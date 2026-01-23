@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { Hero } from "@/components/Hero"; // Import the new component
 import { Features } from "@/components/Features";
+import { Pricing } from "@/components/Pricing";
 import { Footer } from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 
@@ -20,6 +21,7 @@ export default function Home() {
       {/* The new Hero Section */}
       <Hero />
       <Features />
+      <Pricing />
       <Footer />
       
     </main>
