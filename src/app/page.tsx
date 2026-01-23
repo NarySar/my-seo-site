@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import { Hero } from "@/components/Hero"; // Import the new component
+import { Features } from "@/components/Features";
 import JsonLd from "@/components/JsonLd";
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
       
       {/* The new Hero Section */}
       <Hero />
+      <Features />
       
     </main>
   );
