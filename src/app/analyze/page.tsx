@@ -5,13 +5,14 @@ import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { 
   Search, Loader2, Code, Globe, AlertTriangle, 
-  FileText, ImageIcon, Link as LinkIcon, HelpCircle 
+  FileText, ImageIcon, Link as LinkIcon, HelpCircle, CheckCircle 
 } from "lucide-react";
 
 export default function AnalyzePage() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [scores, setScores] = useState<any>(null);
   const [error, setError] = useState("");
 
   const handleAnalyze = async (e: React.FormEvent) => {
@@ -20,6 +21,7 @@ export default function AnalyzePage() {
 
     setLoading(true);
     setResult(null);
+    setScores(null);
     setError("");
 
     try {
@@ -33,6 +35,8 @@ export default function AnalyzePage() {
 
       if (data.success) {
         setResult(data.data);
+        // Calculate scores immediately
+        setScores(calculateSeoScore(data.data));
       } else {
         setError("Could not scan this website. (It might block bots)");
       }
@@ -57,7 +61,7 @@ export default function AnalyzePage() {
           </p>
         </div>
 
-        <form onSubmit={handleAnalyze} className="w-full max-w-2xl relative mb-16">
+        <form onSubmit={handleAnalyze} className="w-full max-w-2xl relative mb-12">
           <div className="relative flex items-center">
             <Search className="absolute left-4 h-5 w-5 text-zinc-400" />
             <input
@@ -79,115 +83,157 @@ export default function AnalyzePage() {
           {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
         </form>
 
-        {/* RESULTS GRID */}
-        {result && (
+        {/* RESULTS AREA */}
+        {result && scores && (
           <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-4 duration-700">
             
-            {/* Top Bar: Title */}
-            <div className="mb-8 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative group">
+            {/* --- OVERALL SCORE CARD --- */}
+            <div className="mb-8 p-8 rounded-3xl bg-zinc-900 text-white shadow-2xl flex flex-col md:flex-row items-center justify-between relative overflow-hidden">
+               {/* Background Glow */}
+               <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${scores.overall >= 80 ? 'from-green-500/20' : scores.overall >= 50 ? 'from-yellow-500/20' : 'from-red-500/20'} to-transparent rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none`}></div>
+               
+               <div className="z-10 text-center md:text-left mb-6 md:mb-0">
+                  <h2 className="text-3xl font-bold mb-2">Overall Agent Score</h2>
+                  <p className="text-zinc-400 max-w-md">
+                    {scores.overall >= 90 ? "Excellent! This site is perfectly optimized for AI agents." : 
+                     scores.overall >= 70 ? "Good job. A few tweaks will make this site agent-ready." : 
+                     "Needs work. AI agents may struggle to understand this content."}
+                  </p>
+               </div>
+
+               {/* Big Circle Score */}
+               <div className="z-10 relative">
+                  <div className="flex items-center justify-center w-32 h-32 rounded-full border-8 border-zinc-800 bg-zinc-950 shadow-inner">
+                    <span className={`text-4xl font-black ${getColor(scores.overall)}`}>{scores.overall}</span>
+                  </div>
+                  <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold uppercase bg-white text-black`}>
+                    {getGrade(scores.overall)}
+                  </div>
+               </div>
+            </div>
+
+            {/* --- TITLE & META --- */}
+            <div className="mb-6 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative group">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Page Title</h3>
+                  <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Page Identity</h3>
                   <p className="text-xl font-medium text-zinc-900 dark:text-white mb-2">{result.title}</p>
                   <p className="text-zinc-500 italic">"{result.metaDescription}"</p>
                 </div>
-                {/* Tooltip Icon */}
-                <Tooltip text="The main title and description shown in Google search results. Agents use this to decide if your page is relevant." />
+                <ScoreBadge score={scores.meta} />
               </div>
             </div>
 
+            {/* --- METRICS GRID --- */}
             <div className="grid md:grid-cols-3 gap-6">
               
               {/* 1. H1 Tag */}
-              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative">
-                 <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                        <Globe className="h-4 w-4 text-blue-600" />
-                      </div>
-                      <h3 className="font-semibold text-zinc-900 dark:text-white">Primary Topic (H1)</h3>
+              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
+                 <div>
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                            <Globe className="h-4 w-4 text-blue-600" />
+                          </div>
+                          <h3 className="font-semibold text-zinc-900 dark:text-white">Primary Topic</h3>
+                        </div>
+                        <Tooltip text="The main headline (H1). Agents use this to confirm the page topic." />
                     </div>
-                    <Tooltip text="The main headline (H1) tells AI agents exactly what this specific page is about. It should be clear and descriptive." />
-                </div>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">"{result.h1Text}"</p>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">"{result.h1Text}"</p>
+                 </div>
+                 <ScoreBadge score={scores.h1} />
               </div>
 
               {/* 2. Schema Data */}
-              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`h-8 w-8 rounded-full flex items-center justify-center ${result.jsonLdCount > 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
-                      <Code className={`h-4 w-4 ${result.jsonLdCount > 0 ? 'text-green-600' : 'text-red-600'}`} />
+              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`h-8 w-8 rounded-full flex items-center justify-center ${result.jsonLdCount > 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                        <Code className={`h-4 w-4 ${result.jsonLdCount > 0 ? 'text-green-600' : 'text-red-600'}`} />
+                      </div>
+                      <h3 className="font-semibold text-zinc-900 dark:text-white">Structured Data</h3>
                     </div>
-                    <h3 className="font-semibold text-zinc-900 dark:text-white">Structured Data</h3>
+                    <Tooltip text="JSON-LD code that feeds facts (price, rating, hours) directly to AI." />
                   </div>
-                  <Tooltip text="Hidden code (JSON-LD) that feeds facts directly to AI. It tells bots your price, rating, address, and hours in a language they understand." />
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">Found {result.jsonLdCount} Schema snippets.</p>
                 </div>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">Found {result.jsonLdCount} Schema snippets.</p>
+                <ScoreBadge score={scores.schema} />
               </div>
 
-              {/* 3. Word Count (Context) */}
-              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`h-8 w-8 rounded-full flex items-center justify-center ${result.wordCount > 300 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-yellow-100 dark:bg-yellow-900/30'}`}>
-                      <FileText className={`h-4 w-4 ${result.wordCount > 300 ? 'text-green-600' : 'text-yellow-600'}`} />
+              {/* 3. Word Count */}
+              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`h-8 w-8 rounded-full flex items-center justify-center ${result.wordCount > 300 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-yellow-100 dark:bg-yellow-900/30'}`}>
+                        <FileText className={`h-4 w-4 ${result.wordCount > 300 ? 'text-green-600' : 'text-yellow-600'}`} />
+                      </div>
+                      <h3 className="font-semibold text-zinc-900 dark:text-white">Content Depth</h3>
                     </div>
-                    <h3 className="font-semibold text-zinc-900 dark:text-white">Content Depth</h3>
+                    <Tooltip text="Agents need at least 300 words to understand context. >1000 is ideal." />
                   </div>
-                  <Tooltip text="AI models need text to understand context. Pages with under 300 words are often ignored by agents as 'too thin' to be useful." />
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                    <strong>{result.wordCount}</strong> words. 
+                  </p>
                 </div>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  <strong>{result.wordCount}</strong> words. 
-                  {result.wordCount < 300 ? " Too thin for AI training." : " Good context for Agents."}
-                </p>
+                <ScoreBadge score={scores.content} />
               </div>
 
               {/* 4. Image Alt Text */}
-              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`h-8 w-8 rounded-full flex items-center justify-center ${result.missingAlt === 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
-                      <ImageIcon className={`h-4 w-4 ${result.missingAlt === 0 ? 'text-green-600' : 'text-red-600'}`} />
+              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`h-8 w-8 rounded-full flex items-center justify-center ${scores.images > 80 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                        <ImageIcon className={`h-4 w-4 ${scores.images > 80 ? 'text-green-600' : 'text-red-600'}`} />
+                      </div>
+                      <h3 className="font-semibold text-zinc-900 dark:text-white">Image Context</h3>
                     </div>
-                    <h3 className="font-semibold text-zinc-900 dark:text-white">Image Context</h3>
+                    <Tooltip text="Percentage of images with descriptions. 100% is required for AI vision." />
                   </div>
-                  <Tooltip text="AI cannot 'see' images. They read the Alt Text description. If missing, the AI treats the image as a blank hole in your content." />
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                    {result.totalImages} Images. <br/>
+                    {result.missingAlt > 0 ? <span className="text-red-500 font-bold"> {result.missingAlt} missing descriptions.</span> : " All optimized."}
+                  </p>
                 </div>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  {result.totalImages} Images. 
-                  {result.missingAlt > 0 ? <span className="text-red-500 font-bold"> {result.missingAlt} missing Alt text.</span> : " All optimized."}
-                </p>
+                <ScoreBadge score={scores.images} />
               </div>
 
-              {/* 5. Link Count */}
-              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                      <LinkIcon className="h-4 w-4 text-purple-600" />
+              {/* 5. Connections */}
+              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                        <LinkIcon className="h-4 w-4 text-purple-600" />
+                      </div>
+                      <h3 className="font-semibold text-zinc-900 dark:text-white">Connections</h3>
                     </div>
-                    <h3 className="font-semibold text-zinc-900 dark:text-white">Connections</h3>
+                    <Tooltip text="Links prove your page is connected to the web. 0 links = 'Orphaned' page." />
                   </div>
-                  <Tooltip text="Links tell AI that your page is connected to other relevant info. Isolated pages (orphans) are trusted less by search bots." />
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                    Found <strong>{result.totalLinks}</strong> links.
+                  </p>
                 </div>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Found <strong>{result.totalLinks}</strong> links. {result.totalLinks > 0 ? "Good connectivity." : "Page is orphaned."}
-                </p>
+                <ScoreBadge score={scores.links} />
               </div>
 
               {/* 6. Robots Tag */}
-              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative">
-                <div className="flex items-center justify-between mb-4">
-                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                      <AlertTriangle className="h-4 w-4 text-gray-600" />
+              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
+                <div>
+                   <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                        <AlertTriangle className="h-4 w-4 text-gray-600" />
+                      </div>
+                      <h3 className="font-semibold text-zinc-900 dark:text-white">Bot Access</h3>
                     </div>
-                    <h3 className="font-semibold text-zinc-900 dark:text-white">Bot Access</h3>
+                    <Tooltip text="If 'noindex' is found, score drops to 0 immediately." />
                   </div>
-                  <Tooltip text="The 'Do Not Enter' sign for robots. If this says 'noindex', AI agents are blocked from learning anything on this page." />
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 break-words mb-4">{result.robotsTag}</p>
                 </div>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 break-words">{result.robotsTag}</p>
+                <ScoreBadge score={scores.robots} />
               </div>
 
             </div>
@@ -199,16 +245,85 @@ export default function AnalyzePage() {
   );
 }
 
-// Simple Tooltip Component
+// --- HELPER COMPONENTS & LOGIC ---
+
 function Tooltip({ text }: { text: string }) {
   return (
     <div className="group relative flex items-center justify-center cursor-help">
       <HelpCircle className="h-4 w-4 text-zinc-400 hover:text-blue-500 transition-colors" />
       <div className="absolute bottom-full mb-2 hidden w-48 p-2 bg-black text-white text-xs rounded-lg shadow-xl group-hover:block z-50 text-center pointer-events-none">
         {text}
-        {/* Little arrow pointing down */}
         <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black"></div>
       </div>
     </div>
   );
+}
+
+function ScoreBadge({ score }: { score: number }) {
+  let color = "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300";
+  if (score >= 80) color = "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300";
+  else if (score >= 50) color = "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300";
+
+  return (
+    <div className={`px-3 py-1 rounded-full text-xs font-bold ${color}`}>
+      {score}/100
+    </div>
+  );
+}
+
+function getColor(score: number) {
+  if (score >= 90) return "text-green-500";
+  if (score >= 70) return "text-yellow-500";
+  return "text-red-500";
+}
+
+function getGrade(score: number) {
+  if (score >= 95) return "A+";
+  if (score >= 90) return "A";
+  if (score >= 80) return "B";
+  if (score >= 70) return "C";
+  if (score >= 50) return "D";
+  return "F";
+}
+
+// --- THE SCORING MATH ---
+function calculateSeoScore(data: any) {
+  let h1 = data.h1Text && data.h1Text !== "No H1 tag found" ? 100 : 0;
+  
+  let schema = data.jsonLdCount > 0 ? 100 : 0;
+  
+  // Word Count (30% weight)
+  let content = 0;
+  if (data.wordCount > 1000) content = 100;
+  else if (data.wordCount > 600) content = 80;
+  else if (data.wordCount > 300) content = 50;
+  
+  // Images (20% weight)
+  let images = 100;
+  if (data.totalImages > 0) {
+     const validRatio = (data.totalImages - data.missingAlt) / data.totalImages;
+     images = Math.round(validRatio * 100);
+  }
+
+  // Links (10% weight)
+  let links = data.totalLinks > 0 ? 100 : 0;
+
+  // Robots (Binary)
+  let robots = data.robotsTag.includes("noindex") ? 0 : 100;
+
+  // Meta (Title + Desc)
+  let meta = 100;
+  if (!data.title || data.title === "No title found") meta -= 50;
+  if (!data.metaDescription || data.metaDescription === "No description found") meta -= 50;
+
+  // Weighted Average
+  const overall = Math.round(
+    (content * 0.30) + 
+    (schema * 0.25) + 
+    (images * 0.20) + 
+    (meta * 0.15) + 
+    (links * 0.10)
+  );
+
+  return { overall, h1, schema, content, images, links, robots, meta };
 }
