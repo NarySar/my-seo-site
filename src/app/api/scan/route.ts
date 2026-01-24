@@ -1,17 +1,14 @@
 import { NextResponse } from "next/server";
 import * as cheerio from "cheerio";
-// Fix
+
 export async function POST(request: Request) {
   try {
-    // 1. Get the URL from the frontend
     const { url } = await request.json();
 
     if (!url) {
       return NextResponse.json({ error: "URL is required" }, { status: 400 });
     }
 
-    // 2. Fetch the actual HTML of the website
-    // We add a User-Agent so we look like a real browser
     const response = await fetch(url, {
       headers: {
         "User-Agent": "PulseSeo-Agent/1.0",
@@ -23,24 +20,29 @@ export async function POST(request: Request) {
     }
 
     const html = await response.text();
-
-    // 3. Load HTML into Cheerio (The Reader)
     const $ = cheerio.load(html);
 
-    // 4. Extract Data
-    const title = $("title").text() || "No title found";
+    // --- BASIC DATA ---
+    const title = $("title").text().trim() || "No title found";
     const metaDescription = $('meta[name="description"]').attr("content") || "No description found";
-    
-    // Check for H1 tag (Primary Topic)
     const h1Text = $("h1").first().text().trim() || "No H1 tag found";
-    
-    // Check for schema.org data (JSON-LD)
     const jsonLdCount = $('script[type="application/ld+json"]').length;
-
-    // Check for robots meta tag
     const robotsTag = $('meta[name="robots"]').attr("content") || "No robots tag found";
 
-    // 5. Return the Real Data
+    // --- NEW "SMART" METRICS ---
+    
+    // 1. Word Count (Clean text only, no scripts/styles)
+    const bodyText = $("body").text().replace(/\s+/g, " ").trim();
+    const wordCount = bodyText.split(" ").length;
+
+    // 2. Image Analysis
+    const totalImages = $("img").length;
+    const imagesWithAlt = $("img[alt]").filter((i, el) => $(el).attr("alt") !== "").length;
+    const missingAlt = totalImages - imagesWithAlt;
+
+    // 3. Link Analysis
+    const totalLinks = $("a").length;
+
     return NextResponse.json({
       success: true,
       data: {
@@ -49,6 +51,11 @@ export async function POST(request: Request) {
         h1Text,
         jsonLdCount,
         robotsTag,
+        // Send new data to frontend
+        wordCount,
+        totalImages,
+        missingAlt,
+        totalLinks,
       },
     });
 

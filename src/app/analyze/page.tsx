@@ -3,12 +3,11 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { Search, Loader2, CheckCircle, AlertTriangle, XCircle, Globe, Code } from "lucide-react";
+import { Search, Loader2, Code, Globe, AlertTriangle, FileText, ImageIcon, Link as LinkIcon, XCircle } from "lucide-react";
 
 export default function AnalyzePage() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  // We now store real data here
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState("");
 
@@ -21,7 +20,7 @@ export default function AnalyzePage() {
     setError("");
 
     try {
-      // Call our new Real API
+      // Calling the API
       const response = await fetch("/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -52,7 +51,7 @@ export default function AnalyzePage() {
             Real-Time <span className="text-blue-600">Agent Analysis</span>
           </h1>
           <p className="text-lg text-zinc-600 dark:text-zinc-400">
-            Enter a URL to perform a live scrape. We analyze the HTML structure for AI readability.
+            Check your Agentic SEO score. We analyze structure, content depth, and accessibility for AI models.
           </p>
         </div>
 
@@ -78,59 +77,93 @@ export default function AnalyzePage() {
           {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
         </form>
 
-        {/* Display Real Results */}
+        {/* RESULTS GRID */}
         {result && (
           <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-4 duration-700">
             
-            {/* Top Bar: Title & Meta */}
+            {/* Top Bar: Title */}
             <div className="mb-8 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
               <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Page Title</h3>
-              <p className="text-xl font-medium text-zinc-900 dark:text-white mb-4">{result.title}</p>
-              
-              <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Meta Description</h3>
-              <p className="text-zinc-600 dark:text-zinc-300 italic">"{result.metaDescription}"</p>
+              <p className="text-xl font-medium text-zinc-900 dark:text-white mb-2">{result.title}</p>
+              <p className="text-zinc-500 italic">"{result.metaDescription}"</p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
-              {/* Card 1: JSON-LD Status */}
-              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className={`h-8 w-8 rounded-full flex items-center justify-center ${result.jsonLdCount > 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
-                    {result.jsonLdCount > 0 ? <Code className="h-4 w-4 text-green-600" /> : <XCircle className="h-4 w-4 text-red-600" />}
-                  </div>
-                  <h3 className="font-semibold text-zinc-900 dark:text-white">Structured Data</h3>
-                </div>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                  Found <strong>{result.jsonLdCount}</strong> Schema entities.
-                  {result.jsonLdCount === 0 ? " Critical missing piece for AI." : " Good for Knowledge Graph."}
-                </p>
-              </div>
-
-              {/* Card 2: H1 Tag */}
+              
+              {/* 1. H1 Tag */}
               <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
                  <div className="flex items-center gap-3 mb-4">
                   <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                     <Globe className="h-4 w-4 text-blue-600" />
                   </div>
-                  <h3 className="font-semibold text-zinc-900 dark:text-white">H1 Tag</h3>
+                  <h3 className="font-semibold text-zinc-900 dark:text-white">Primary Topic (H1)</h3>
                 </div>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                  "{result.h1Text}"
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">"{result.h1Text}"</p>
+              </div>
+
+              {/* 2. Schema Data */}
+              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={`h-8 w-8 rounded-full flex items-center justify-center ${result.jsonLdCount > 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                    <Code className={`h-4 w-4 ${result.jsonLdCount > 0 ? 'text-green-600' : 'text-red-600'}`} />
+                  </div>
+                  <h3 className="font-semibold text-zinc-900 dark:text-white">Structured Data</h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">Found {result.jsonLdCount} Schema snippets.</p>
+              </div>
+
+              {/* 3. Word Count (Context) */}
+              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={`h-8 w-8 rounded-full flex items-center justify-center ${result.wordCount > 300 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-yellow-100 dark:bg-yellow-900/30'}`}>
+                    <FileText className={`h-4 w-4 ${result.wordCount > 300 ? 'text-green-600' : 'text-yellow-600'}`} />
+                  </div>
+                  <h3 className="font-semibold text-zinc-900 dark:text-white">Content Depth</h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <strong>{result.wordCount}</strong> words. 
+                  {result.wordCount < 300 ? " Too thin for AI training." : " Good context for Agents."}
                 </p>
               </div>
 
-              {/* Card 3: Robots Tag */}
+              {/* 4. Image Alt Text */}
               <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-                 <div className="flex items-center gap-3 mb-4">
-                  <div className="h-8 w-8 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
-                    <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={`h-8 w-8 rounded-full flex items-center justify-center ${result.missingAlt === 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                    <ImageIcon className={`h-4 w-4 ${result.missingAlt === 0 ? 'text-green-600' : 'text-red-600'}`} />
                   </div>
-                  <h3 className="font-semibold text-zinc-900 dark:text-white">Bot Permissions</h3>
+                  <h3 className="font-semibold text-zinc-900 dark:text-white">Image Context</h3>
                 </div>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                  {result.robotsTag}
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  {result.totalImages} Images. 
+                  {result.missingAlt > 0 ? <span className="text-red-500 font-bold"> {result.missingAlt} missing Alt text.</span> : " All optimized."}
                 </p>
               </div>
+
+              {/* 5. Link Count */}
+              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-8 w-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                    <LinkIcon className="h-4 w-4 text-purple-600" />
+                  </div>
+                  <h3 className="font-semibold text-zinc-900 dark:text-white">Connections</h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  Found <strong>{result.totalLinks}</strong> links. {result.totalLinks > 0 ? "Good connectivity." : "Page is orphaned."}
+                </p>
+              </div>
+
+              {/* 6. Robots Tag */}
+              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                <div className="flex items-center gap-3 mb-4">
+                   <div className="h-8 w-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                    <AlertTriangle className="h-4 w-4 text-gray-600" />
+                  </div>
+                  <h3 className="font-semibold text-zinc-900 dark:text-white">Bot Access</h3>
+                </div>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">{result.robotsTag}</p>
+              </div>
+
             </div>
           </div>
         )}
