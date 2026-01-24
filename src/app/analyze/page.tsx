@@ -22,7 +22,7 @@ export default function AnalyzePage() {
 
     try {
       // Call our new Real API
-      const response = await fetch("/api/analyze", {
+      const response = await fetch("/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
