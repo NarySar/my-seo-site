@@ -100,7 +100,7 @@ export default function AnalyzePage() {
                   </p>
                </div>
 
-               {/* Big Circle Score (No Letter Grade) */}
+               {/* Big Circle Score */}
                <div className="z-10 relative">
                   <div className="flex items-center justify-center w-32 h-32 rounded-full border-8 border-zinc-800 bg-zinc-950 shadow-inner">
                     <span className={`text-4xl font-black ${getColor(scores.overall)}`}>{scores.overall}</span>
@@ -118,7 +118,7 @@ export default function AnalyzePage() {
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   <ScoreBadge score={scores.meta} />
-                  <span className="text-xs font-medium text-zinc-400">Weight: 15%</span>
+                  <span className="text-xs font-medium text-zinc-400">Impact: 15%</span>
                 </div>
               </div>
             </div>
@@ -141,7 +141,7 @@ export default function AnalyzePage() {
                     <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">"{result.h1Text}"</p>
                  </div>
                  <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
-                    <span className="text-xs font-medium text-zinc-400">Weight: 10%</span>
+                    <span className="text-xs font-medium text-zinc-400">Impact: 10%</span>
                     <ScoreBadge score={scores.h1} />
                  </div>
               </div>
@@ -161,7 +161,7 @@ export default function AnalyzePage() {
                   <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">Found {result.jsonLdCount} Schema snippets.</p>
                 </div>
                 <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
-                    <span className="text-xs font-medium text-zinc-400">Weight: 20%</span>
+                    <span className="text-xs font-medium text-zinc-400">Impact: 20%</span>
                     <ScoreBadge score={scores.schema} />
                  </div>
               </div>
@@ -183,7 +183,7 @@ export default function AnalyzePage() {
                   </p>
                 </div>
                 <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
-                    <span className="text-xs font-medium text-zinc-400">Weight: 25%</span>
+                    <span className="text-xs font-medium text-zinc-400">Impact: 25%</span>
                     <ScoreBadge score={scores.content} />
                  </div>
               </div>
@@ -206,7 +206,7 @@ export default function AnalyzePage() {
                   </p>
                 </div>
                 <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
-                    <span className="text-xs font-medium text-zinc-400">Weight: 20%</span>
+                    <span className="text-xs font-medium text-zinc-400">Impact: 20%</span>
                     <ScoreBadge score={scores.images} />
                  </div>
               </div>
@@ -228,12 +228,12 @@ export default function AnalyzePage() {
                   </p>
                 </div>
                 <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
-                    <span className="text-xs font-medium text-zinc-400">Weight: 10%</span>
+                    <span className="text-xs font-medium text-zinc-400">Impact: 10%</span>
                     <ScoreBadge score={scores.links} />
                  </div>
               </div>
 
-              {/* 6. Robots Tag (Critical) */}
+              {/* 6. Robots Tag (Critical Check - No Impact %) */}
               <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
                 <div>
                    <div className="flex items-center justify-between mb-4">
@@ -296,40 +296,29 @@ function getColor(score: number) {
   return "text-red-500";
 }
 
-// --- UPDATED MATH LOGIC ---
+// --- SCORING MATH ---
 function calculateSeoScore(data: any) {
-  // 1. H1 (10%)
   let h1 = data.h1Text && data.h1Text !== "No H1 tag found" ? 100 : 0;
-  
-  // 2. Schema (20%)
   let schema = data.jsonLdCount > 0 ? 100 : 0;
   
-  // 3. Content (25%)
   let content = 0;
   if (data.wordCount > 1000) content = 100;
   else if (data.wordCount > 600) content = 80;
   else if (data.wordCount > 300) content = 50;
   
-  // 4. Images (20%)
   let images = 100;
   if (data.totalImages > 0) {
      const validRatio = (data.totalImages - data.missingAlt) / data.totalImages;
      images = Math.round(validRatio * 100);
   }
 
-  // 5. Links (10%)
   let links = data.totalLinks > 0 ? 100 : 0;
-
-  // 6. Robots (Critical Gatekeeper)
   let robots = data.robotsTag.includes("noindex") ? 0 : 100;
 
-  // 7. Meta (15%)
   let meta = 100;
   if (!data.title || data.title === "No title found") meta -= 50;
   if (!data.metaDescription || data.metaDescription === "No description found") meta -= 50;
 
-  // Weighted Average
-  // Total weights = 0.25 + 0.20 + 0.20 + 0.15 + 0.10 + 0.10 = 1.0 (100%)
   let overall = Math.round(
     (content * 0.25) + 
     (schema * 0.20) + 
@@ -339,7 +328,6 @@ function calculateSeoScore(data: any) {
     (h1 * 0.10)
   );
 
-  // If robots block the site, the score is automatically 0
   if (robots === 0) overall = 0;
 
   return { overall, h1, schema, content, images, links, robots, meta };
