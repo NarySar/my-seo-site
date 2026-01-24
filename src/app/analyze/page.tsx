@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { 
   Search, Loader2, Code, Globe, AlertTriangle, 
-  FileText, ImageIcon, Link as LinkIcon, HelpCircle, CheckCircle 
+  FileText, ImageIcon, Link as LinkIcon, HelpCircle 
 } from "lucide-react";
 
 export default function AnalyzePage() {
@@ -35,7 +35,6 @@ export default function AnalyzePage() {
 
       if (data.success) {
         setResult(data.data);
-        // Calculate scores immediately
         setScores(calculateSeoScore(data.data));
       } else {
         setError("Could not scan this website. (It might block bots)");
@@ -101,18 +100,15 @@ export default function AnalyzePage() {
                   </p>
                </div>
 
-               {/* Big Circle Score */}
+               {/* Big Circle Score (No Letter Grade) */}
                <div className="z-10 relative">
                   <div className="flex items-center justify-center w-32 h-32 rounded-full border-8 border-zinc-800 bg-zinc-950 shadow-inner">
                     <span className={`text-4xl font-black ${getColor(scores.overall)}`}>{scores.overall}</span>
                   </div>
-                  <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold uppercase bg-white text-black`}>
-                    {getGrade(scores.overall)}
-                  </div>
                </div>
             </div>
 
-            {/* --- TITLE & META --- */}
+            {/* --- PAGE IDENTITY (15%) --- */}
             <div className="mb-6 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative group">
               <div className="flex justify-between items-start">
                 <div>
@@ -120,14 +116,17 @@ export default function AnalyzePage() {
                   <p className="text-xl font-medium text-zinc-900 dark:text-white mb-2">{result.title}</p>
                   <p className="text-zinc-500 italic">"{result.metaDescription}"</p>
                 </div>
-                <ScoreBadge score={scores.meta} />
+                <div className="flex flex-col items-end gap-2">
+                  <ScoreBadge score={scores.meta} />
+                  <span className="text-xs font-medium text-zinc-400">Weight: 15%</span>
+                </div>
               </div>
             </div>
 
             {/* --- METRICS GRID --- */}
             <div className="grid md:grid-cols-3 gap-6">
               
-              {/* 1. H1 Tag */}
+              {/* 1. H1 Tag (10%) */}
               <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
                  <div>
                     <div className="flex items-center justify-between mb-4">
@@ -141,10 +140,13 @@ export default function AnalyzePage() {
                     </div>
                     <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">"{result.h1Text}"</p>
                  </div>
-                 <ScoreBadge score={scores.h1} />
+                 <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
+                    <span className="text-xs font-medium text-zinc-400">Weight: 10%</span>
+                    <ScoreBadge score={scores.h1} />
+                 </div>
               </div>
 
-              {/* 2. Schema Data */}
+              {/* 2. Structured Data (20%) */}
               <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -158,10 +160,13 @@ export default function AnalyzePage() {
                   </div>
                   <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">Found {result.jsonLdCount} Schema snippets.</p>
                 </div>
-                <ScoreBadge score={scores.schema} />
+                <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
+                    <span className="text-xs font-medium text-zinc-400">Weight: 20%</span>
+                    <ScoreBadge score={scores.schema} />
+                 </div>
               </div>
 
-              {/* 3. Word Count */}
+              {/* 3. Word Count (25%) */}
               <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -177,10 +182,13 @@ export default function AnalyzePage() {
                     <strong>{result.wordCount}</strong> words. 
                   </p>
                 </div>
-                <ScoreBadge score={scores.content} />
+                <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
+                    <span className="text-xs font-medium text-zinc-400">Weight: 25%</span>
+                    <ScoreBadge score={scores.content} />
+                 </div>
               </div>
 
-              {/* 4. Image Alt Text */}
+              {/* 4. Image Alt Text (20%) */}
               <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -197,10 +205,13 @@ export default function AnalyzePage() {
                     {result.missingAlt > 0 ? <span className="text-red-500 font-bold"> {result.missingAlt} missing descriptions.</span> : " All optimized."}
                   </p>
                 </div>
-                <ScoreBadge score={scores.images} />
+                <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
+                    <span className="text-xs font-medium text-zinc-400">Weight: 20%</span>
+                    <ScoreBadge score={scores.images} />
+                 </div>
               </div>
 
-              {/* 5. Connections */}
+              {/* 5. Connections (10%) */}
               <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -216,10 +227,13 @@ export default function AnalyzePage() {
                     Found <strong>{result.totalLinks}</strong> links.
                   </p>
                 </div>
-                <ScoreBadge score={scores.links} />
+                <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
+                    <span className="text-xs font-medium text-zinc-400">Weight: 10%</span>
+                    <ScoreBadge score={scores.links} />
+                 </div>
               </div>
 
-              {/* 6. Robots Tag */}
+              {/* 6. Robots Tag (Critical) */}
               <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
                 <div>
                    <div className="flex items-center justify-between mb-4">
@@ -233,7 +247,12 @@ export default function AnalyzePage() {
                   </div>
                   <p className="text-sm text-zinc-600 dark:text-zinc-400 break-words mb-4">{result.robotsTag}</p>
                 </div>
-                <ScoreBadge score={scores.robots} />
+                <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
+                    <span className="text-xs font-medium text-zinc-400">Critical Check</span>
+                    <div className={`px-3 py-1 rounded-full text-xs font-bold ${scores.robots === 100 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      {scores.robots === 100 ? "PASS" : "FAIL"}
+                    </div>
+                 </div>
               </div>
 
             </div>
@@ -245,7 +264,7 @@ export default function AnalyzePage() {
   );
 }
 
-// --- HELPER COMPONENTS & LOGIC ---
+// --- HELPER COMPONENTS ---
 
 function Tooltip({ text }: { text: string }) {
   return (
@@ -277,53 +296,51 @@ function getColor(score: number) {
   return "text-red-500";
 }
 
-function getGrade(score: number) {
-  if (score >= 95) return "A+";
-  if (score >= 90) return "A";
-  if (score >= 80) return "B";
-  if (score >= 70) return "C";
-  if (score >= 50) return "D";
-  return "F";
-}
-
-// --- THE SCORING MATH ---
+// --- UPDATED MATH LOGIC ---
 function calculateSeoScore(data: any) {
+  // 1. H1 (10%)
   let h1 = data.h1Text && data.h1Text !== "No H1 tag found" ? 100 : 0;
   
+  // 2. Schema (20%)
   let schema = data.jsonLdCount > 0 ? 100 : 0;
   
-  // Word Count (30% weight)
+  // 3. Content (25%)
   let content = 0;
   if (data.wordCount > 1000) content = 100;
   else if (data.wordCount > 600) content = 80;
   else if (data.wordCount > 300) content = 50;
   
-  // Images (20% weight)
+  // 4. Images (20%)
   let images = 100;
   if (data.totalImages > 0) {
      const validRatio = (data.totalImages - data.missingAlt) / data.totalImages;
      images = Math.round(validRatio * 100);
   }
 
-  // Links (10% weight)
+  // 5. Links (10%)
   let links = data.totalLinks > 0 ? 100 : 0;
 
-  // Robots (Binary)
+  // 6. Robots (Critical Gatekeeper)
   let robots = data.robotsTag.includes("noindex") ? 0 : 100;
 
-  // Meta (Title + Desc)
+  // 7. Meta (15%)
   let meta = 100;
   if (!data.title || data.title === "No title found") meta -= 50;
   if (!data.metaDescription || data.metaDescription === "No description found") meta -= 50;
 
   // Weighted Average
-  const overall = Math.round(
-    (content * 0.30) + 
-    (schema * 0.25) + 
+  // Total weights = 0.25 + 0.20 + 0.20 + 0.15 + 0.10 + 0.10 = 1.0 (100%)
+  let overall = Math.round(
+    (content * 0.25) + 
+    (schema * 0.20) + 
     (images * 0.20) + 
     (meta * 0.15) + 
-    (links * 0.10)
+    (links * 0.10) +
+    (h1 * 0.10)
   );
+
+  // If robots block the site, the score is automatically 0
+  if (robots === 0) overall = 0;
 
   return { overall, h1, schema, content, images, links, robots, meta };
 }
