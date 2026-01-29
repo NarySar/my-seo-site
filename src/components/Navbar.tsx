@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Zap, Menu, X } from "lucide-react"; // Added Menu and X icons
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/ThemeToggle"; // Import the new component
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,28 +20,32 @@ export default function Navbar() {
           <span>PulseSeo.ai</span>
         </Link>
 
-        {/* Desktop Links (Hidden on Mobile) */}
+        {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-600 dark:text-zinc-400">
           <Link href="#" className="hover:text-black dark:hover:text-white transition-colors">Features</Link>
           <Link href="#" className="hover:text-black dark:hover:text-white transition-colors">Pricing</Link>
           <Link href="#" className="hover:text-black dark:hover:text-white transition-colors">Docs</Link>
         </div>
 
-        {/* Desktop CTA & Theme Toggle (Hidden on Mobile) */}
+        {/* Desktop Actions (Toggle + CTA) */}
         <div className="hidden md:flex items-center gap-4">
-          {/* You can re-add your ThemeToggle component here if you have one */}
+          <ThemeToggle /> {/* <--- Added here for Desktop */}
           <Link href="/analyze" className="bg-zinc-900 dark:bg-white text-white dark:text-black px-5 py-2.5 rounded-full text-sm font-bold hover:opacity-90 transition-opacity">
             Get Started
           </Link>
         </div>
 
-        {/* Mobile Menu Button (Visible ONLY on Mobile) */}
-        <button 
-          className="md:hidden text-zinc-900 dark:text-white"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        {/* Mobile Menu Button & Toggle */}
+        <div className="md:hidden flex items-center gap-4">
+          {/* We also show the toggle on the main bar for mobile users for easy access */}
+          <ThemeToggle /> 
+          <button 
+            className="text-zinc-900 dark:text-white"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Dropdown Menu */}

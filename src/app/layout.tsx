@@ -1,28 +1,16 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/ThemeProvider";
+// 👇 IMPORT MATCHING YOUR FILENAME EXACTLY (Case Sensitive!)
+import { ThemeProvider } from "@/components/ThemeProvider"; 
+import Navbar from "@/components/Navbar"; // Assuming you want Navbar on all pages
+import { Footer } from "@/components/Footer"; // Assuming you want Footer on all pages
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: {
-    default: "PulseSeo.ai | Optimize for the Machine Economy",
-    template: "%s | PulseSeo.ai"
-  },
-  description: "The first SEO tool built for AI Agents, LLMs, and Voice Search. Analyze your site's readiness for the agentic future.",
-  keywords: ["Agentic SEO", "LLM Optimization", "AI Search", "Technical SEO"],
-  
-  // This "openGraph" section is what FACEBOOK uses
-  openGraph: {
-    title: "PulseSeo.ai - The Future of SEO is Agentic",
-    description: "Don't just rank for humans. Rank for AI. Test your site's readability for ChatGPT, Claude, and Gemini.",
-    url: "https://pulseseo.ai",
-    siteName: "PulseSeo.ai",
-    type: "website",
-    locale: "en_US",
-  },
-  // Twitter section removed as requested
+  title: "PulseSeo.ai | Agentic SEO Scanner",
+  description: "Check if your site is visible to AI Agents like ChatGPT and Gemini.",
 };
 
 export default function RootLayout({
@@ -33,8 +21,19 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        {/* 👇 Wrap the entire app in the ThemeProvider */}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {/* Navbar can go here so it appears on every page */}
+          {/* <Navbar />  <-- If you already have Navbar in page.tsx, remove it there and put it here! */}
+          
           {children}
+
+          {/* <Footer /> <-- Same for Footer */}
         </ThemeProvider>
       </body>
     </html>
