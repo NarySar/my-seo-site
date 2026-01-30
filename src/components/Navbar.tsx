@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import { ThemeToggle } from "@/components/ThemeToggle"; // Import the new component
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,14 +22,14 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-600 dark:text-zinc-400">
-          <Link href="#" className="hover:text-black dark:hover:text-white transition-colors">Features</Link>
-          <Link href="#" className="hover:text-black dark:hover:text-white transition-colors">Pricing</Link>
-          <Link href="#" className="hover:text-black dark:hover:text-white transition-colors">Docs</Link>
+          <Link href="/features" className="hover:text-black dark:hover:text-white transition-colors">Features</Link>
+          <Link href="/pricing" className="hover:text-black dark:hover:text-white transition-colors">Pricing</Link>
+          <Link href="/docs" className="hover:text-black dark:hover:text-white transition-colors">Docs</Link>
         </div>
 
         {/* Desktop Actions (Toggle + CTA) */}
         <div className="hidden md:flex items-center gap-4">
-          <ThemeToggle /> {/* <--- Added here for Desktop */}
+          <ThemeToggle />
           <Link href="/analyze" className="bg-zinc-900 dark:bg-white text-white dark:text-black px-5 py-2.5 rounded-full text-sm font-bold hover:opacity-90 transition-opacity">
             Get Started
           </Link>
@@ -37,8 +37,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Button & Toggle */}
         <div className="md:hidden flex items-center gap-4">
-          {/* We also show the toggle on the main bar for mobile users for easy access */}
-          <ThemeToggle /> 
+          <ThemeToggle />
           <button 
             className="text-zinc-900 dark:text-white"
             onClick={() => setIsOpen(!isOpen)}
@@ -51,9 +50,9 @@ export default function Navbar() {
       {/* Mobile Dropdown Menu */}
       {isOpen && (
         <div className="md:hidden absolute top-20 left-0 w-full bg-white dark:bg-black border-b border-zinc-200 dark:border-zinc-800 p-6 flex flex-col gap-6 shadow-xl animate-in slide-in-from-top-2">
-           <Link href="#" className="text-lg font-medium text-zinc-900 dark:text-white" onClick={() => setIsOpen(false)}>Features</Link>
-           <Link href="#" className="text-lg font-medium text-zinc-900 dark:text-white" onClick={() => setIsOpen(false)}>Pricing</Link>
-           <Link href="#" className="text-lg font-medium text-zinc-900 dark:text-white" onClick={() => setIsOpen(false)}>Docs</Link>
+           <Link href="/features" className="text-lg font-medium text-zinc-900 dark:text-white" onClick={() => setIsOpen(false)}>Features</Link>
+           <Link href="/pricing" className="text-lg font-medium text-zinc-900 dark:text-white" onClick={() => setIsOpen(false)}>Pricing</Link>
+           <Link href="/docs" className="text-lg font-medium text-zinc-900 dark:text-white" onClick={() => setIsOpen(false)}>Docs</Link>
            <hr className="border-zinc-100 dark:border-zinc-800"/>
            <Link href="/analyze" className="bg-blue-600 text-white py-3 rounded-xl text-center font-bold" onClick={() => setIsOpen(false)}>
             Get Started Free
