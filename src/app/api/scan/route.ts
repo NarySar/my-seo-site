@@ -1,111 +1,97 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import { auth } from "@clerk/nextjs/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { google } from "@ai-sdk/google";
+import { generateObject } from "ai";
+import { z } from "zod";
 import * as cheerio from "cheerio";
+import { auth } from "@clerk/nextjs/server";
+import { createClient } from "@supabase/supabase-js"; // Import createClient directly
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+// Define the Schema (Structure of the output)
+const seoSchema = z.object({
+  score: z.number().describe("A generic SEO score from 0 to 100 based on content quality"),
+  summary: z.string().describe("A 2-sentence summary of what the page is about"),
+  keywords: z.array(z.string()).describe("Top 5 keywords found on the page"),
+  improvements: z.array(z.string()).describe("3 specific actionable tips to improve SEO"),
+  modelUsed: z.string().optional()
+});
 
 export async function POST(req: Request) {
   try {
-    // 1. SETUP GEMINI
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.0-flash",
-      generationConfig: { responseMimeType: "application/json" } 
+    const { url } = await req.json();
+
+    console.log(`Visiting: ${url}`);
+
+    // 1. Fetch Website Content
+    const response = await fetch(url, {
+      headers: { "User-Agent": "PulseSeo-Bot/1.0" },
     });
 
-    const body = await req.json();
-    const { url } = body;
-
-    if (!url) return NextResponse.json({ error: "URL is required" }, { status: 400 });
-
-    // 2. SCRAPE
-    console.log("Visiting: " + url);
-    const response = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 (PulseSeoBot)" } });
-    if (!response.ok) throw new Error("Failed to visit site");
+    if (!response.ok) {
+        throw new Error(`Failed to fetch site: ${response.statusText}`);
+    }
 
     const html = await response.text();
     const $ = cheerio.load(html);
 
-    // 3. EXTRACT DATA
-    const title = $("title").text().trim().substring(0, 100) || "No title";
-    const metaDescription = $('meta[name="description"]').attr("content") || "No description found";
-    const h1Text = $("h1").first().text().trim().substring(0, 100) || "No H1 tag";
+    // Clean up content
+    $('script, style, nav, footer, svg').remove();
+    const textContent = $('body').text().replace(/\s+/g, ' ').trim().substring(0, 15000); 
+
+    console.log("Sending to Gemini...");
+
+    // 2. AI Analysis
+    const { object } = await generateObject({
+      model: google("gemini-2.0-flash"),
+      schema: seoSchema,
+      prompt: `Analyze this website content for Agentic SEO (readability for AI agents).
+      
+      URL: ${url}
+      Content:
+      ${textContent}
+      
+      Return a JSON object with:
+      - score (0-100)
+      - summary
+      - keywords
+      - improvements
+      `,
+    });
+
+    // Add model name manually for tracking
+    const scanResult = { ...object, modelUsed: "gemini-2.0-flash" };
     
-    // 🔥 CRITICAL FIXES FOR FRONTEND MATCHING
-    const totalImages = $("img").length;
-    const totalLinks = $("a").length;
-    const missingAlt = $("img:not([alt])").length; // Count images without alt text
-    const jsonLdCount = $('script[type="application/ld+json"]').length; // Count Schema
-    const robotsTag = $('meta[name="robots"]').attr("content") || "index, follow";
+    // Calculate Score for Database
+    const aiScore = scanResult.score || 0;
 
-    // Clean text
-    $("script").remove(); 
-    $("style").remove();
-    const bodyText = $("body").text().replace(/\s+/g, " ").trim().substring(0, 5000);
-    const wordCount = bodyText.split(" ").length;
+    // 3. SAVE TO DATABASE (Lazy Connection) 💾
+    // We create the client HERE, so it only runs when a user requests a scan
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-    // 4. ASK GEMINI
-    let aiScore = 0; 
-    let aiAdvice = "Pending";
-    
-    try {
-      console.log("Sending to Gemini...");
-      const prompt = `Analyze SEO. Title: "${title}". H1: "${h1Text}". Content: "${bodyText.substring(0, 2000)}". 
-      Return JSON: { "contentScore": number, "advice": string }`;
-      
-      const result = await model.generateContent(prompt);
-      const data = JSON.parse(result.response.text().replace(/```json|```/g, "").trim());
-      
-      aiScore = data.contentScore;
-      aiAdvice = data.advice;
-    } catch (e) { 
-        console.error("AI Error"); 
-    }
-
-    // 5. CONSTRUCT RESPONSE (Exact match for page.tsx)
-    const scanResult = {
-      url, 
-      title, 
-      metaDescription,
-      h1Text, 
-      wordCount, 
-      aiScore, 
-      aiAdvice,
-      
-      // 🔥 EXACT NAMES YOUR FRONTEND EXPECTS
-      totalImages: totalImages,
-      missingAlt: missingAlt,
-      totalLinks: totalLinks,
-      jsonLdCount: jsonLdCount, // This fixes "Business Info"
-      robotsTag: robotsTag,
-      
-      modelUsed: "gemini-2.0-flash"
-    };
-
-    // 6. SAVE TO DATABASE (with Debugging) 💾
-    const { userId } = await auth();
-    
-    if (userId) {
-        console.log(`👤 User ID found: ${userId} - Attempting save...`);
+    // Only try to save if we have the keys (prevents build crashes)
+    if (supabaseUrl && supabaseKey) {
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        const { userId } = await auth();
         
-        const { data, error: dbError } = await supabase.from("scans").insert({
-          url, 
-          domain: new URL(url).hostname, 
-          score: aiScore, 
-          result: scanResult, 
-          user_id: userId
-        });
+        if (userId) {
+            console.log(`👤 User ID found: ${userId} - Attempting save...`);
+            
+            const { error: dbError } = await supabase.from("scans").insert({
+              url, 
+              domain: new URL(url).hostname, 
+              score: aiScore, 
+              result: scanResult, 
+              user_id: userId
+            });
 
-        if (dbError) {
-            console.error("🔴 SUPABASE SAVE FAILED:", dbError.message);
-            console.error("Details:", dbError.details);
-            console.error("Hint:", dbError.hint);
+            if (dbError) {
+                console.error("🔴 SUPABASE SAVE FAILED:", dbError.message);
+            } else {
+                console.log("✅ Saved to Supabase successfully!");
+            }
         } else {
-            console.log("✅ Saved to Supabase successfully!");
+            console.log("🟠 No User Logged In - Skipping Database Save");
         }
-    } else {
-        console.log("🟠 No User Logged In - Skipping Database Save");
     }
 
     return NextResponse.json(scanResult);
