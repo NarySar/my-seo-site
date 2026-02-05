@@ -12,36 +12,18 @@ export default async function Dashboard() {
     redirect("/");
   }
 
-  console.log("🔍 DASHBOARD DEBUG START");
-  console.log("👤 User ID:", userId);
-
-  // Check if the key exists
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!serviceKey) {
-    console.error("❌ CRITICAL ERROR: SUPABASE_SERVICE_ROLE_KEY is missing from .env.local!");
-  } else {
-    console.log("✅ Service Key found (Starts with):", serviceKey.substring(0, 10) + "...");
-  }
-
-  // Create the Admin Client
+  // Create the Admin Client securely
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    serviceKey || ""
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
   // Fetch Data
-  console.log("⏳ Fetching data from Supabase...");
-  const { data: scans, error } = await supabaseAdmin
+  const { data: scans } = await supabaseAdmin
     .from("scans")
     .select("*")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("❌ SUPABASE FETCH ERROR:", error.message);
-  } else {
-    console.log("✅ Data received. Rows found:", scans?.length || 0);
-  }
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
@@ -61,15 +43,8 @@ export default async function Dashboard() {
             </Link>
         </div>
 
-        {/* ERROR STATE */}
-        {error && (
-            <div className="p-4 bg-red-100 text-red-700 rounded-lg mb-6">
-                Error loading data: {error.message} (Check Terminal for details)
-            </div>
-        )}
-
         {/* EMPTY STATE */}
-        {(!scans || scans.length === 0) && !error && (
+        {(!scans || scans.length === 0) && (
             <div className="text-center py-20 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
                 <p className="text-zinc-500 mb-4">You haven't scanned any sites yet.</p>
                 <Link href="/analyze" className="text-blue-600 hover:underline">Run your first scan &rarr;</Link>
