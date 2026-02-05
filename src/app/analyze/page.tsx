@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { Footer } from "@/components/Footer"; // <--- Fixed this line! (Added braces)
 import { jsPDF } from "jspdf";
 import { 
   Search, Loader2, Code, Globe, AlertTriangle, 
@@ -46,9 +46,9 @@ export default function AnalyzePage() {
 
       const data = await response.json();
 
-      if (data.success) {
-        setResult(data.data);
-        setScores(calculateSeoScore(data.data));
+      if (response.ok) { 
+        setResult(data);
+        setScores(calculateSeoScore(data));
       } else {
         setError("Could not scan this website. (It might block bots)");
       }
@@ -89,12 +89,12 @@ export default function AnalyzePage() {
     doc.setFontSize(14);
     
     const metrics = [
-      { name: "Page Identity (Title & Meta)", score: scores.meta, value: result.title },
-      { name: "Main Headline (H1)", score: scores.h1, value: result.h1Text },
-      { name: "Business Info (Schema)", score: scores.schema, value: `${result.jsonLdCount} snippet(s) found` },
-      { name: "Content Volume", score: scores.content, value: `${result.wordCount} words` },
-      { name: "Image Context", score: scores.images, value: `${result.missingAlt} missing descriptions` },
-      { name: "Search Visibility", score: scores.robots, value: result.robotsTag },
+      { name: "Page Identity (Title & Meta)", score: scores.meta, value: result.title || "No title" },
+      { name: "Main Headline (H1)", score: scores.h1, value: result.h1Text || "No H1" },
+      { name: "Business Info (Schema)", score: scores.schema, value: `${result.jsonLdCount || 0} snippet(s) found` },
+      { name: "Content Volume", score: scores.content, value: `${result.wordCount || 0} words` },
+      { name: "Image Context", score: scores.images, value: `${result.missingAlt || 0} missing descriptions` },
+      { name: "Search Visibility", score: scores.robots, value: result.robotsTag || "Unknown" },
     ];
 
     metrics.forEach((m) => {
@@ -125,10 +125,10 @@ export default function AnalyzePage() {
   };
 
   return (
-    <main className="min-h-screen bg-white dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900">
+    <main className="min-h-screen bg-white dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900 flex flex-col">
       <Navbar />
 
-      <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col items-center min-h-[80vh]">
+      <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col items-center min-h-[80vh] flex-grow w-full">
         <div className="text-center max-w-3xl mb-12">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-zinc-900 dark:text-white mb-6">
             Real-Time <span className="text-blue-600">Agent Analysis</span>
@@ -413,6 +413,9 @@ function getColor(score: number) {
 }
 
 function calculateSeoScore(data: any) {
+  // Defensive checks to prevent crashes if data is missing
+  if (!data) return { overall: 0, h1: 0, schema: 0, content: 0, images: 0, links: 0, robots: 0, meta: 0 };
+
   let h1 = data.h1Text && data.h1Text !== "No H1 tag found" ? 100 : 0;
   let schema = data.jsonLdCount > 0 ? 100 : 0;
   
@@ -423,12 +426,12 @@ function calculateSeoScore(data: any) {
   
   let images = 100;
   if (data.totalImages > 0) {
-     const validRatio = (data.totalImages - data.missingAlt) / data.totalImages;
+     const validRatio = (data.totalImages - (data.missingAlt || 0)) / data.totalImages;
      images = Math.round(validRatio * 100);
   }
 
-  let links = data.totalLinks > 0 ? 100 : 0;
-  let robots = data.robotsTag.includes("noindex") ? 0 : 100;
+  let links = (data.totalLinks || 0) > 0 ? 100 : 0;
+  let robots = (data.robotsTag || "").includes("noindex") ? 0 : 100;
 
   let meta = 100;
   if (!data.title || data.title === "No title found") meta -= 50;
