@@ -2,19 +2,18 @@
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import { Footer } from "@/components/Footer"; // <--- Fixed this line! (Added braces)
+import { Footer } from "@/components/Footer";
 import { jsPDF } from "jspdf";
 import { 
-  Search, Loader2, Code, Globe, AlertTriangle, 
-  FileText, ImageIcon, Link as LinkIcon, HelpCircle, Download, 
-  ChevronDown, ChevronUp, Lightbulb, RefreshCw 
+  Search, Loader2, Code, Globe, FileText, Download, 
+  Lightbulb, RefreshCw, CheckCircle, BarChart3, 
+  HelpCircle, ChevronDown, ChevronUp, ImageIcon, Cpu, Shield, Zap
 } from "lucide-react";
 
 export default function AnalyzePage() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
-  const [scores, setScores] = useState<any>(null);
   const [error, setError] = useState("");
 
   const handleAnalyze = async (e: React.FormEvent) => {
@@ -23,120 +22,129 @@ export default function AnalyzePage() {
     runScan();
   };
 
-  // Separated logic so "Re-Scan" button can use it too
   const runScan = async () => {
     setLoading(true);
     setResult(null);
-    setScores(null);
     setError("");
 
     try {
-      // 1. Start the "real" scan
       const scanPromise = fetch("/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
       });
 
-      // 2. Force a "Thinking" delay (1.5s) for UX
-      const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
-
-      // 3. Wait for BOTH
+      const delayPromise = new Promise(resolve => setTimeout(resolve, 2000));
       const [response] = await Promise.all([scanPromise, delayPromise]);
 
       const data = await response.json();
 
       if (response.ok) { 
         setResult(data);
-        setScores(calculateSeoScore(data));
       } else {
-        setError("Could not scan this website. (It might block bots)");
+        setError(data.summary || "Could not scan this website.");
       }
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError("Connection failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  // --- FIXED PDF GENERATOR ---
   const generatePDF = () => {
-    if (!result || !scores) return;
+    if (!result) return;
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     
-    // Header
+    // 1. Header (Black Bar)
     doc.setFillColor(10, 10, 10);
     doc.rect(0, 0, pageWidth, 40, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(22);
-    doc.text("PulseSeo.ai Report", 20, 25);
+    doc.text("PulseSeo.ai Analysis", 20, 25);
     
-    // Info
+    doc.setFontSize(10);
+    doc.setTextColor(200, 200, 200);
+    doc.text(`Target: ${url}`, 20, 35);
+
+    // 2. Score Section
     doc.setTextColor(0, 0, 0);
-    doc.setFontSize(12);
-    doc.text(`Analyzed Site: ${url}`, 20, 55);
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 62);
-
-    // Score
-    doc.setFontSize(16);
-    doc.setFont("helvetica", "bold");
-    doc.text(`Overall Agentic Score: ${scores.overall}/100`, 20, 80);
-    doc.setLineWidth(0.5);
-    doc.line(20, 85, pageWidth - 20, 85);
-
-    // Metrics
-    let y = 100;
     doc.setFontSize(14);
+    doc.text("Overall Agent Score:", 20, 60);
     
+    doc.setFontSize(30);
+    // Color score based on value
+    if (result.score >= 80) doc.setTextColor(0, 150, 0); // Green
+    else if (result.score >= 50) doc.setTextColor(200, 150, 0); // Yellow
+    else doc.setTextColor(200, 0, 0); // Red
+    
+    doc.text(`${result.score}/100`, 20, 75);
+    
+    // 3. Breakdown Metrics (The 5 Factors)
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(14);
+    doc.text("Score Breakdown:", 100, 60);
+    
+    doc.setFontSize(10);
+    let y = 70;
+    const bd = result.breakdown || {};
     const metrics = [
-      { name: "Page Identity (Title & Meta)", score: scores.meta, value: result.title || "No title" },
-      { name: "Main Headline (H1)", score: scores.h1, value: result.h1Text || "No H1" },
-      { name: "Business Info (Schema)", score: scores.schema, value: `${result.jsonLdCount || 0} snippet(s) found` },
-      { name: "Content Volume", score: scores.content, value: `${result.wordCount || 0} words` },
-      { name: "Image Context", score: scores.images, value: `${result.missingAlt || 0} missing descriptions` },
-      { name: "Search Visibility", score: scores.robots, value: result.robotsTag || "Unknown" },
+        { label: "Data Density", val: bd.dataDensity },
+        { label: "Structure", val: bd.structure },
+        { label: "Trust Signals", val: bd.trust },
+        { label: "Clarity", val: bd.clarity },
+        { label: "Completeness", val: bd.completeness }
     ];
 
-    metrics.forEach((m) => {
-        doc.setFont("helvetica", "bold");
-        doc.text(m.name, 20, y);
-        
-        if (m.score >= 80) doc.setTextColor(0, 150, 0);
-        else if (m.score >= 50) doc.setTextColor(200, 150, 0);
-        else doc.setTextColor(200, 0, 0);
-        
-        doc.text(`${m.score}/100`, 150, y);
-        
-        doc.setTextColor(60, 60, 60);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        const safeValue = m.value.length > 60 ? m.value.substring(0, 60) + "..." : m.value;
-        doc.text(safeValue, 20, y + 7);
-        
-        doc.setTextColor(0, 0, 0);
-        doc.setFontSize(14);
-        y += 20;
+    metrics.forEach(m => {
+        if (m.val !== undefined) {
+            doc.text(`${m.label}:`, 100, y);
+            doc.text(`${m.val}/100`, 160, y);
+            y += 7;
+        }
     });
 
-    doc.setFontSize(10);
-    doc.setTextColor(150, 150, 150);
-    doc.text("Generated by PulseSeo.ai - The Agentic SEO Platform", 20, 280);
+    // 4. Executive Summary
+    y = 110;
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("AI Executive Summary", 20, y);
+    y += 10;
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    const summaryText = doc.splitTextToSize(result.summary || "No summary available.", 170);
+    doc.text(summaryText, 20, y);
+    y += (summaryText.length * 6) + 15;
+
+    // 5. Improvements List
+    if (result.improvements && result.improvements.length > 0) {
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Actionable Improvements", 20, y);
+        y += 10;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        
+        result.improvements.forEach((item: string) => {
+            const cleanItem = doc.splitTextToSize(`• ${item}`, 170);
+            doc.text(cleanItem, 20, y);
+            y += (cleanItem.length * 6) + 4;
+        });
+    }
+
     doc.save("agent-seo-report.pdf");
   };
 
   return (
-    <main className="min-h-screen bg-white dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900 flex flex-col">
+    <main className="min-h-screen bg-white dark:bg-black flex flex-col">
       <Navbar />
 
-      <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col items-center min-h-[80vh] flex-grow w-full">
-        <div className="text-center max-w-3xl mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-zinc-900 dark:text-white mb-6">
-            Real-Time <span className="text-blue-600">Agent Analysis</span>
-          </h1>
-          <p className="text-lg text-zinc-600 dark:text-zinc-400">
-            Check your Agentic SEO score. We analyze structure, content depth, and accessibility for AI models.
-          </p>
-        </div>
+      <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col items-center w-full">
+        <h1 className="text-4xl md:text-6xl font-bold text-zinc-900 dark:text-white mb-6 text-center">
+          Real-Time <span className="text-blue-600">Agent Analysis</span>
+        </h1>
 
         <form onSubmit={handleAnalyze} className="w-full max-w-2xl relative mb-12">
           <div className="relative flex items-center">
@@ -147,7 +155,7 @@ export default function AnalyzePage() {
               required
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              className="w-full h-14 pl-12 pr-32 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all shadow-lg"
+              className="w-full h-14 pl-12 pr-32 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none shadow-lg"
             />
             <button
               type="submit"
@@ -157,156 +165,124 @@ export default function AnalyzePage() {
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Analyze"}
             </button>
           </div>
-          {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
+          {error && <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-xl text-center">{error}</div>}
         </form>
 
         {loading && <LoadingSkeleton />}
 
-        {/* RESULTS AREA */}
-        {!loading && result && scores && (
+        {!loading && result && (
           <div className="w-full max-w-5xl animate-in fade-in slide-in-from-bottom-4 duration-700">
             
-            {/* Top Row */}
+            {/* Top Row: Score & Breakdown */}
             <div className="flex flex-col md:flex-row gap-6 mb-8">
                 <div className="flex-1 p-8 rounded-3xl bg-zinc-900 text-white shadow-2xl flex items-center justify-between relative overflow-hidden">
-                   <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${scores.overall >= 80 ? 'from-green-500/20' : scores.overall >= 50 ? 'from-yellow-500/20' : 'from-red-500/20'} to-transparent rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none`}></div>
                    <div className="z-10">
                       <h2 className="text-2xl font-bold mb-2">Overall Agent Score</h2>
-                      <p className="text-zinc-400 text-sm max-w-xs">
-                        {scores.overall >= 90 ? "Excellent. Optimized for AI." : 
-                         scores.overall >= 70 ? "Good. Minor tweaks needed." : 
-                         "Needs Work. Hard for AI to read."}
-                      </p>
+                      <p className="text-zinc-400 text-sm">Weighted calculation based on 5 factors.</p>
                    </div>
                    <div className="z-10 flex items-center justify-center w-24 h-24 rounded-full border-4 border-zinc-800 bg-zinc-950">
-                        <span className={`text-3xl font-black ${getColor(scores.overall)}`}>{scores.overall}</span>
+                        <span className={`text-3xl font-black ${getColor(result.score)}`}>{result.score}</span>
                    </div>
                 </div>
 
-                <div className="md:w-1/3 p-8 rounded-3xl bg-blue-600 text-white shadow-xl flex flex-col justify-center items-start">
-                    <h3 className="text-xl font-bold mb-2">Expert Report</h3>
-                    <p className="text-blue-100 text-sm mb-6">Download a professional summary or try a fresh scan.</p>
-                    
-                    <button 
-                        onClick={generatePDF}
-                        className="w-full bg-white text-blue-700 font-bold py-3 rounded-xl hover:bg-blue-50 transition-colors flex items-center justify-center gap-2 mb-3"
-                    >
-                        <Download className="h-5 w-5" />
-                        Download PDF
-                    </button>
-
-                    {/* NEW: Re-Scan Button */}
-                    <button 
-                        onClick={runScan}
-                        className="w-full bg-blue-700 text-white font-medium py-2 rounded-xl hover:bg-blue-800 transition-colors flex items-center justify-center gap-2 text-sm"
-                    >
-                        <RefreshCw className="h-4 w-4" />
-                        Re-Scan Page
-                    </button>
-                </div>
+                {result.breakdown && (
+                  <div className="flex-1 p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                      <h3 className="flex items-center gap-2 font-semibold mb-6 text-zinc-900 dark:text-white">
+                        <BarChart3 className="h-4 w-4 text-blue-500" /> Score Breakdown
+                      </h3>
+                      <div className="space-y-4">
+                          <ProgressBar 
+                            label="Data Density" 
+                            score={result.breakdown.dataDensity} 
+                            tooltip="Does your page contain hard facts (prices, dates, specs) or just marketing fluff? AI loves raw data."
+                            fix="Add specific numbers, pricing tables, or technical specifications."
+                          />
+                          <ProgressBar 
+                            label="Structure" 
+                            score={result.breakdown.structure} 
+                            tooltip="Do you use H1, H2, and H3 tags correctly to organize content?"
+                            fix="Ensure your main title is H1 and sub-points are H2."
+                          />
+                          <ProgressBar 
+                            label="Trust Signals" 
+                            score={result.breakdown.trust} 
+                            tooltip="Can AI find your physical address, contact info, and privacy policy?"
+                            fix="Add a footer with your physical address and phone number."
+                          />
+                          <ProgressBar 
+                            label="Clarity" 
+                            score={result.breakdown.clarity} 
+                            tooltip="Is the language simple and direct, or complex and jargon-heavy?"
+                            fix="Shorten your sentences. Aim for an 8th-grade reading level."
+                          />
+                          <ProgressBar 
+                            label="Completeness" 
+                            score={result.breakdown.completeness} 
+                            tooltip="Is this a thin landing page or a deep resource?"
+                            fix="Expand your content. Aim for at least 800 words."
+                          />
+                      </div>
+                  </div>
+                )}
             </div>
 
-            {/* Page Identity */}
-            <div className="mb-6 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative group">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Page Identity</h3>
-                  <p className="text-xl font-medium text-zinc-900 dark:text-white mb-2">{result.title}</p>
-                  <p className="text-zinc-500 italic">"{result.metaDescription}"</p>
-                </div>
-                <div className="flex flex-col items-end gap-2">
-                  <ScoreBadge score={scores.meta} />
-                  <span className="text-xs font-medium text-zinc-400">Impact: 15%</span>
-                </div>
-              </div>
+            {/* AI Summary */}
+            <div className="mb-6 p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+               <h3 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-3">AI Executive Summary</h3>
+               <p className="text-lg text-zinc-800 dark:text-zinc-200 leading-relaxed">{result.summary}</p>
             </div>
 
-            {/* Grid */}
-            <div className="grid md:grid-cols-3 gap-6">
-              
+            {/* Metrics */}
+            <div className="grid md:grid-cols-3 gap-6 mb-8">
               <MetricCard 
                 icon={<Globe className="h-4 w-4 text-blue-600" />} 
                 title="Main Headline" 
-                value={`"${result.h1Text}"`}
-                tooltip="The main title (H1) of the page. This tells AI agents exactly what the primary topic is."
-                score={scores.h1}
-                impact="10%"
-                bgColor="bg-blue-100 dark:bg-blue-900/30"
-                advice="Open your page editor (WordPress/Wix/Code) and ensure your main title is wrapped in an <h1> tag. It should clearly state what you do and where you are (e.g., 'Emergency Locksmith in Boston')."
+                value={result.mainHeadline || "No H1 Found"}
+                score={result.mainHeadline ? 100 : 0}
               />
-
               <MetricCard 
-                icon={<Code className={`h-4 w-4 ${result.jsonLdCount > 0 ? 'text-green-600' : 'text-red-600'}`} />} 
-                title="Business Info" 
-                value={`Found ${result.jsonLdCount} data snippets.`}
-                tooltip="This is 'Structured Data' (Schema). It's hidden code that explicitly tells AI your phone number, price, and location."
-                score={scores.schema}
-                impact="20%"
-                bgColor={result.jsonLdCount > 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}
-                advice="Use a free 'Schema Generator' tool (like Merkle) to create JSON-LD code for 'LocalBusiness'. Paste it into your site's <head> section. This feeds accurate facts directly to AI."
-              />
-
-              <MetricCard 
-                icon={<FileText className={`h-4 w-4 ${result.wordCount > 300 ? 'text-green-600' : 'text-yellow-600'}`} />} 
+                icon={<FileText className="h-4 w-4 text-purple-600" />} 
                 title="Content Volume" 
-                value={`${result.wordCount} words found.`}
-                tooltip="AI needs text to learn. If your page has fewer than 300 words, agents may consider it 'empty' or 'thin'."
-                score={scores.content}
-                impact="25%"
-                bgColor={result.wordCount > 300 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-yellow-100 dark:bg-yellow-900/30'}
-                advice="Expand your content. AI models treat pages with under 300 words as 'thin content'. Add a FAQ section or detailed service descriptions to reach at least 500 words."
+                value={`${result.contentVolume} (${result.contentLength || 0} chars)`}
+                score={result.contentVolume === "Low" ? 50 : 100}
               />
-
               <MetricCard 
-                icon={<ImageIcon className={`h-4 w-4 ${scores.images > 80 ? 'text-green-600' : 'text-red-600'}`} />} 
-                title="Image Context" 
-                value={`${result.totalImages} Images. ${result.missingAlt > 0 ? result.missingAlt + " missing descriptions." : "All optimized."}`}
-                tooltip="Computers can't see images. They read 'Alt Text'. If images are missing text, the AI sees blank spaces."
-                score={scores.images}
-                impact="20%"
-                bgColor={scores.images > 80 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}
-                advice="Add 'alt' attributes to your <img> tags. Describe the image simply (e.g., 'Red Nike running shoe side view'). This allows AI vision models to 'see' and recommend your products."
+                icon={<Code className="h-4 w-4 text-green-600" />} 
+                title="Top Keywords" 
+                value={result.keywords?.slice(0, 3).join(", ") || "None"}
+                score={100}
               />
-
-              <MetricCard 
-                icon={<LinkIcon className="h-4 w-4 text-purple-600" />} 
-                title="Site Authority" 
-                value={`Found ${result.totalLinks} connections.`}
-                tooltip="Links are like votes. A page with 0 links (internal or external) is considered 'orphaned' and unimportant by AI."
-                score={scores.links}
-                impact="10%"
-                bgColor="bg-purple-100 dark:bg-purple-900/30"
-                advice="Internal links help AI crawl your site. Add links in your text pointing to your other service pages. For external authority, try to get listed in local directories or partner sites."
-              />
-
-              {/* Robots Card */}
-              <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
-                <div>
-                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                        <AlertTriangle className="h-4 w-4 text-gray-600" />
-                      </div>
-                      <h3 className="font-semibold text-zinc-900 dark:text-white">Search Visibility</h3>
-                    </div>
-                    <Tooltip text="The 'Front Door Key'. If set to 'noindex', your site is invisible to Google and AI." />
-                  </div>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400 break-words mb-4 line-clamp-2">{result.robotsTag}</p>
-                </div>
-                
-                <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
-                    <span className="text-xs font-medium text-zinc-400">Critical Check</span>
-                    <div className={`px-3 py-1 rounded-full text-xs font-bold ${scores.robots === 100 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                      {scores.robots === 100 ? "PASS" : "FAIL"}
-                    </div>
-                 </div>
-
-                 <ExpandableAdvice advice="CRITICAL FIX. Your site is blocking AI. 1. Check your CMS settings (e.g., WordPress > Settings > Reading > uncheck 'Discourage search engines'). 2. Check your 'robots.txt' file for 'Disallow: /'." />
-              </div>
-
             </div>
+
+             {/* Improvements & Actions */}
+             <div className="p-6 rounded-2xl bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-100 dark:border-yellow-900/50 mb-12">
+                <h3 className="flex items-center gap-2 text-lg font-bold text-yellow-800 dark:text-yellow-500 mb-4">
+                    <Lightbulb className="h-5 w-5" /> Recommended Improvements
+                </h3>
+                <ul className="space-y-3">
+                    {result.improvements?.map((item: string, i: number) => (
+                        <li key={i} className="flex items-start gap-3 text-zinc-700 dark:text-zinc-300">
+                            <CheckCircle className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
+                            <span>{item}</span>
+                        </li>
+                    ))}
+                </ul>
+             </div>
+
+             <div className="flex gap-4 justify-center mb-16">
+                <button onClick={generatePDF} className="bg-zinc-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-zinc-800 flex items-center gap-2">
+                    <Download className="h-4 w-4" /> Download PDF
+                </button>
+                <button onClick={runScan} className="bg-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-700 flex items-center gap-2">
+                    <RefreshCw className="h-4 w-4" /> Re-Scan
+                </button>
+             </div>
+
           </div>
         )}
+
+        <UnderTheHood />
+
       </div>
       <Footer />
     </main>
@@ -314,139 +290,79 @@ export default function AnalyzePage() {
 }
 
 // --- SUB-COMPONENTS ---
-function ExpandableAdvice({ advice }: { advice: string }) {
-  const [isOpen, setIsOpen] = useState(false);
+function ProgressBar({ label, score, tooltip, fix }: { label: string, score: number, tooltip: string, fix: string }) {
+    const [isOpen, setIsOpen] = useState(false);
 
-  return (
-    <div className="mt-4 pt-2">
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 text-xs font-semibold text-blue-600 hover:text-blue-500 transition-colors w-full"
-      >
-        {isOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-        {isOpen ? "Hide Advice" : "How to fix this"}
-      </button>
-      
-      {isOpen && (
-        <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-900 text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed animate-in fade-in slide-in-from-top-1">
-          <div className="flex gap-2 items-start">
-            <Lightbulb className="h-3 w-3 text-blue-500 shrink-0 mt-0.5" />
-            <span>{advice}</span>
-          </div>
+    return (
+        <div className="group">
+            <div className="flex items-center gap-3 text-sm mb-1">
+                <div className="w-28 flex items-center gap-1 font-medium text-zinc-600 dark:text-zinc-400">
+                    {label}
+                    <div className="relative group/tooltip">
+                        <HelpCircle className="h-3.5 w-3.5 text-zinc-400 cursor-help" />
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden w-48 p-2 bg-black text-white text-xs rounded-lg shadow-xl group-hover/tooltip:block z-50 text-center pointer-events-none">
+                            {tooltip}
+                        </div>
+                    </div>
+                </div>
+                <div className="flex-1 h-2 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
+                    <div 
+                        className={`h-full rounded-full ${score >= 80 ? 'bg-green-500' : score >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`} 
+                        style={{ width: `${score}%` }}
+                    ></div>
+                </div>
+                <span className="w-8 text-right font-bold text-zinc-900 dark:text-white">{score}</span>
+                <button onClick={() => setIsOpen(!isOpen)} className="text-zinc-400 hover:text-blue-500">
+                    {isOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                </button>
+            </div>
+            {isOpen && (
+                <div className="ml-28 mb-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs text-zinc-600 dark:text-zinc-300 border-l-2 border-blue-500 animate-in slide-in-from-top-1">
+                    <span className="font-semibold text-blue-600 block mb-1">Improvement Tip:</span>
+                    {fix}
+                </div>
+            )}
         </div>
-      )}
+    )
+}
+
+function UnderTheHood() {
+  return (
+    <div className="w-full max-w-5xl mt-8">
+      <div className="text-center mb-10">
+        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">Under the Hood</h2>
+        <p className="text-zinc-500">PulseSeo isn&apos;t just a crawler. It&apos;s an Agentic Emulator.</p>
+      </div>
+      <div className="grid md:grid-cols-2 gap-4">
+        <FeatureCard icon={<ImageIcon className="h-5 w-5 text-blue-500" />} title="Vector Context Analysis" desc="We scan images for descriptive Alt Text." />
+        <FeatureCard icon={<Zap className="h-5 w-5 text-yellow-500" />} title="Smart Caching" desc="Results are cached for speed." />
+        <FeatureCard icon={<Shield className="h-5 w-5 text-red-500" />} title="Bot Access Control" desc="Check robots.txt for AI blockers." />
+        <FeatureCard icon={<Cpu className="h-5 w-5 text-purple-500" />} title="Schema Validator" desc="Verifies JSON-LD structured data." />
+      </div>
     </div>
   );
 }
 
-function MetricCard({ icon, title, value, tooltip, score, impact, bgColor, advice }: any) {
-    return (
-      <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 relative flex flex-col justify-between">
-         <div>
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className={`h-8 w-8 rounded-full flex items-center justify-center ${bgColor}`}>
-                    {icon}
-                  </div>
-                  <h3 className="font-semibold text-zinc-900 dark:text-white">{title}</h3>
-                </div>
-                <Tooltip text={tooltip} />
-            </div>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">{value}</p>
-         </div>
-         
-         <div className="flex justify-between items-center border-t border-zinc-200 dark:border-zinc-800 pt-4 mt-2">
-            <span className="text-xs font-medium text-zinc-400">Impact: {impact}</span>
-            <ScoreBadge score={score} />
-         </div>
+function FeatureCard({ icon, title, desc }: any) {
+  return (
+    <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm flex items-start gap-4">
+      <div className="p-2 bg-zinc-50 dark:bg-zinc-800 rounded-lg shrink-0">{icon}</div>
+      <div><h3 className="font-semibold text-zinc-900 dark:text-white mb-1">{title}</h3><p className="text-sm text-zinc-500 dark:text-zinc-400">{desc}</p></div>
+    </div>
+  );
+}
 
-         <ExpandableAdvice advice={advice} />
+function MetricCard({ icon, title, value, score }: any) {
+    return (
+      <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+        <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3"><div className="h-8 w-8 rounded-full bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center">{icon}</div><h3 className="font-semibold text-zinc-900 dark:text-white">{title}</h3></div>
+            <div className={`px-2 py-1 rounded text-xs font-bold ${score > 50 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{score > 50 ? "PASS" : "CHECK"}</div>
+        </div>
+        <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{value}</p>
       </div>
     );
 }
 
-function Tooltip({ text }: { text: string }) {
-  return (
-    <div className="group relative flex items-center justify-center cursor-help">
-      <HelpCircle className="h-4 w-4 text-zinc-400 hover:text-blue-500 transition-colors" />
-      <div className="absolute bottom-full mb-2 hidden w-48 p-2 bg-black text-white text-xs rounded-lg shadow-xl group-hover:block z-50 text-center pointer-events-none">
-        {text}
-        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black"></div>
-      </div>
-    </div>
-  );
-}
-
-function LoadingSkeleton() {
-  return (
-    <div className="w-full max-w-5xl animate-pulse">
-      <div className="flex flex-col md:flex-row gap-6 mb-8">
-         <div className="flex-1 h-48 bg-zinc-100 dark:bg-zinc-900/50 rounded-3xl"></div>
-         <div className="md:w-1/3 h-48 bg-zinc-100 dark:bg-zinc-900/50 rounded-3xl"></div>
-      </div>
-      <div className="h-32 w-full bg-zinc-100 dark:bg-zinc-900/50 rounded-2xl mb-6"></div>
-      <div className="grid md:grid-cols-3 gap-6">
-         {[...Array(6)].map((_, i) => (
-           <div key={i} className="h-48 bg-zinc-100 dark:bg-zinc-900/50 rounded-2xl"></div>
-         ))}
-      </div>
-    </div>
-  );
-}
-
-function ScoreBadge({ score }: { score: number }) {
-  let color = "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300";
-  if (score >= 80) color = "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300";
-  else if (score >= 50) color = "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300";
-
-  return (
-    <div className={`px-3 py-1 rounded-full text-xs font-bold ${color}`}>
-      {score}/100
-    </div>
-  );
-}
-
-function getColor(score: number) {
-  if (score >= 90) return "text-green-500";
-  if (score >= 70) return "text-yellow-500";
-  return "text-red-500";
-}
-
-function calculateSeoScore(data: any) {
-  // Defensive checks to prevent crashes if data is missing
-  if (!data) return { overall: 0, h1: 0, schema: 0, content: 0, images: 0, links: 0, robots: 0, meta: 0 };
-
-  let h1 = data.h1Text && data.h1Text !== "No H1 tag found" ? 100 : 0;
-  let schema = data.jsonLdCount > 0 ? 100 : 0;
-  
-  let content = 0;
-  if (data.wordCount > 1000) content = 100;
-  else if (data.wordCount > 600) content = 80;
-  else if (data.wordCount > 300) content = 50;
-  
-  let images = 100;
-  if (data.totalImages > 0) {
-     const validRatio = (data.totalImages - (data.missingAlt || 0)) / data.totalImages;
-     images = Math.round(validRatio * 100);
-  }
-
-  let links = (data.totalLinks || 0) > 0 ? 100 : 0;
-  let robots = (data.robotsTag || "").includes("noindex") ? 0 : 100;
-
-  let meta = 100;
-  if (!data.title || data.title === "No title found") meta -= 50;
-  if (!data.metaDescription || data.metaDescription === "No description found") meta -= 50;
-
-  let overall = Math.round(
-    (content * 0.25) + 
-    (schema * 0.20) + 
-    (images * 0.20) + 
-    (meta * 0.15) + 
-    (links * 0.10) +
-    (h1 * 0.10)
-  );
-
-  if (robots === 0) overall = 0;
-
-  return { overall, h1, schema, content, images, links, robots, meta };
-}
+function LoadingSkeleton() { return <div className="w-full max-w-5xl h-96 bg-zinc-100 animate-pulse rounded-3xl"></div>; }
+function getColor(score: number) { if (score >= 80) return "text-green-500"; if (score >= 50) return "text-yellow-500"; return "text-red-500"; }
