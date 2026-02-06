@@ -13,6 +13,7 @@
     "@clerk/nextjs": "^6.37.0",
     "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.93.3",
+    "@upstash/qstash": "^2.9.0",
     "ai": "^6.0.70",
     "cheerio": "^1.2.0",
     "dotenv": "^17.2.4",
