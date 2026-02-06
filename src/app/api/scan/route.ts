@@ -1,12 +1,19 @@
 import { NextResponse } from "next/server";
-import { google } from "@ai-sdk/google";
+import { createGoogleGenerativeAI } from "@ai-sdk/google"; // CHANGED: specific import
 import { generateObject } from "ai";
 import { z } from "zod";
 import * as cheerio from "cheerio";
 import { auth } from "@clerk/nextjs/server";
-import { createClient } from "@supabase/supabase-js"; // Import createClient directly
+import { createClient } from "@supabase/supabase-js";
 
-// Define the Schema (Structure of the output)
+// 1. SETUP GOOGLE AI MANUALLY
+// This checks BOTH names so it works no matter what you named it in Vercel
+const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
+
+const google = createGoogleGenerativeAI({
+  apiKey: apiKey,
+});
+
 const seoSchema = z.object({
   score: z.number().describe("A generic SEO score from 0 to 100 based on content quality"),
   summary: z.string().describe("A 2-sentence summary of what the page is about"),
@@ -17,11 +24,18 @@ const seoSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const { url } = await req.json();
+    // Debug: Check if key exists (Don't log the actual key for security!)
+    if (!apiKey) {
+      console.error("❌ FATAL ERROR: No API Key found in Environment Variables!");
+      throw new Error("Server Misconfiguration: API Key Missing");
+    } else {
+      console.log("✅ API Key found. Length:", apiKey.length);
+    }
 
+    const { url } = await req.json();
     console.log(`Visiting: ${url}`);
 
-    // 1. Fetch Website Content
+    // 2. Fetch Website Content
     const response = await fetch(url, {
       headers: { "User-Agent": "PulseSeo-Bot/1.0" },
     });
@@ -33,64 +47,40 @@ export async function POST(req: Request) {
     const html = await response.text();
     const $ = cheerio.load(html);
 
-    // Clean up content
     $('script, style, nav, footer, svg').remove();
     const textContent = $('body').text().replace(/\s+/g, ' ').trim().substring(0, 15000); 
 
     console.log("Sending to Gemini...");
 
-    // 2. AI Analysis
+    // 3. AI Analysis
     const { object } = await generateObject({
-      model: google("gemini-2.0-flash"),
+      model: google("gemini-2.0-flash"), // Use the manually created provider
       schema: seoSchema,
-      prompt: `Analyze this website content for Agentic SEO (readability for AI agents).
-      
+      prompt: `Analyze this website content for Agentic SEO.
       URL: ${url}
-      Content:
-      ${textContent}
-      
-      Return a JSON object with:
-      - score (0-100)
-      - summary
-      - keywords
-      - improvements
+      Content: ${textContent}
       `,
     });
 
-    // Add model name manually for tracking
     const scanResult = { ...object, modelUsed: "gemini-2.0-flash" };
-    
-    // Calculate Score for Database
     const aiScore = scanResult.score || 0;
 
-    // 3. SAVE TO DATABASE (Lazy Connection) 💾
-    // We create the client HERE, so it only runs when a user requests a scan
+    // 4. Save to Database
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-    // Only try to save if we have the keys (prevents build crashes)
     if (supabaseUrl && supabaseKey) {
-        const supabase = createClient(supabaseUrl, supabaseKey);
         const { userId } = await auth();
-        
         if (userId) {
-            console.log(`👤 User ID found: ${userId} - Attempting save...`);
-            
-            const { error: dbError } = await supabase.from("scans").insert({
+            const supabase = createClient(supabaseUrl, supabaseKey);
+            await supabase.from("scans").insert({
               url, 
               domain: new URL(url).hostname, 
               score: aiScore, 
               result: scanResult, 
               user_id: userId
             });
-
-            if (dbError) {
-                console.error("🔴 SUPABASE SAVE FAILED:", dbError.message);
-            } else {
-                console.log("✅ Saved to Supabase successfully!");
-            }
-        } else {
-            console.log("🟠 No User Logged In - Skipping Database Save");
+            console.log("✅ Saved to DB");
         }
     }
 
@@ -98,6 +88,7 @@ export async function POST(req: Request) {
 
   } catch (error: any) {
     console.error("SERVER ERROR:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    // Send the REAL error to the frontend so we can see it
+    return NextResponse.json({ error: error.message || "Scan failed" }, { status: 500 });
   }
 }
