@@ -1,19 +1,19 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-// 1. Create a matcher for your public routes
-// We add '/api/cron' and '/api/worker' here so Clerk doesn't check them
+// 1. Define your public routes
 const isPublicRoute = createRouteMatcher([
   '/sign-in(.*)', 
   '/sign-up(.*)', 
-  '/api/cron',   // 👈 Allow the Manager
-  '/api/worker', // 👈 Allow the Worker
-  '/'            // Allow the homepage
+  '/api/cron',   // 👈 The Manager
+  '/api/worker', // 👈 The Worker
+  '/'            // The Homepage
 ]);
 
-export default clerkMiddleware((auth, req) => {
-  // 2. Protect all routes EXCEPT the public ones
+// 2. We add 'async' here because auth() is now asynchronous
+export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {
-    auth().protect();
+    // 3. We add 'await' here to wait for the user data to load
+    (await auth()).protect();
   }
 });
 
