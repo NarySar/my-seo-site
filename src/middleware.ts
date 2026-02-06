@@ -1,12 +1,22 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default clerkMiddleware();
+// 1. Create a matcher for your public routes
+// We add '/api/cron' and '/api/worker' here so Clerk doesn't check them
+const isPublicRoute = createRouteMatcher([
+  '/sign-in(.*)', 
+  '/sign-up(.*)', 
+  '/api/cron',   // 👈 Allow the Manager
+  '/api/worker', // 👈 Allow the Worker
+  '/'            // Allow the homepage
+]);
+
+export default clerkMiddleware((auth, req) => {
+  // 2. Protect all routes EXCEPT the public ones
+  if (!isPublicRoute(req)) {
+    auth().protect();
+  }
+});
 
 export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-  ],
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };
