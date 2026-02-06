@@ -1,19 +1,24 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-// 1. Define your public routes
+// 1. Define Public Routes
 const isPublicRoute = createRouteMatcher([
   '/sign-in(.*)', 
   '/sign-up(.*)', 
-  '/api/cron',   // 👈 The Manager
-  '/api/worker', // 👈 The Worker
-  '/'            // The Homepage
+  '/api/cron',   // Manager
+  '/api/worker', // Worker
+  '/'            // Homepage
 ]);
 
-// 2. We add 'async' here because auth() is now asynchronous
 export default clerkMiddleware(async (auth, req) => {
+  // 2. If it's NOT a public route...
   if (!isPublicRoute(req)) {
-    // 3. We add 'await' here to wait for the user data to load
-    (await auth()).protect();
+    // 3. Check for a User ID manually (Bypasses the .protect() type error)
+    const { userId, redirectToSignIn } = await auth();
+    
+    // 4. If no user, kick them to login
+    if (!userId) {
+      return redirectToSignIn();
+    }
   }
 });
 
