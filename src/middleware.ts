@@ -1,23 +1,23 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-// We can keep the standard protection here because the Config below
-// will prevent this from even running on your Cron Job.
+// Define routes that usually need protection
 const isProtectedRoute = createRouteMatcher([
     '/dashboard(.*)',
-    '/api/scan(.*)' // Protect the scanner if used manually
+    '/api/scan(.*)'
 ]);
 
-export default clerkMiddleware((auth, req) => {
+// 1. We add 'async' here (Build Fix)
+export default clerkMiddleware(async (auth, req) => {
     if (isProtectedRoute(req)) {
-        auth().protect();
+        // 2. We add 'await' here (Build Fix)
+        (await auth()).protect();
     }
 });
 
 export const config = {
   matcher: [
-    // 🛑 THE FIX:
-    // This weird looking code says: "Match EVERYTHING, EXCEPT /api/cron and /api/worker"
-    // If the URL matches 'api/cron', this middleware will simply NOT RUN.
+    // 🛑 THE NUCLEAR FIX:
+    // This tells Next.js: "Don't even LOOK at /api/cron or /api/worker"
     "/((?!api/cron|api/worker|_next|.*\\..*).*)", 
     
     // Also skip static files
