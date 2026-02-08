@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { Client } from "@upstash/qstash";
 
-// 1. Force this route to be dynamic (avoids static caching issues)
+// 1. Force dynamic mode
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
     try {
-        // 2. Check for Keys explicitly
+        // 2. Check for Keys
         const { QSTASH_TOKEN, CRON_SECRET } = process.env;
 
         if (!QSTASH_TOKEN) {
@@ -25,7 +25,7 @@ export async function GET(req: Request) {
         // 4. Run the Job
         const qstash = new Client({ token: QSTASH_TOKEN });
         const CLIENT_SITES = ["https://www.pulseseo.ai", "https://www.google.com"];
-        const APP_URL = "https://www.pulseseo.ai"; // Force Production URL
+        const APP_URL = "https://www.pulseseo.ai"; 
 
         const results = [];
         for (const url of CLIENT_SITES) {
@@ -38,12 +38,16 @@ export async function GET(req: Request) {
 
         return NextResponse.json({ status: "Jobs Queued", count: results.length, details: results });
 
-    } catch (error: any) {
-        // 5. If it crashes, tell us WHY
+    } catch (error) {
+        // 5. THE FIX: Handle 'unknown' errors safely
         console.error("CRON API ERROR:", error);
+        
+        // This line checks: "Is this a real Error object?"
+        const errorMessage = error instanceof Error ? error.message : String(error);
+
         return NextResponse.json({ 
             error: "Internal Server Error", 
-            message: error.message 
+            message: errorMessage 
         }, { status: 500 });
     }
 }
