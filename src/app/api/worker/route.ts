@@ -43,9 +43,12 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ status: "Success", score: result.score });
 
-    } catch (error: any) {
-        // 5. Now this error log works because 'url' is defined at the top
-        console.error(`❌ Worker Failed for ${url}:`, error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error) { // 👈 No type needed here
+      console.error("Error:", error);
+    
+      // Create a safe message variable
+      const message = error instanceof Error ? error.message : "Unknown error";
+
+      return NextResponse.json({ error: message }, { status: 500 });
     }
 }

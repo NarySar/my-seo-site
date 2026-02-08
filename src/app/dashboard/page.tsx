@@ -11,9 +11,22 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+// --- TYPE DEFINITIONS ---
+interface Scan {
+  id: string;
+  url: string;
+  domain?: string; // Optional because sometimes you might just save url
+  score: number;
+  created_at: string;
+  result?: {
+      modelUsed?: string; // Optional if not always present
+  };
+}
+
 export default function DashboardPage() {
   const { user, isLoaded, isSignedIn } = useUser();
-  const [scans, setScans] = useState<any[]>([]);
+  // Use the defined interface here
+  const [scans, setScans] = useState<Scan[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,7 +52,7 @@ export default function DashboardPage() {
         .eq("user_id", user?.id)
         .order("created_at", { ascending: false });
 
-      setScans(data || []);
+      setScans(data as Scan[] || []);
     } catch (err) {
       console.error("Fetch error:", err);
     } finally {
@@ -135,7 +148,7 @@ export default function DashboardPage() {
                                         <Calendar className="h-3 w-3" /> {formatDate(scan.created_at)}
                                     </span>
                                     <span className="bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
-                                        {formatModelName(scan.result?.modelUsed)}
+                                        {formatModelName(scan.result?.modelUsed || "")}
                                     </span>
                                 </div>
                             </div>
