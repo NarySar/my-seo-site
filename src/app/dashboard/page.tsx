@@ -15,17 +15,17 @@ import Link from "next/link";
 interface Scan {
   id: string;
   url: string;
-  domain?: string; // Optional because sometimes you might just save url
+  domain?: string; 
   score: number;
   created_at: string;
+  model?: string; // ✅ Added 'model' directly (matches your DB column)
   result?: {
-      modelUsed?: string; // Optional if not always present
+      modelUsed?: string;
   };
 }
 
 export default function DashboardPage() {
   const { user, isLoaded, isSignedIn } = useUser();
-  // Use the defined interface here
   const [scans, setScans] = useState<Scan[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -130,6 +130,8 @@ export default function DashboardPage() {
             <div className="space-y-4">
                 {scans.map((scan) => (
                     <div key={scan.id} className="group bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row items-center justify-between gap-6">
+                        
+                        {/* LEFT SIDE: Score & Info */}
                         <div className="flex items-center gap-5 w-full md:w-auto overflow-hidden">
                             <div className={`shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold border-4 ${getScoreColor(scan.score)}`}>
                                 {scan.score || 0}
@@ -148,17 +150,19 @@ export default function DashboardPage() {
                                         <Calendar className="h-3 w-3" /> {formatDate(scan.created_at)}
                                     </span>
                                     <span className="bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
-                                        {formatModelName(scan.result?.modelUsed || "")}
+                                        {formatModelName(scan.model || scan.result?.modelUsed || "")}
                                     </span>
                                 </div>
                             </div>
                         </div>
 
-                        <Link href="/analyze" className="w-full md:w-auto">
-                            <button className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white font-medium hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-zinc-700 transition-colors flex items-center justify-center gap-2 text-sm border border-zinc-200 dark:border-zinc-700">
+                        {/* RIGHT SIDE: Button (NOW CORRECTLY LINKED) */}
+                        <Link href={`/report/${scan.id}`} className="w-full md:w-auto">
+                            <button className="...">
                                 View Report <ArrowRight className="h-4 w-4" />
                             </button>
                         </Link>
+
                     </div>
                 ))}
             </div>
@@ -187,7 +191,7 @@ function formatDate(dateString: string) {
 
 function formatModelName(model: string) {
     if (!model) return "Agent V1";
-    if (model.includes("gemini")) return "Gemini 2.0";
-    if (model.includes("gpt")) return "GPT-4o";
+    if (model.includes("V6")) return "Gemini 2.0 (V6)";
+    if (model.includes("Gemini")) return "Gemini 2.0";
     return model;
 }

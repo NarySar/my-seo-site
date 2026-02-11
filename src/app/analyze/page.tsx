@@ -3,7 +3,11 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { Loader2, Globe, Shield, Zap, Search } from "lucide-react";
+import { 
+  Loader2, Globe, Sparkles, Zap, Search, 
+  AlertCircle, CheckCircle2, Shield, FileText, 
+  Cpu, Image as ImageIcon, Database, HelpCircle, ChevronDown, ChevronUp 
+} from "lucide-react";
 
 // --- TYPE DEFINITIONS ---
 interface AnalysisResult {
@@ -11,20 +15,15 @@ interface AnalysisResult {
   crawlable: boolean;
   wordCount: number;
   hasSchema: boolean;
+  summary: string;
+  breakdown: {
+    dataDensity: number;
+    structure: number;
+    trust: number;
+    clarity: number;
+    completeness: number;
+  };
   improvements: string[];
-}
-
-interface FeatureCardProps {
-  icon: React.ReactNode;
-  title: string;
-  desc: string;
-}
-
-interface MetricCardProps {
-  icon: React.ReactNode;
-  title: string;
-  value: string | number;
-  score?: number;
 }
 
 export default function AnalyzePage() {
@@ -45,9 +44,7 @@ export default function AnalyzePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
       });
-
       const data = await response.json();
-
       if (!response.ok) throw new Error(data.error || "Failed to analyze");
       setResult(data);
     } catch (err) {
@@ -59,82 +56,227 @@ export default function AnalyzePage() {
   };
 
   return (
-    <main className="min-h-screen bg-white dark:bg-black text-zinc-900 dark:text-zinc-100 flex flex-col">
+    <main className="min-h-screen bg-black text-zinc-100 flex flex-col font-sans selection:bg-blue-500/30">
       <Navbar />
-      <div className="flex-grow pt-32 pb-20 px-6 max-w-5xl mx-auto w-full">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Analyze your <span className="text-blue-600">AI Visibility</span>
+      
+      <div className="flex-grow pt-32 pb-20 px-6 max-w-6xl mx-auto w-full">
+        
+        {/* HERO SECTION */}
+        <div className="text-center mb-16 space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wider">
+            <Sparkles className="h-3 w-3" /> The New Standard for AI Visibility
+          </div>
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
+            Analyze your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">AI Visibility</span>
           </h1>
-          <p className="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
-            See how AI agents view your content.
-          </p>
+          
+          <form onSubmit={handleAnalyze} className="max-w-xl mx-auto relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-violet-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+            <div className="relative flex items-center bg-zinc-900 rounded-full border border-zinc-800 p-2 shadow-2xl">
+              <Globe className="ml-4 h-5 w-5 text-zinc-500" />
+              <input 
+                type="url" required value={url} onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://example.com"
+                className="w-full bg-transparent border-none text-white placeholder-zinc-500 focus:ring-0 px-4 py-2"
+              />
+              <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-full font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "Analyze"}
+              </button>
+            </div>
+          </form>
+          {error && <p className="text-red-400 text-sm mt-4 bg-red-900/20 inline-block px-4 py-2 rounded-lg border border-red-900/50">{error}</p>}
         </div>
 
-        <form onSubmit={handleAnalyze} className="max-w-xl mx-auto mb-16 relative">
-          <div className="relative flex items-center">
-            <Globe className="absolute left-4 h-5 w-5 text-zinc-400" />
-            <input
-              type="url"
-              placeholder="https://example.com"
-              required
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="absolute right-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full font-medium disabled:opacity-50"
-            >
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Analyze"}
-            </button>
-          </div>
-          {error && <div className="mt-4 text-red-500 text-center text-sm">{error}</div>}
-        </form>
-
+        {/* RESULTS SECTION */}
         {result && (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 mb-8 text-center">
-              <h2 className="text-xl font-semibold mb-2 text-zinc-600 dark:text-zinc-400">
-                Overall AI Score
-              </h2>
-              <div className={`text-6xl font-bold mb-4 ${getColor(result.score)}`}>
-                {result.score}/100
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 space-y-8">
+            
+            {/* SCORE & BREAKDOWN */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+              
+              {/* Score Box */}
+              <div className="md:col-span-5 bg-zinc-900 border border-zinc-800 rounded-3xl p-8 flex flex-col justify-center items-center text-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent pointer-events-none" />
+                <h3 className="text-zinc-400 font-medium mb-4 uppercase tracking-widest text-xs">Overall Agent Score</h3>
+                <div className={`text-8xl font-black mb-2 tracking-tighter ${getColor(result.score)}`}>
+                  {result.score}
+                </div>
+                <div className="flex gap-2 mb-6">
+                  {result.score >= 80 ? <CheckCircle2 className="text-green-500" /> : <AlertCircle className="text-yellow-500" />}
+                  <span className="text-zinc-300 font-medium">
+                    {result.score >= 80 ? "AI Ready" : result.score >= 50 ? "Needs Optimization" : "Invisible to AI"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Breakdown Bars with NEW Info Tooltips */}
+              <div className="md:col-span-7 bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <h3 className="text-zinc-400 font-medium mb-6 uppercase tracking-widest text-xs flex items-center gap-2">
+                  <Zap className="h-4 w-4" /> Score Breakdown
+                </h3>
+                <div className="space-y-6">
+                   <ProgressBar 
+                     label="Data Density" 
+                     score={result.breakdown?.dataDensity || 0} 
+                     explanation="How much unique, specific information (numbers, prices, specs) your page contains per paragraph."
+                     fix="Add comparison tables, specific pricing, dates, and technical specifications. Avoid fluff words."
+                   />
+                   <ProgressBar 
+                     label="Structure & Hierarchy" 
+                     score={result.breakdown?.structure || 0} 
+                     explanation="Does the page use H1, H2, and H3 tags correctly to create a logical outline for AI?"
+                     fix="Ensure you have exactly one H1 tag. Use H2s for main sections and H3s for subsections."
+                   />
+                   <ProgressBar 
+                     label="Trust Signals" 
+                     score={result.breakdown?.trust || 0} 
+                     explanation="Indicators that tell AI this content is authoritative (Citations, Authors, SSL, Privacy Policy)."
+                     fix="Add an 'About the Author' section, link to reputable sources, and ensure your SSL certificate is valid."
+                   />
+                   <ProgressBar 
+                     label="Content Clarity" 
+                     score={result.breakdown?.clarity || 0} 
+                     explanation="How easy it is for an LLM to parse your sentences. Simple, direct language scores higher."
+                     fix="Shorten your sentences. Use active voice. Break up long paragraphs into bullet points."
+                   />
+                   <ProgressBar 
+                     label="Completeness" 
+                     score={result.breakdown?.completeness || 0} 
+                     explanation="Does the page fully answer the user's intent compared to top-ranking results?"
+                     fix="Cover the topic exhaustively. Add an FAQ section to address related questions."
+                   />
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <MetricCard icon={<Search className="h-5 w-5" />} title="Crawlability" value={result.crawlable ? "Yes" : "No"} score={result.crawlable ? 100 : 0} />
-              <MetricCard icon={<Globe className="h-5 w-5" />} title="Word Count" value={result.wordCount} score={Math.min(100, Math.floor((result.wordCount / 1000) * 100))} />
-              <MetricCard icon={<Shield className="h-5 w-5" />} title="Schema" value={result.hasSchema ? "Yes" : "No"} score={result.hasSchema ? 100 : 0} />
+            {/* AI EXECUTIVE SUMMARY */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+              <h3 className="text-zinc-400 font-medium mb-4 uppercase tracking-widest text-xs">AI Executive Summary</h3>
+              <p className="text-zinc-300 text-lg leading-relaxed">
+                {result.summary || "No summary generated for this scan."}
+              </p>
             </div>
 
-            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8">
-              <h3 className="text-xl font-bold mb-4">Improvements</h3>
-              <ul className="space-y-2">
+            {/* ACTION PLAN */}
+            <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+              <h3 className="text-xl font-bold text-white mb-6">⚡ Action Plan</h3>
+              <div className="space-y-3">
                 {result.improvements.map((item, i) => (
-                  <li key={i} className="flex gap-2">
-                    <span className="text-blue-500 font-bold">•</span> {item}
-                  </li>
+                  <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-zinc-800/50">
+                    <div className="mt-0.5 h-6 w-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-xs font-bold shrink-0">
+                      {i + 1}
+                    </div>
+                    <p className="text-zinc-300 text-sm leading-relaxed">{item}</p>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
+
+            {/* UNDER THE HOOD */}
+            <div className="mt-20 pt-10 border-t border-zinc-800">
+               <h2 className="text-3xl font-bold text-center mb-4">Under the Hood</h2>
+               <p className="text-zinc-400 text-center mb-10 max-w-2xl mx-auto">
+                 PulseSeo isn&apos;t just a crawler. It&apos;s an Agentic Emulator that reads your site exactly like ChatGPT does.
+               </p>
+               
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FeatureCard 
+                    icon={<ImageIcon className="text-blue-500" />} 
+                    title="Vector Context Analysis" 
+                    desc="We scan your images for descriptive Alt Text, ensuring AI Vision models can 'see' your products." 
+                  />
+                  <FeatureCard 
+                    icon={<FileText className="text-green-500" />} 
+                    title="Token Density Check" 
+                    desc="AI skips 'thin' content. We calculate if your page has enough depth for an LLM to cite it." 
+                  />
+                  <FeatureCard 
+                    icon={<Database className="text-purple-500" />} 
+                    title="Schema Validator" 
+                    desc="Structured Data (JSON-LD) is the language of AI. We verify your LocalBusiness and Product tags." 
+                  />
+                  <FeatureCard 
+                    icon={<Shield className="text-red-500" />} 
+                    title="Bot Access Control" 
+                    desc="Ensure you aren't accidentally blocking GPTBot or Google-Extended in your robots.txt." 
+                  />
+                  <FeatureCard 
+                    icon={<Globe className="text-cyan-500" />} 
+                    title="Entity Authority" 
+                    desc="We check if your H1s and Meta Tags establish a clear 'Entity' for Knowledge Graphs." 
+                  />
+                  <FeatureCard 
+                    icon={<Zap className="text-yellow-500" />} 
+                    title="Smart Caching" 
+                    desc="Results are cached for speed, allowing you to track improvements over time." 
+                  />
+               </div>
+            </div>
+
           </div>
         )}
+
       </div>
       <Footer />
     </main>
   );
 }
 
-function MetricCard({ icon, title, value, score }: MetricCardProps) {
+// --- HELPER COMPONENTS ---
+
+function ProgressBar({ label, score, explanation, fix }: { label: string, score: number, explanation: string, fix: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-center">
-      <div className="flex justify-center mb-3">{icon}</div>
-      <h3 className="text-sm text-zinc-500">{title}</h3>
-      <div className="text-xl font-bold">{value}</div>
-      {score !== undefined && <div className="text-xs text-zinc-400 mt-1">Score: {score}</div>}
+    <div className="group">
+      <div className="flex justify-between mb-2 items-center">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-zinc-300">{label}</span>
+          <button 
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-zinc-500 hover:text-blue-400 transition-colors focus:outline-none"
+            title="Click for details"
+          >
+            <HelpCircle className="h-4 w-4" />
+          </button>
+        </div>
+        <span className="text-sm font-bold text-zinc-100">{score}/100</span>
+      </div>
+      
+      <div className="h-2 w-full bg-zinc-800 rounded-full overflow-hidden mb-3">
+        <div 
+          className={`h-full rounded-full transition-all duration-1000 ${
+            score >= 80 ? 'bg-green-500' : score >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+          }`}
+          style={{ width: `${score}%` }}
+        />
+      </div>
+
+      {/* EXPANDABLE INFO BOX */}
+      {isOpen && (
+        <div className="bg-zinc-800/50 rounded-lg p-4 mb-4 text-sm border-l-2 border-blue-500 animate-in fade-in slide-in-from-top-2">
+          <p className="text-zinc-300 mb-2">
+            <span className="font-bold text-blue-400">What is this?</span> {explanation}
+          </p>
+          <p className="text-zinc-300">
+            <span className="font-bold text-green-400">How to fix:</span> {fix}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FeatureCard({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
+  return (
+    <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-start gap-4 hover:border-zinc-700 transition-colors">
+       <div className="p-3 bg-zinc-950 rounded-xl border border-zinc-800">
+         <div className="h-6 w-6 [&>*]:h-full [&>*]:w-full">{icon}</div>
+       </div>
+       <div>
+         <h3 className="font-bold text-lg mb-2 text-white">{title}</h3>
+         <p className="text-zinc-400 text-sm leading-relaxed">{desc}</p>
+       </div>
     </div>
   );
 }

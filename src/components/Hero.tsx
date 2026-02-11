@@ -1,46 +1,59 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { Sparkles, Zap } from "lucide-react";
 
 export function Hero() {
   return (
-    <section className="pt-32 pb-16 md:pt-48 md:pb-32 px-6 max-w-7xl mx-auto flex flex-col items-center text-center">
-      {/* Badge */}
-      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 mb-8">
-        <Sparkles className="h-4 w-4 text-yellow-500" />
-        <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          The Future of SEO is Agentic
-        </span>
-      </div>
+    <section className="pt-28 pb-14 px-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="relative overflow-hidden rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 bg-white/70 dark:bg-zinc-950/40 backdrop-blur p-8 sm:p-12">
+          <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-indigo-500/10 blur-3xl" />
 
-      {/* Headline */}
-      <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-zinc-900 dark:text-white max-w-4xl mb-6">
-        Optimize for the <br />
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600">
-          AI Agents
-        </span>
-        {" "}searching for you.
-      </h1>
+          <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 px-3 py-1 text-sm text-zinc-600 dark:text-zinc-300">
+            <Sparkles className="h-4 w-4 text-blue-600" />
+            The new standard for AI visibility
+          </div>
 
-      {/* Subheadline */}
-      <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mb-10 leading-relaxed">
-        Traditional SEO targets humans. PulseSeo helps you rank in the hidden 
-        economy of AI agents, LLMs, and voice assistants.
-      </p>
+          <h1 className="mt-6 text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight">
+            Get recommended by{" "}
+            <span className="text-blue-600">AI search</span>, not just ranked on Google.
+          </h1>
 
-      {/* Buttons */}
-      <div className="flex flex-col sm:flex-row items-center gap-4">
-        <Link
-          href="/analyze"
-          className="h-12 px-8 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-medium flex items-center gap-2 hover:opacity-90 transition-opacity"
-        >
-          Analyze My Site <ArrowRight className="h-4 w-4" />
-        </Link>
-        <Link
-          href="/docs"
-          className="h-12 px-8 rounded-full bg-transparent border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white font-medium flex items-center hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
-        >
-          Read the Docs
-        </Link>
+          <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-300 max-w-2xl">
+            PulseSeo helps ChatGPT, Gemini, Claude, and Perplexity understand what you do
+            — and when to recommend you.
+          </p>
+
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/analyze"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 font-semibold transition-colors"
+            >
+              <Zap className="h-4 w-4" />
+              Audit my website free
+            </Link>
+            <Link
+              href="/docs"
+              className="inline-flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 px-6 py-3 font-semibold text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+            >
+              Read the docs
+            </Link>
+          </div>
+
+          <div className="mt-8 flex flex-wrap items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+            <span className="font-semibold text-zinc-600 dark:text-zinc-300">
+              Optimized for:
+            </span>
+            {["OpenAI", "Perplexity", "Gemini", "Claude"].map((x) => (
+              <span
+                key={x}
+                className="rounded-full border border-zinc-200 dark:border-zinc-800 px-3 py-1 bg-white/60 dark:bg-zinc-900/30"
+              >
+                {x}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
