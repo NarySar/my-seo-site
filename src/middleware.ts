@@ -1,25 +1,27 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-// Define which routes are public (no login required)
+// 1. Define which routes are public (No login required)
 const isPublicRoute = createRouteMatcher([
-  "/",                  // Home page
-  "/features",          // Features page
-  "/pricing",           // Pricing page
-  "/docs",              // Docs page
-  "/analyze",           // Analyze page (the frontend)
-  "/api/scan",          // 👈 CRITICAL: The API must be public!
-  "/sign-in(.*)",       // Auth pages
-  "/sign-up(.*)"
+  "/",                  // Landing Page
+  "/features",          // Features Page
+  "/pricing",           // Pricing Page
+  "/docs",              // Documentation
+  "/analyze",           // The Scanner Frontend
+  "/api/scan",          // 👈 The Scanner API
+  "/api/cron",          // 👈 The Scheduler (Critical for Vercel Cron)
+  "/api/worker",        // 👈 The Background Worker (Critical for Emails)
+  "/sign-in(.*)",       // Clerk Sign In
+  "/sign-up(.*)"        // Clerk Sign Up
 ]);
 
-// 👇 Update this function to be ASYNC
+// 2. Protect all other routes
 export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {
-    // 👇 Add 'await' here
     await auth.protect();
   }
 });
 
+// 3. Configuration to skip static files
 export const config = {
   matcher: [
     // Skip Next.js internals and all static files, unless found in search params
