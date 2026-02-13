@@ -112,23 +112,26 @@ export async function runAgentScan(url: string) {
       (sSchema * 0.2)
     );
 
-    const confidence = calculateConfidence(isSPA, wordCount);
-
-    // --- GEMINI SUMMARY ---
+    // --- GEMINI SUMMARY (UPDATED FOR DETAIL) ---
     const prompt = `
-      You are an SEO Analyst. 
+      You are an expert SEO Consultant providing a high-level website audit.
+      
       CONTEXT: This site is a ${isSPA ? "Single Page App (SPA)" : "Standard Website"}.
       
-      --- METRICS ---
-      Score: ${totalScore}/100
-      Title: "${title}"
-      Description: "${desc}"
+      --- MEASURED METRICS ---
+      Overall Score: ${totalScore}/100
+      Title: "${title}" (Length: ${title.length} chars)
+      Description: "${desc}" (Length: ${desc.length} chars)
       Word Count: ${isSPA ? "Hidden (Loaded via JS)" : wordCount}
+      Schema Detected: ${hasSchema}
       
       --- TASK ---
-      Write a 2-sentence summary.
-      If it is an SPA (React/Vue), explicitly mention that "Content is dynamically loaded, so the Agent judged primarily on Metadata."
-      Provide 3 specific improvements for SEO metadata.
+      Write a detailed, 4-5 sentence Executive Summary.
+      1. Start with a direct assessment of the site's AI visibility status.
+      2. Critique the specific phrasing of the Title and Description. Are they click-worthy? Do they contain keywords?
+      3. Explain *why* the score is what it is. (e.g., "The score is dragged down by a missing description..." or "The score is perfect due to...").
+      4. If it is an SPA, reassure the user that the technical foundation looks good despite hidden text.
+      5. Tone: Professional, authoritative, and helpful.
     `;
 
     const { object } = await generateObject({

@@ -1,29 +1,30 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isProtectedRoute = createRouteMatcher([
-    '/dashboard(.*)',
-    '/api/scan(.*)'
+// Define which routes are public (no login required)
+const isPublicRoute = createRouteMatcher([
+  "/",                  // Home page
+  "/features",          // Features page
+  "/pricing",           // Pricing page
+  "/docs",              // Docs page
+  "/analyze",           // Analyze page (the frontend)
+  "/api/scan",          // 👈 CRITICAL: The API must be public!
+  "/sign-in(.*)",       // Auth pages
+  "/sign-up(.*)"
 ]);
 
+// 👇 Update this function to be ASYNC
 export default clerkMiddleware(async (auth, req) => {
-    if (isProtectedRoute(req)) {
-        // 🛑 FIX: We manually check for the user instead of using .protect()
-        // This avoids the TypeScript error completely.
-        const { userId, redirectToSignIn } = await auth();
-        
-        if (!userId) {
-            return redirectToSignIn();
-        }
-    }
+  if (!isPublicRoute(req)) {
+    // 👇 Add 'await' here
+    await auth.protect();
+  }
 });
 
 export const config = {
   matcher: [
-    // 🛑 THE "NUCLEAR" CONFIG (Keep this!):
-    // This tells Next.js to completely IGNORE /api/cron and /api/worker
-    "/((?!api/cron|api/worker|_next|.*\\..*).*)", 
-    
-    // Also skip static files
-    "/(api|trpc)((?!/cron|/worker).*)",
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
   ],
 };
