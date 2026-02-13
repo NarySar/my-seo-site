@@ -22,7 +22,7 @@ export default function FeaturesPage() {
             Built for the <span className="text-blue-600">AI Era</span>
           </h1>
           <p className="text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
-            Traditional SEO tools track Google. We track ChatGPT, Claude, and Perplexity. 
+            Traditional SEO tools track Google. We track Gemini, ChatGPT, Claude, and Perplexity. 
             See how your site performs when an AI Agent is the visitor.
           </p>
         </div>
