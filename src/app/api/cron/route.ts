@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Client } from "@upstash/qstash";
 import { createClient } from "@supabase/supabase-js";
 
+// Force dynamic prevents Vercel from caching this route
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
@@ -13,32 +14,31 @@ export async function GET(req: Request) {
             SUPABASE_SERVICE_ROLE_KEY 
         } = process.env;
 
-        // 1. Security Check (Fixed for Vercel Cron)
+        // 1. SECURITY: Verify the Vercel Cron Secret
         const authHeader = req.headers.get("authorization");
         if (authHeader !== `Bearer ${CRON_SECRET}`) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        // 2. Fetch Active Sites from Database
+        // 2. DATABASE: Fetch all active monitors
         const supabase = createClient(NEXT_PUBLIC_SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
         
-        // We select sites that are 'active' (you can add logic for 'due date' later)
+        // You can filter by .eq("tier", "agency") if you only want paying clients later
         const { data: monitors, error } = await supabase
             .from("monitors")
             .select("*")
             .eq("active", true);
 
         if (error) throw new Error(error.message);
-        
         if (!monitors || monitors.length === 0) {
-            return NextResponse.json({ message: "No active monitors found to scan." });
+            return NextResponse.json({ message: "No active sites to scan." });
         }
 
-        // 3. Queue Jobs via QStash
+        // 3. QUEUE JOBS: Send them to the Worker
         const qstash = new Client({ token: QSTASH_TOKEN! });
         
-        // ⚠️ CRITICAL: QStash needs your LIVE URL, not localhost.
-        // If you are testing, use your .vercel.app URL temporarily.
+        // ⚠️ IMPORTANT: Use your LIVE domain here (e.g., https://pulseseo.ai)
+        // If testing locally, use your ngrok or local URL, but for production use real domain.
         const APP_URL = "https://www.pulseseo.ai"; 
 
         const results = [];
@@ -46,9 +46,9 @@ export async function GET(req: Request) {
             const result = await qstash.publishJSON({
                 url: `${APP_URL}/api/worker`,
                 body: { 
-                    url: monitor.url,      // The site to scan
-                    email: monitor.email,  // Who to email (from DB)
-                    userId: monitor.user_id 
+                    url: monitor.url,       // The site to scan
+                    userId: monitor.user_id, // The client's ID
+                    monitorId: monitor.id    // To update 'last_run' later
                 },
             });
             results.push(result);
@@ -56,7 +56,7 @@ export async function GET(req: Request) {
 
         return NextResponse.json({ 
             status: "Success", 
-            queued: results.length, 
+            queued_count: results.length, 
             sites: monitors.map(m => m.url) 
         });
 
