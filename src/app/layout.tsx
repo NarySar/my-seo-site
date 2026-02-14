@@ -2,20 +2,35 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import { ThemeProvider } from "@/components/ThemeProvider"; // Restore this!
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PulseSeo.ai",
-  description: "Agentic SEO Analysis Tool",
+  title: "PulseSeo.ai | Hybrid SEO Agency for AI & Google",
+  description: "PulseSeo.ai helps local businesses rank on Google and become visible to AI agents like ChatGPT, Gemini, and Perplexity. Get your free AI visibility scan today.",
+  openGraph: {
+    title: "PulseSeo.ai | Hybrid SEO Agency",
+    description: "Is your website invisible to AI? Scan it now with PulseSeo.ai to find out.",
+    url: "https://www.pulseseo.ai",
+    siteName: "PulseSeo.ai",
+    images: [
+      {
+        url: "https://www.pulseseo.ai/opengraph-image.png", 
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
@@ -26,6 +41,43 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            {/* 👇 SCHEMA MARKUP FOR AGENTIC SEO 👇 */}
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "ProfessionalService",
+                  "name": "PulseSeo.ai",
+                  "image": "https://www.pulseseo.ai/opengraph-image.png",
+                  "@id": "https://www.pulseseo.ai",
+                  "url": "https://www.pulseseo.ai",
+                  "telephone": "+1-555-0100",
+                  "priceRange": "$$",
+                  "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "100 Morrissey Blvd",
+                    "addressLocality": "Boston",
+                    "addressRegion": "MA",
+                    "postalCode": "02125",
+                    "addressCountry": "US",
+                  },
+                  "geo": {
+                    "@type": "GeoCoordinates",
+                    "latitude": 42.3134,
+                    "longitude": -71.0389,
+                  },
+                  "areaServed": [
+                    { "@type": "City", "name": "Boston" },
+                    { "@type": "Country", "name": "US" },
+                  ],
+                  "description":
+                    "PulseSeo.ai is a Hybrid SEO Agency in Boston specializing in Agentic SEO. We help local businesses rank on Google and become visible to AI agents.",
+                }),
+              }}
+            />
+            {/* 👆 END SCHEMA 👆 */}
+
             {children}
           </ThemeProvider>
         </body>
