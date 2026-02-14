@@ -41,18 +41,21 @@ export async function GET(req: Request) {
         // If testing locally, use your ngrok or local URL, but for production use real domain.
         const APP_URL = "https://www.pulseseo.ai"; 
 
-        const results = [];
-        for (const monitor of monitors) {
-            const result = await qstash.publishJSON({
-                url: `${APP_URL}/api/worker`,
-                body: { 
-                    url: monitor.url,       // The site to scan
-                    userId: monitor.user_id, // The client's ID
-                    monitorId: monitor.id    // To update 'last_run' later
-                },
-            });
-            results.push(result);
-        }
+        // 3. QUEUE JOBS: Create a list of promises (requests)
+        const jobs = monitors.map(monitor => 
+        qstash.publishJSON({
+            url: `${APP_URL}/api/worker`,
+            body: { 
+                url: monitor.url,
+                userId: monitor.user_id,
+                monitorId: monitor.id
+            },
+        })
+        );
+
+        // 4. FIRE: Send them all to QStash at the exact same time
+        // This takes ~200ms total, whether you have 5 clients or 500.
+        const results = await Promise.all(jobs);
 
         return NextResponse.json({ 
             status: "Success", 
