@@ -1,58 +1,38 @@
 import Link from "next/link";
-import { Sparkles, Zap } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 
-export function Hero() {
+export default function Hero() {
   return (
-    <section className="pt-28 pb-14 px-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="relative overflow-hidden rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 bg-white/70 dark:bg-zinc-950/40 backdrop-blur p-8 sm:p-12">
-          <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-indigo-500/10 blur-3xl" />
+    <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6">
+      {/* Glow Effects */}
+      <div className="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-blue-500/20 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+      <div className="md:hidden absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[60px] -z-10 pointer-events-none"></div>
+      
+      <div className="max-w-4xl mx-auto text-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 text-blue-600 dark:text-blue-400 text-sm font-medium mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+          </span>
+          The New Standard for AI Visibility
+        </div>
 
-          <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 px-3 py-1 text-sm text-zinc-600 dark:text-zinc-300">
-            <Sparkles className="h-4 w-4 text-blue-600" />
-            The new standard for AI visibility
-          </div>
+        <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-zinc-900 dark:text-white mb-8 leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">
+          Is your business <br/>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">invisible to AI?</span>
+        </h1>
+        
+        <p className="text-xl text-zinc-600 dark:text-zinc-400 mb-12 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          Traditional SEO helps Google find you. <strong>Agentic SEO</strong> ensures ChatGPT, Gemini, and Perplexity can recommend you. Scan your site now.
+        </p>
 
-          <h1 className="mt-6 text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight">
-            Get recommended by{" "}
-            <span className="text-blue-600">AI search</span>, not just ranked on Google.
-          </h1>
-
-          <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-300 max-w-2xl">
-            PulseSeo helps ChatGPT, Gemini, Claude, and Perplexity understand what you do
-            — and when to recommend you.
-          </p>
-
-          <div className="mt-6 flex flex-col sm:flex-row gap-3">
-            <Link
-              href="/analyze"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 font-semibold transition-colors"
-            >
-              <Zap className="h-4 w-4" />
-              Audit my website free
-            </Link>
-            <Link
-              href="/docs"
-              className="inline-flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 px-6 py-3 font-semibold text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
-            >
-              Read the docs
-            </Link>
-          </div>
-
-          <div className="mt-8 flex flex-wrap items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
-            <span className="font-semibold text-zinc-600 dark:text-zinc-300">
-              Optimized for:
-            </span>
-            {["OpenAI", "Perplexity", "Gemini", "Claude"].map((x) => (
-              <span
-                key={x}
-                className="rounded-full border border-zinc-200 dark:border-zinc-800 px-3 py-1 bg-white/60 dark:bg-zinc-900/30"
-              >
-                {x}
-              </span>
-            ))}
-          </div>
+        <div className="flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-200">
+           <Link href="/analyze" className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 text-lg font-semibold text-white bg-blue-600 rounded-full hover:bg-blue-500 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
+              <Search className="w-5 h-5" />
+              Audit My Website Free
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+           </Link>
+           <p className="text-sm text-zinc-400">No credit card required • Instant analysis</p>
         </div>
       </div>
     </section>

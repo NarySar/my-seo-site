@@ -52,27 +52,29 @@ export default function RootLayout({
                   "image": "https://www.pulseseo.ai/opengraph-image.png",
                   "@id": "https://www.pulseseo.ai",
                   "url": "https://www.pulseseo.ai",
-                  "telephone": "+1-555-0100",
+                  "telephone": "+1-555-0100", 
                   "priceRange": "$$",
                   "address": {
                     "@type": "PostalAddress",
-                    "streetAddress": "100 Morrissey Blvd",
-                    "addressLocality": "Boston",
+                    "streetAddress": "Bellvista Road",
+                    "addressLocality": "Brighton",
                     "addressRegion": "MA",
-                    "postalCode": "02125",
+                    "postalCode": "02135",
                     "addressCountry": "US",
                   },
                   "geo": {
                     "@type": "GeoCoordinates",
-                    "latitude": 42.3134,
-                    "longitude": -71.0389,
+                    "latitude": 42.3464,
+                    "longitude": -71.1444,
                   },
                   "areaServed": [
                     { "@type": "City", "name": "Boston" },
-                    { "@type": "Country", "name": "US" },
+                    { "@type": "City", "name": "Brighton" },
+                    { "@type": "City", "name": "Allston" },
+                    { "@type": "City", "name": "Brookline" }
                   ],
                   "description":
-                    "PulseSeo.ai is a Hybrid SEO Agency in Boston specializing in Agentic SEO. We help local businesses rank on Google and become visible to AI agents.",
+                    "PulseSeo.ai is a Hybrid SEO Agency based in Brighton, MA. We help local businesses rank on Google and become visible to AI agents.",
                 }),
               }}
             />

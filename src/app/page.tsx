@@ -1,51 +1,20 @@
 import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { ArrowRight, Search, Zap, Shield, Globe, Cpu, BarChart3, ImageIcon as ImageIconLucide } from "lucide-react";
+import Hero from "@/components/Hero"; // ✅ extracted Hero
+import HybridSection from "@/components/HybridSection"; // ✅ The new comparison section
+import Features from "@/components/Features"; // ✅ extracted Features
 import Link from "next/link";
+import { ArrowRight, Cpu, Globe, Shield, Zap } from "lucide-react";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-white dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900 overflow-x-hidden">
       <Navbar />
 
-      {/* --- HERO SECTION --- */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6">
-        {/* Changed: "hidden md:block" hides it on mobile to fix scrolling lag */}
-        <div className="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-blue-500/20 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+      {/* 1. Hero Section */}
+      <Hero />
 
-        {/* New: A simpler, smaller glow for mobile that won't lag */}
-        <div className="md:hidden absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[60px] -z-10 pointer-events-none"></div>
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 text-blue-600 dark:text-blue-400 text-sm font-medium mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-            </span>
-            The New Standard for AI Visibility
-          </div>
-
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-zinc-900 dark:text-white mb-8 leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700">
-            Is your business <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">invisible to AI?</span>
-          </h1>
-          
-          <p className="text-xl text-zinc-600 dark:text-zinc-400 mb-12 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000">
-            Traditional SEO helps Google find you. <strong>Agentic SEO</strong> ensures ChatGPT, Gemini, and Perplexity can recommend you. Scan your site now.
-          </p>
-
-          {/* Call to Action Area */}
-          <div className="flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-200">
-             <Link href="/analyze" className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 text-lg font-semibold text-white bg-blue-600 rounded-full hover:bg-blue-500 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
-                <Search className="w-5 h-5" />
-                Audit My Website Free
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-             </Link>
-             <p className="text-sm text-zinc-400">No credit card required • Instant analysis</p>
-          </div>
-        </div>
-      </section>
-
-      {/* --- TRUST BADGES --- */}
+      {/* 2. Trust Badges (Kept inline as it's small) */}
       <section className="py-10 border-y border-zinc-100 dark:border-zinc-900 bg-zinc-50/50 dark:bg-zinc-900/20">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <p className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-6">Optimized for the next generation of search</p>
@@ -58,7 +27,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- PROBLEM / SOLUTION (UPDATED TONE) --- */}
+      {/* 3. The New Hybrid Comparison (Your Strategic Advantage) */}
+      <HybridSection />
+
+      {/* 4. Problem / Solution Block (Kept inline) */}
       <section className="py-24 px-6 bg-white dark:bg-black">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
            <div>
@@ -82,8 +54,8 @@ export default function Home() {
                  ))}
               </ul>
            </div>
+           
            <div className="relative p-8 rounded-3xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rotate-1 hover:rotate-0 transition-transform duration-500">
-              {/* Abstract Visual of the Audit Tool */}
               <div className="space-y-4">
                  <div className="h-4 w-1/3 bg-zinc-300 dark:bg-zinc-700 rounded-full"></div>
                  <div className="h-8 w-3/4 bg-zinc-800 dark:bg-zinc-200 rounded-lg"></div>
@@ -103,36 +75,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- FEATURES GRID --- */}
-      <section className="py-24 px-6 bg-zinc-50 dark:bg-zinc-900/50">
-        <div className="max-w-7xl mx-auto">
-           <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4">What we analyze</h2>
-              <p className="text-zinc-600 dark:text-zinc-400">Our deep-scan technology checks the 6 critical data points that Large Language Models use to understand your business.</p>
-           </div>
-           
-           <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { title: "Vector Context", desc: "Do your images have descriptive Alt Text for AI vision models?", icon: <ImageIconLucide className="w-6 h-6" /> },
-                { title: "Token Density", desc: "Is there enough text content for the LLM to process and learn?", icon: <BarChart3 className="w-6 h-6" /> },
-                { title: "Structured Data", desc: "Do you feed facts (JSON-LD) directly to the AI's knowledge graph?", icon: <Cpu className="w-6 h-6" /> },
-                { title: "Bot Access", desc: "Are you accidentally blocking AI crawlers in your robots.txt?", icon: <Shield className="w-6 h-6" /> },
-                { title: "Topic Authority", desc: "Does your H1 and Meta Data clearly define your niche?", icon: <Globe className="w-6 h-6" /> },
-                { title: "Connectivity", desc: "Is your site an authority hub or an orphaned island?", icon: <Zap className="w-6 h-6" /> },
-              ].map((f, i) => (
-                <div key={i} className="p-8 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:shadow-lg transition-shadow">
-                   <div className="h-12 w-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-blue-600 mb-6">
-                      {f.icon}
-                   </div>
-                   <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-3">{f.title}</h3>
-                   <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">{f.desc}</p>
-                </div>
-              ))}
-           </div>
-        </div>
-      </section>
+      {/* 5. Features Grid (Component) */}
+      <Features />
 
-      {/* --- CTA FOOTER --- */}
+      {/* 6. CTA Footer (Kept inline as it's specific to this page) */}
       <section className="py-24 px-6">
          <div className="max-w-5xl mx-auto bg-blue-600 rounded-[2.5rem] p-12 md:p-24 text-center text-white relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>

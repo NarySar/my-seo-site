@@ -1,64 +1,33 @@
-"use client";
+import { BarChart3, Cpu, Globe, ImageIcon as ImageIconLucide, Shield, Zap } from "lucide-react";
 
-import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
-import { ThemeToggle } from "@/components/ThemeToggle";
-
-export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-
+export default function Features() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl text-zinc-900 dark:text-white">
-          <div className="h-8 w-8 bg-zinc-900 dark:bg-white text-white dark:text-black rounded-lg flex items-center justify-center font-bold">
-            P
-          </div>
-          <span>PulseSeo.ai</span>
-        </Link>
-
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-600 dark:text-zinc-400">
-          <Link href="/features" className="hover:text-black dark:hover:text-white transition-colors">Features</Link>
-          <Link href="/pricing" className="hover:text-black dark:hover:text-white transition-colors">Pricing</Link>
-          <Link href="/docs" className="hover:text-black dark:hover:text-white transition-colors">Docs</Link>
-        </div>
-
-        {/* Desktop Actions (Toggle + CTA) */}
-        <div className="hidden md:flex items-center gap-4">
-          <ThemeToggle />
-          <Link href="/analyze" className="bg-zinc-900 dark:bg-white text-white dark:text-black px-5 py-2.5 rounded-full text-sm font-bold hover:opacity-90 transition-opacity">
-            Get Started
-          </Link>
-        </div>
-
-        {/* Mobile Menu Button & Toggle */}
-        <div className="md:hidden flex items-center gap-4">
-          <ThemeToggle />
-          <button 
-            className="text-zinc-900 dark:text-white"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
+    <section className="py-24 px-6 bg-zinc-50 dark:bg-zinc-900/50">
+      <div className="max-w-7xl mx-auto">
+         <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4">What we analyze</h2>
+            <p className="text-zinc-600 dark:text-zinc-400">Our deep-scan technology checks the 6 critical data points that Large Language Models use to understand your business.</p>
+         </div>
+         
+         <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { title: "Vector Context", desc: "Do your images have descriptive Alt Text for AI vision models?", icon: <ImageIconLucide className="w-6 h-6" /> },
+              { title: "Token Density", desc: "Is there enough text content for the LLM to process and learn?", icon: <BarChart3 className="w-6 h-6" /> },
+              { title: "Structured Data", desc: "Do you feed facts (JSON-LD) directly to the AI's knowledge graph?", icon: <Cpu className="w-6 h-6" /> },
+              { title: "Bot Access", desc: "Are you accidentally blocking AI crawlers in your robots.txt?", icon: <Shield className="w-6 h-6" /> },
+              { title: "Topic Authority", desc: "Does your H1 and Meta Data clearly define your niche?", icon: <Globe className="w-6 h-6" /> },
+              { title: "Connectivity", desc: "Is your site an authority hub or an orphaned island?", icon: <Zap className="w-6 h-6" /> },
+            ].map((f, i) => (
+              <div key={i} className="p-8 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 hover:shadow-lg transition-shadow">
+                 <div className="h-12 w-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-blue-600 mb-6">
+                    {f.icon}
+                 </div>
+                 <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-3">{f.title}</h3>
+                 <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+         </div>
       </div>
-
-      {/* Mobile Dropdown Menu */}
-      {isOpen && (
-        <div className="md:hidden absolute top-20 left-0 w-full bg-white dark:bg-black border-b border-zinc-200 dark:border-zinc-800 p-6 flex flex-col gap-6 shadow-xl animate-in slide-in-from-top-2">
-           <Link href="/features" className="text-lg font-medium text-zinc-900 dark:text-white" onClick={() => setIsOpen(false)}>Features</Link>
-           <Link href="/pricing" className="text-lg font-medium text-zinc-900 dark:text-white" onClick={() => setIsOpen(false)}>Pricing</Link>
-           <Link href="/docs" className="text-lg font-medium text-zinc-900 dark:text-white" onClick={() => setIsOpen(false)}>Docs</Link>
-           <hr className="border-zinc-100 dark:border-zinc-800"/>
-           <Link href="/analyze" className="bg-blue-600 text-white py-3 rounded-xl text-center font-bold" onClick={() => setIsOpen(false)}>
-            Get Started Free
-           </Link>
-        </div>
-      )}
-    </nav>
+    </section>
   );
 }

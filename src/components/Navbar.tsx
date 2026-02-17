@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUser, UserButton, SignInButton, SignOutButton } from "@clerk/nextjs";
-import { Menu, X, Zap, LogOut } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle"; 
 
 // --- TYPE DEFINITIONS ---
@@ -35,7 +36,7 @@ export default function Navbar() {
   const isActive = (href: string) => pathname === href;
 
   const navLinks: NavLink[] = [
-    { name: "Features", href: "/features" },
+    { name: "Features", href: "/#features" },
     { name: "Analyze", href: "/analyze" },
     { name: "Pricing", href: "/pricing" },
     { name: "Docs", href: "/docs" },
@@ -44,14 +45,18 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4">
-        <div className="rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 bg-white/70 dark:bg-black/50 backdrop-blur-md transition-colors">
-          <div className="h-16 flex items-center justify-between px-4 sm:px-6">
+        <div className="rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 bg-white/70 dark:bg-black/50 backdrop-blur-md transition-colors relative">
+          
+          {/* Main Bar */}
+          <div className="h-24 flex items-center justify-between px-4 sm:px-6 relative z-20">
             
             {/* 1. SHARED LOGO */}
             <Logo />
 
-            {/* 2. DESKTOP NAVIGATION */}
-            <div className="hidden md:flex items-center gap-7 text-sm font-semibold text-zinc-600 dark:text-zinc-300">
+            {/* 2. DESKTOP NAVIGATION 
+                Added 'relative z-50' to ensure links are clickable even if logo overlaps 
+            */}
+            <div className="hidden md:flex items-center gap-7 text-sm font-semibold text-zinc-600 dark:text-zinc-300 relative z-50">
               {navLinks.map((item) => (
                 <Link
                   key={item.href}
@@ -70,8 +75,10 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* 3. DESKTOP ACTIONS */}
-            <div className="hidden md:flex items-center gap-3">
+            {/* 3. DESKTOP ACTIONS 
+                Added 'relative z-50' here too 
+            */}
+            <div className="hidden md:flex items-center gap-3 relative z-50">
               <ThemeToggle />
               {isSignedIn ? (
                 <div className="flex items-center gap-3">
@@ -87,7 +94,7 @@ export default function Navbar() {
             </div>
 
             {/* 4. MOBILE TOGGLE */}
-            <div className="md:hidden flex items-center gap-3">
+            <div className="md:hidden flex items-center gap-3 relative z-50">
               <ThemeToggle />
               <button
                 onClick={() => setOpen(!open)}
@@ -113,11 +120,27 @@ export default function Navbar() {
   );
 }
 
-// --- SUB-COMPONENTS (Now Fully Typed!) ---
+// --- SUB-COMPONENTS ---
+
+function Logo() {
+  return (
+    // 👇 FIX: reduced width to w-64 so the box doesn't cover the links
+    // scale-[3.5] keeps it looking huge visually
+    <Link href="/" className="relative w-64 h-20 block overflow-visible -ml-4 z-10">
+      <Image
+        src="/logo.png" 
+        alt="PulseSeo.ai"
+        fill
+        className="object-contain object-left scale-[3.5] origin-left" 
+        priority
+      />
+    </Link>
+  );
+}
 
 function MobileMenu({ links, isSignedIn, onClose, isActive }: MobileMenuProps) {
   return (
-    <div className="md:hidden border-t border-zinc-200/70 dark:border-zinc-800/70 px-4 py-4 space-y-3 animate-in slide-in-from-top-2 fade-in duration-200">
+    <div className="md:hidden border-t border-zinc-200/70 dark:border-zinc-800/70 px-4 py-4 space-y-3 animate-in slide-in-from-top-2 fade-in duration-200 relative z-40">
       {links.map((item) => (
         <Link
           key={item.href}
@@ -157,17 +180,6 @@ function MobileMenu({ links, isSignedIn, onClose, isActive }: MobileMenuProps) {
         )}
       </div>
     </div>
-  );
-}
-
-function Logo() {
-  return (
-    <Link href="/" className="flex items-center gap-2 font-extrabold tracking-tight text-zinc-900 dark:text-white group">
-      <span className="h-9 w-9 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-black flex items-center justify-center group-hover:rotate-12 transition-transform">
-        <Zap className="h-5 w-5 fill-current" />
-      </span>
-      <span className="text-lg">PulseSeo.ai</span>
-    </Link>
   );
 }
 
