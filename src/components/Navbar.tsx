@@ -124,14 +124,25 @@ export default function Navbar() {
 
 function Logo() {
   return (
-    // 👇 FIX: reduced width to w-64 so the box doesn't cover the links
-    // scale-[3.5] keeps it looking huge visually
-    <Link href="/" className="relative w-64 h-20 block overflow-visible -ml-4 z-10">
+    // 👇 RESPONSIVE FIX:
+    // Mobile: w-40 width, -ml-2 margin
+    // Desktop (md): w-64 width, -ml-4 margin
+    <Link 
+      href="/" 
+      className="relative block overflow-visible z-10 transition-opacity hover:opacity-80
+                 w-40 h-16 -ml-2       /* Mobile Size */
+                 md:w-64 md:h-20 md:-ml-4  /* Desktop Size */"
+    >
       <Image
         src="/logo.png" 
         alt="PulseSeo.ai"
         fill
-        className="object-contain object-left scale-[3.5] origin-left" 
+        // 👇 RESPONSIVE SCALE:
+        // Mobile: scale-[2] (Readable but fits)
+        // Desktop (md): scale-[3.5] (Massive impact)
+        className="object-contain object-left origin-left
+                   scale-[2] 
+                   md:scale-[3.5]" 
         priority
       />
     </Link>
