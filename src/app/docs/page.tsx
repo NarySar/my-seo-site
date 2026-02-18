@@ -170,7 +170,7 @@ export default function DocsPage() {
   const [activeSection, setActiveSection] = useState("introduction");
 
   return (
-    <main className="min-h-screen bg-white dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900">
+    <main className="min-h-screen bg-white dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900 overflow-x-hidden">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-6 pt-32 pb-24 flex flex-col md:flex-row gap-12">

@@ -124,25 +124,22 @@ export default function Navbar() {
 
 function Logo() {
   return (
-    // 👇 RESPONSIVE FIX:
-    // Mobile: w-40 width, -ml-2 margin
-    // Desktop (md): w-64 width, -ml-4 margin
+    // 👇 RESPONSIVE UPDATE:
+    // Mobile: Increased width from w-32 to w-52 (Massive mobile size)
+    // Mobile: Increased scale from 1.8 to 3.0 (2x Zoom)
     <Link 
       href="/" 
       className="relative block overflow-visible z-10 transition-opacity hover:opacity-80
-                 w-40 h-16 -ml-2       /* Mobile Size */
-                 md:w-64 md:h-20 md:-ml-4  /* Desktop Size */"
+                 w-52 h-16 -ml-3        /* Mobile: Much wider container */
+                 md:w-64 md:h-20 md:-ml-4   /* Desktop: Stays the same */"
     >
       <Image
-        src="/logo.png" 
+        src="/pulse-logo.png"   
         alt="PulseSeo.ai"
         fill
-        // 👇 RESPONSIVE SCALE:
-        // Mobile: scale-[2] (Readable but fits)
-        // Desktop (md): scale-[3.5] (Massive impact)
         className="object-contain object-left origin-left
-                   scale-[2] 
-                   md:scale-[3.5]" 
+                   scale-[3]              /* Mobile: Zoomed in 3x */
+                   md:scale-[3.5]"        /* Desktop: Zoomed in 3.5x */
         priority
       />
     </Link>

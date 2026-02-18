@@ -5,7 +5,8 @@ import Link from "next/link";
 
 export default function PricingPage() {
   return (
-    <main className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900">
+    // 👇 Added 'overflow-x-hidden' to stop the horizontal scrolling issue
+    <main className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900 overflow-x-hidden">
       <Navbar />
 
       <div className="pt-32 pb-24 px-6 max-w-7xl mx-auto">

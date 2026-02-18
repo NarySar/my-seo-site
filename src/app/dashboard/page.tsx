@@ -61,7 +61,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="min-h-screen bg-zinc-50 dark:bg-black flex flex-col">
+    <main className="min-h-screen bg-zinc-50 dark:bg-black flex flex-col overflow-x-hidden">
       <Navbar />
 
       <div className="pt-32 pb-20 px-6 max-w-5xl mx-auto w-full flex-grow">

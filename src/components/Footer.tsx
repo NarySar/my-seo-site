@@ -12,7 +12,7 @@ export function Footer() {
           {/* Logo with fixed zoom */}
           <Link href="/" className="inline-block relative w-96 h-24 mb-2 -ml-8 overflow-visible">
             <Image
-              src="/logo.png" 
+              src="/pulse-logo.png" 
               alt="PulseSeo.ai"
               fill
               className="object-contain object-left scale-[3.5] origin-left"

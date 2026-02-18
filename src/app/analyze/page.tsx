@@ -56,7 +56,7 @@ export default function AnalyzePage() {
   };
 
   return (
-    <main className="min-h-screen bg-black text-zinc-100 flex flex-col font-sans selection:bg-blue-500/30">
+    <main className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900 overflow-x-hidden">
       <Navbar />
       
       <div className="flex-grow pt-32 pb-20 px-6 max-w-6xl mx-auto w-full">
