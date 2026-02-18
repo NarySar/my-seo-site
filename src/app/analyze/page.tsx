@@ -63,11 +63,13 @@ export default function AnalyzePage() {
         
         {/* HERO SECTION */}
         <div className="text-center mb-16 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider">
             <Sparkles className="h-3 w-3" /> The New Standard for AI Visibility
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
-            Analyze your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">AI Visibility</span>
+          
+          {/* 👇 FIXED: Added 'text-zinc-900 dark:text-white' so it is visible in Light Mode */}
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            Analyze your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-500">AI Visibility</span>
           </h1>
           
           <form onSubmit={handleAnalyze} className="max-w-xl mx-auto relative group">
@@ -77,14 +79,14 @@ export default function AnalyzePage() {
               <input 
                 type="url" required value={url} onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://example.com"
-                className="w-full bg-transparent border-none text-white placeholder-zinc-500 focus:ring-0 px-4 py-2"
+                className="w-full bg-transparent border-none text-white placeholder-zinc-500 focus:ring-0 px-4 py-2 outline-none"
               />
-              <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-full font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+              <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-full font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                 {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "Analyze"}
               </button>
             </div>
           </form>
-          {error && <p className="text-red-400 text-sm mt-4 bg-red-900/20 inline-block px-4 py-2 rounded-lg border border-red-900/50">{error}</p>}
+          {error && <p className="text-red-600 dark:text-red-400 text-sm mt-4 bg-red-100 dark:bg-red-900/20 inline-block px-4 py-2 rounded-lg border border-red-200 dark:border-red-900/50">{error}</p>}
         </div>
 
         {/* RESULTS SECTION */}
@@ -95,23 +97,23 @@ export default function AnalyzePage() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
               
               {/* Score Box */}
-              <div className="md:col-span-5 bg-zinc-900 border border-zinc-800 rounded-3xl p-8 flex flex-col justify-center items-center text-center relative overflow-hidden">
+              <div className="md:col-span-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 flex flex-col justify-center items-center text-center relative overflow-hidden shadow-lg">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent pointer-events-none" />
-                <h3 className="text-zinc-400 font-medium mb-4 uppercase tracking-widest text-xs">Overall Agent Score</h3>
+                <h3 className="text-zinc-500 dark:text-zinc-400 font-medium mb-4 uppercase tracking-widest text-xs">Overall Agent Score</h3>
                 <div className={`text-8xl font-black mb-2 tracking-tighter ${getColor(result.score)}`}>
                   {result.score}
                 </div>
                 <div className="flex gap-2 mb-6">
                   {result.score >= 80 ? <CheckCircle2 className="text-green-500" /> : <AlertCircle className="text-yellow-500" />}
-                  <span className="text-zinc-300 font-medium">
+                  <span className="text-zinc-700 dark:text-zinc-300 font-medium">
                     {result.score >= 80 ? "AI Ready" : result.score >= 50 ? "Needs Optimization" : "Invisible to AI"}
                   </span>
                 </div>
               </div>
 
-              {/* Breakdown Bars with NEW Info Tooltips */}
-              <div className="md:col-span-7 bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
-                <h3 className="text-zinc-400 font-medium mb-6 uppercase tracking-widest text-xs flex items-center gap-2">
+              {/* Breakdown Bars */}
+              <div className="md:col-span-7 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 shadow-lg">
+                <h3 className="text-zinc-500 dark:text-zinc-400 font-medium mb-6 uppercase tracking-widest text-xs flex items-center gap-2">
                   <Zap className="h-4 w-4" /> Score Breakdown
                 </h3>
                 <div className="space-y-6">
@@ -150,32 +152,32 @@ export default function AnalyzePage() {
             </div>
 
             {/* AI EXECUTIVE SUMMARY */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
-              <h3 className="text-zinc-400 font-medium mb-4 uppercase tracking-widest text-xs">AI Executive Summary</h3>
-              <p className="text-zinc-300 text-lg leading-relaxed">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 shadow-lg">
+              <h3 className="text-zinc-500 dark:text-zinc-400 font-medium mb-4 uppercase tracking-widest text-xs">AI Executive Summary</h3>
+              <p className="text-zinc-700 dark:text-zinc-300 text-lg leading-relaxed">
                 {result.summary || "No summary generated for this scan."}
               </p>
             </div>
 
             {/* ACTION PLAN */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
-              <h3 className="text-xl font-bold text-white mb-6">⚡ Action Plan</h3>
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 shadow-lg">
+              <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-6">⚡ Action Plan</h3>
               <div className="space-y-3">
                 {result.improvements.map((item, i) => (
-                  <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-black/40 border border-zinc-800/50">
-                    <div className="mt-0.5 h-6 w-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-xs font-bold shrink-0">
+                  <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-black/40 border border-zinc-200 dark:border-zinc-800/50">
+                    <div className="mt-0.5 h-6 w-6 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold shrink-0">
                       {i + 1}
                     </div>
-                    <p className="text-zinc-300 text-sm leading-relaxed">{item}</p>
+                    <p className="text-zinc-700 dark:text-zinc-300 text-sm leading-relaxed">{item}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* UNDER THE HOOD */}
-            <div className="mt-20 pt-10 border-t border-zinc-800">
-               <h2 className="text-3xl font-bold text-center mb-4">Under the Hood</h2>
-               <p className="text-zinc-400 text-center mb-10 max-w-2xl mx-auto">
+            <div className="mt-20 pt-10 border-t border-zinc-200 dark:border-zinc-800">
+               <h2 className="text-3xl font-bold text-center mb-4 text-zinc-900 dark:text-white">Under the Hood</h2>
+               <p className="text-zinc-600 dark:text-zinc-400 text-center mb-10 max-w-2xl mx-auto">
                  PulseSeo isn&apos;t just a crawler. It&apos;s an Agentic Emulator that reads your site exactly like ChatGPT does.
                </p>
                
@@ -231,19 +233,19 @@ function ProgressBar({ label, score, explanation, fix }: { label: string, score:
     <div className="group">
       <div className="flex justify-between mb-2 items-center">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-zinc-300">{label}</span>
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{label}</span>
           <button 
             onClick={() => setIsOpen(!isOpen)}
-            className="text-zinc-500 hover:text-blue-400 transition-colors focus:outline-none"
+            className="text-zinc-400 dark:text-zinc-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors focus:outline-none"
             title="Click for details"
           >
             <HelpCircle className="h-4 w-4" />
           </button>
         </div>
-        <span className="text-sm font-bold text-zinc-100">{score}/100</span>
+        <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{score}/100</span>
       </div>
       
-      <div className="h-2 w-full bg-zinc-800 rounded-full overflow-hidden mb-3">
+      <div className="h-2 w-full bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden mb-3">
         <div 
           className={`h-full rounded-full transition-all duration-1000 ${
             score >= 80 ? 'bg-green-500' : score >= 50 ? 'bg-yellow-500' : 'bg-red-500'
@@ -254,12 +256,12 @@ function ProgressBar({ label, score, explanation, fix }: { label: string, score:
 
       {/* EXPANDABLE INFO BOX */}
       {isOpen && (
-        <div className="bg-zinc-800/50 rounded-lg p-4 mb-4 text-sm border-l-2 border-blue-500 animate-in fade-in slide-in-from-top-2">
-          <p className="text-zinc-300 mb-2">
-            <span className="font-bold text-blue-400">What is this?</span> {explanation}
+        <div className="bg-zinc-100 dark:bg-zinc-800/50 rounded-lg p-4 mb-4 text-sm border-l-2 border-blue-500 animate-in fade-in slide-in-from-top-2">
+          <p className="text-zinc-700 dark:text-zinc-300 mb-2">
+            <span className="font-bold text-blue-600 dark:text-blue-400">What is this?</span> {explanation}
           </p>
-          <p className="text-zinc-300">
-            <span className="font-bold text-green-400">How to fix:</span> {fix}
+          <p className="text-zinc-700 dark:text-zinc-300">
+            <span className="font-bold text-green-600 dark:text-green-400">How to fix:</span> {fix}
           </p>
         </div>
       )}
@@ -269,13 +271,13 @@ function ProgressBar({ label, score, explanation, fix }: { label: string, score:
 
 function FeatureCard({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
   return (
-    <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-start gap-4 hover:border-zinc-700 transition-colors">
-       <div className="p-3 bg-zinc-950 rounded-xl border border-zinc-800">
+    <div className="p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl flex items-start gap-4 hover:border-blue-300 dark:hover:border-zinc-700 transition-colors shadow-sm">
+       <div className="p-3 bg-zinc-50 dark:bg-zinc-950 rounded-xl border border-zinc-200 dark:border-zinc-800">
          <div className="h-6 w-6 [&>*]:h-full [&>*]:w-full">{icon}</div>
        </div>
        <div>
-         <h3 className="font-bold text-lg mb-2 text-white">{title}</h3>
-         <p className="text-zinc-400 text-sm leading-relaxed">{desc}</p>
+         <h3 className="font-bold text-lg mb-2 text-zinc-900 dark:text-white">{title}</h3>
+         <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">{desc}</p>
        </div>
     </div>
   );
