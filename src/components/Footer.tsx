@@ -34,7 +34,7 @@ export function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                 <span>
-                  23 Bellvista Road<br />
+                  Bellvista Road<br />
                   Brighton, MA 02135
                 </span>
               </li>
