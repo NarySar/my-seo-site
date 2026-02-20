@@ -9,6 +9,7 @@ const isPublicRoute = createRouteMatcher([
   "/local-seo-plans",     
   "/technical-seo-plans", 
   "/services/(.*)",  // 👈 NEW: Whitelists all pages inside /services/
+  "/docs",
   "/analyze",        
   "/api/scan",       
   "/api/cron",       
