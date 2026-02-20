@@ -3,17 +3,17 @@ import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { CheckCircle2 } from "lucide-react";
 
-export default function PricingPage() {
+export default function LinkBuildingPage() {
   return (
     <main className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900">
       <Navbar />
       
       <section className="pt-40 pb-16 px-6 text-center max-w-4xl mx-auto">
-        <h1 className="text-5xl md:text-6xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
-          Consistent, professional Hybrid SEO. <br /> Delivered every month.
+        <h1 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
+          Our Link Building plans
         </h1>
         <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          Our comprehensive plans optimize your visibility across traditional search engines and AI platforms like ChatGPT, Gemini, and Perplexity. No contracts, no lock-in. Stay because the work speaks for itself.
+          Transform your website&apos;s authority with our premium contextual link building services. We secure high-quality backlinks from authoritative websites in your industry, strategically placed within relevant, comprehensive content to boost your search rankings and drive qualified traffic to your business.
         </p>
       </section>
 
@@ -21,78 +21,54 @@ export default function PricingPage() {
         <div className="grid md:grid-cols-3 gap-8">
           
           <PricingCard 
-            title="Momentum"
-            description="Everything you need to compete in search."
+            title="Essential"
+            description="Build your foundation with quality links"
             price="Under development"
+            listTitle="Deliverables"
             features={[
-              "Website Audit",
-              "Keyword Research",
-              "Competitor Research",
-              "Complimentary Setup",
-              "Custom Strategy & Roadmap",
-              "Live Dashboard",
-              "Landing Pages Optimisation",
-              "Technical SEO Maintenance",
-              "GBP Management & Monthly Posts",
-              "Backlinks & Brand Mentions",
-              "Brand & Entity Building",
-              "Structured Data Optimization",
-              "Content Optimization",
-              "AI Search Optimization",
-              "Blog Posts",
-              "Google + AI visibility Tracking",
-              "Ticket & Email Support",
+              "3 Contextual Backlinks",
+              "Minimum Ahrefs DR 30+",
+              "Minimum 1000-word content",
+              "Strategic anchor text distribution",
+              "Industry-relevant content placement",
+              "Comprehensive reporting",
+              "Backlink profile audit",
+              "Ticket Support",
             ]}
           />
 
           <PricingCard 
-            title="Scale"
-            description="Built for businesses ready to accelerate."
+            title="Advanced"
+            description="Accelerate growth with strategic link building"
             price="Under development"
+            listTitle="Deliverables"
             isPopular
             features={[
-              "Website Audit",
-              "Keyword Research",
-              "Competitor Research",
-              "Complimentary Setup",
-              "Custom Strategy & Roadmap",
-              "Live Dashboard",
-              "Landing Pages Optimisation",
-              "Technical SEO Maintenance",
-              "GBP Management & Bi-Weekly Posts",
-              "Backlinks & Brand Mentions",
-              "Brand & Entity Building",
-              "Structured Data Optimization",
-              "Content Optimization",
-              "AI Search Optimization",
-              "Blog Posts",
-              "Google + AI visibility Tracking",
-              "Ticket & Email Support",
+              "5 Contextual Backlinks",
+              "Minimum Ahrefs DR 30+",
+              "Minimum 1000-word content",
+              "Strategic anchor text distribution",
+              "Industry-relevant content placement",
+              "Comprehensive reporting",
+              "Backlink profile audit",
+              "Ticket Support",
             ]}
           />
 
           <PricingCard 
-            title="Elite"
-            description="Our highest output plan."
+            title="Ultimate"
+            description="Dominate your market with maximum power"
             price="Under development"
+            listTitle="Deliverables"
             features={[
-              "Website Audit",
-              "Keyword Research",
-              "Competitor Research",
-              "Complimentary Setup",
-              "Custom Strategy & Roadmap",
-              "Live Dashboard",
-              "Landing Pages Optimisation",
-              "Technical SEO Maintenance",
-              "GBP Management & Weekly Posts",
-              "Backlinks & Brand Mentions",
-              "Brand & Entity Building",
-              "Structured Data Optimization",
-              "Content Optimization",
-              "AI Search Optimization",
-              "Blog Posts",
-              "Google + AI visibility Tracking",
-              "Ticket & Email Support",
+              "10 Contextual Backlinks",
+              "Minimum Ahrefs DR 30+",
+              "Minimum 1000-word content",
+              "Strategic anchor text distribution",
+              "Industry-relevant content placement",
+              "Comprehensive reporting",
+              "Backlink profile audit",
+              "Ticket Support",
             ]}
           />
         </div>
@@ -110,9 +86,10 @@ interface PricingCardProps {
   price: string;
   features: string[];
   isPopular?: boolean;
+  listTitle?: string;
 }
 
-function PricingCard({ title, description, price, features, isPopular }: PricingCardProps) {
+function PricingCard({ title, description, price, features, isPopular, listTitle }: PricingCardProps) {
   return (
     <div className={`flex flex-col rounded-3xl overflow-hidden border ${isPopular ? 'border-blue-500 shadow-2xl shadow-blue-900/20 relative' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 shadow-lg'}`}>
       {isPopular && (
@@ -129,7 +106,7 @@ function PricingCard({ title, description, price, features, isPopular }: Pricing
         </button>
       </div>
       <div className={`p-8 flex-1 ${isPopular ? 'bg-white dark:bg-zinc-900/80' : ''}`}>
-        <p className="font-bold text-zinc-900 dark:text-white mb-6">What&apos;s included</p>
+        <p className="font-bold text-zinc-900 dark:text-white mb-6">{listTitle || "What's included"}</p>
         <ul className="space-y-4">
           {features.map((feature, i) => (
             <li key={i} className="flex items-start gap-3 text-sm text-zinc-700 dark:text-zinc-300">

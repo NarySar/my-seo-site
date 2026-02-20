@@ -3,96 +3,77 @@ import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { CheckCircle2 } from "lucide-react";
 
-export default function PricingPage() {
+export default function LocalSEOPage() {
   return (
     <main className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900">
       <Navbar />
       
+      {/* HEADER SECTION */}
       <section className="pt-40 pb-16 px-6 text-center max-w-4xl mx-auto">
-        <h1 className="text-5xl md:text-6xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
-          Consistent, professional Hybrid SEO. <br /> Delivered every month.
+        <h1 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
+          Our Local SEO plans
         </h1>
         <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          Our comprehensive plans optimize your visibility across traditional search engines and AI platforms like ChatGPT, Gemini, and Perplexity. No contracts, no lock-in. Stay because the work speaks for itself.
+          Choose the perfect <strong>Local SEO</strong> plan for your business needs and budget with our comprehensive range of service packages.
         </p>
       </section>
 
+      {/* PRICING CARDS SECTION */}
       <section className="max-w-7xl mx-auto px-6 pb-32">
         <div className="grid md:grid-cols-3 gap-8">
           
+          {/* Starter Plan */}
           <PricingCard 
-            title="Momentum"
-            description="Everything you need to compete in search."
+            title="Starter"
+            description="Perfect for new businesses"
             price="Under development"
+            listTitle="Deliverables"
             features={[
-              "Website Audit",
+              "Google Business Profile optimization",
+              "GBP Audit",
+              "Business Citations",
+              "Monthly GBP posts",
               "Keyword Research",
               "Competitor Research",
-              "Complimentary Setup",
-              "Custom Strategy & Roadmap",
-              "Live Dashboard",
-              "Landing Pages Optimisation",
-              "Technical SEO Maintenance",
-              "GBP Management & Monthly Posts",
-              "Backlinks & Brand Mentions",
-              "Brand & Entity Building",
-              "Structured Data Optimization",
-              "Content Optimization",
-              "AI Search Optimization",
-              "Blog Posts",
-              "Google + AI visibility Tracking",
-              "Ticket & Email Support",
+              "Ticket Support",
             ]}
           />
 
+          {/* Professional Plan */}
           <PricingCard 
-            title="Scale"
-            description="Built for businesses ready to accelerate."
+            title="Professional"
+            description="Comprehensive local SEO"
             price="Under development"
+            listTitle="Deliverables"
             isPopular
             features={[
-              "Website Audit",
+              "Google Business Profile optimization",
+              "GBP Audit",
+              "Business Citations",
+              "Monthly GBP posts",
               "Keyword Research",
               "Competitor Research",
-              "Complimentary Setup",
-              "Custom Strategy & Roadmap",
-              "Live Dashboard",
-              "Landing Pages Optimisation",
-              "Technical SEO Maintenance",
-              "GBP Management & Bi-Weekly Posts",
-              "Backlinks & Brand Mentions",
-              "Brand & Entity Building",
-              "Structured Data Optimization",
-              "Content Optimization",
-              "AI Search Optimization",
-              "Blog Posts",
-              "Google + AI visibility Tracking",
-              "Ticket & Email Support",
+              "Local Schema Markup",
+              "Ticket Support",
             ]}
           />
 
+          {/* Enterprise Plan */}
           <PricingCard 
-            title="Elite"
-            description="Our highest output plan."
+            title="Enterprise"
+            description="Maximum local dominance"
             price="Under development"
+            listTitle="Deliverables"
             features={[
-              "Website Audit",
+              "Google Business Profile optimization",
+              "GBP Audit",
+              "Business Citations",
+              "Weekly GBP posts",
               "Keyword Research",
               "Competitor Research",
-              "Complimentary Setup",
-              "Custom Strategy & Roadmap",
-              "Live Dashboard",
-              "Landing Pages Optimisation",
-              "Technical SEO Maintenance",
-              "GBP Management & Weekly Posts",
-              "Backlinks & Brand Mentions",
-              "Brand & Entity Building",
-              "Structured Data Optimization",
-              "Content Optimization",
-              "AI Search Optimization",
-              "Blog Posts",
-              "Google + AI visibility Tracking",
-              "Ticket & Email Support",
+              "Local Schema Markup",
+              "Review Monitoring & Response",
+              "Ticket Support",
             ]}
           />
         </div>
@@ -110,9 +91,10 @@ interface PricingCardProps {
   price: string;
   features: string[];
   isPopular?: boolean;
+  listTitle?: string;
 }
 
-function PricingCard({ title, description, price, features, isPopular }: PricingCardProps) {
+function PricingCard({ title, description, price, features, isPopular, listTitle }: PricingCardProps) {
   return (
     <div className={`flex flex-col rounded-3xl overflow-hidden border ${isPopular ? 'border-blue-500 shadow-2xl shadow-blue-900/20 relative' : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 shadow-lg'}`}>
       {isPopular && (
@@ -129,7 +111,7 @@ function PricingCard({ title, description, price, features, isPopular }: Pricing
         </button>
       </div>
       <div className={`p-8 flex-1 ${isPopular ? 'bg-white dark:bg-zinc-900/80' : ''}`}>
-        <p className="font-bold text-zinc-900 dark:text-white mb-6">What&apos;s included</p>
+        <p className="font-bold text-zinc-900 dark:text-white mb-6">{listTitle || "What's included"}</p>
         <ul className="space-y-4">
           {features.map((feature, i) => (
             <li key={i} className="flex items-start gap-3 text-sm text-zinc-700 dark:text-zinc-300">
