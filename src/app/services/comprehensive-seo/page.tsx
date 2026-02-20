@@ -5,7 +5,7 @@ import { ArrowRight, Search, Bot, Zap, LineChart, CheckCircle2, Globe, Cpu } fro
 
 export default function ComprehensiveSEOPage() {
   return (
-    <main className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900">
+    <main className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900 overflow-x-hidden w-full relative">
       <Navbar />
       
       {/* HEADER SECTION */}

@@ -5,7 +5,7 @@ import { CheckCircle2 } from "lucide-react";
 
 export default function LinkBuildingPage() {
   return (
-    <main className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900">
+    <main className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900 overflow-x-hidden w-full relative">
       <Navbar />
       
       <section className="pt-40 pb-16 px-6 text-center max-w-4xl mx-auto">
