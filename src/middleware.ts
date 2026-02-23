@@ -4,18 +4,15 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 const isPublicRoute = createRouteMatcher([
   "/",               // Landing Page
   "/features",       // Features Page
-  "/pricing",        // Pricing Page
-  "/link-building-plans", 
-  "/local-seo-plans",     
-  "/technical-seo-plans", 
-  "/services/(.*)",  // 👈 NEW: Whitelists all pages inside /services/
-  "/docs",
-  "/analyze",        
-  "/api/scan",       
-  "/api/cron",       
-  "/api/worker",     
-  "/sign-in(.*)",    
-  "/sign-up(.*)"     
+  "/pricing",        // Base Pricing Page (optional fallback)
+  "/pricing/(.*)",   // 👈 NEW: Whitelists all new pricing tier pages
+  "/services/(.*)",  // 👈 NEW: Whitelists all new service pages
+  "/analyze",        // The Scanner Frontend
+  "/api/scan",       // The Scanner API
+  "/api/cron",       // The Scheduler
+  "/api/worker",     // The Background Worker
+  "/sign-in(.*)",    // Clerk Sign In
+  "/sign-up(.*)"     // Clerk Sign Up
 ]);
 
 // 2. Protect all other routes

@@ -1,217 +1,253 @@
 import Link from "next/link";
-import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { ArrowRight, Search, Bot, Zap, BarChart3, Globe, Cpu, CheckCircle2, Star, Trophy, Users, Layers, Share2, Sparkles } from "lucide-react";
+import { 
+  ArrowRight, Sparkles, Search, Bot, Zap, 
+  Activity, Radar, Network, BrainCircuit, ShieldCheck, Database
+} from "lucide-react";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900 overflow-x-hidden relative">
+    <main className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900 overflow-x-hidden w-full relative">
       <Navbar />
       
-      {/* SECTIONS */}
-      <Hero />
-      <HybridSection />
-      <ScoreSection />
-      <AnalysisGrid />
-      <CTA />
-      
-      {/* 👇 NEW: The Floating "Breakline" Style Button */}
-      <FloatingAuditBtn />
+      {/* 1. HERO SECTION */}
+      <section className="relative pt-40 pb-24 overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-blue-500/10 dark:bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
 
-      <Footer />
-    </main>
-  );
-}
-
-// --- COMPONENTS ---
-
-function Hero() {
-  return (
-    <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100 via-transparent to-transparent dark:from-blue-950/50 dark:via-transparent dark:to-transparent opacity-70"></div>
-      
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="text-center max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 text-xs font-bold uppercase tracking-wider mb-8 animate-in fade-in slide-in-from-bottom-3 duration-500">
-            <Zap className="w-4 h-4" /> The New Standard for AI Visibility
+        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 text-sm font-bold uppercase tracking-wider mb-8 shadow-sm">
+            <Sparkles className="w-4 h-4" /> The Hybrid Search Agency
           </div>
-          
-          <h1 className="text-5xl md:text-7xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
-            Is your business <br className="hidden md:block" />
-            <span className="text-blue-600">invisible to AI?</span>
+
+          <h1 className="text-5xl md:text-7xl font-extrabold text-zinc-900 dark:text-white tracking-tight mb-8">
+            Dominate Google. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+              Be Cited by AI.
+            </span>
           </h1>
-          
-          <p className="text-xl text-zinc-600 dark:text-zinc-400 mb-10 max-w-2xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-5 duration-700 delay-200">
-            Traditional SEO helps Google find you. <strong>Agentic SEO</strong> ensures ChatGPT, Gemini, and Perplexity can recommend you.
+
+          <p className="text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto leading-relaxed mb-12">
+            Stop choosing between traditional traffic and the future of search. We build unbreakable entity authority to rank your business on Google, ChatGPT, Gemini, and Perplexity.
           </p>
-          
-          {/* 👇 UPDATED: Changed back to a prominent blue 'Audit' button pointing to /analyze */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
-            <Link href="/analyze" className="flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg transition-all hover:scale-105 shadow-lg shadow-blue-600/20">
-              Audit Your Website Free <ArrowRight className="w-5 h-5" />
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/services/hybrid" className="flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg transition-all hover:scale-105 shadow-xl shadow-blue-600/20">
+              Explore Services <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link href="/analyze" className="flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white font-bold text-lg transition-all hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:scale-105 shadow-lg">
+              <Search className="w-5 h-5" /> Free AI Visibility Audit
+            </Link>
+          </div>
+
+          <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto text-left">
+            <Link href="/services/seo" className="group p-6 rounded-3xl bg-white/60 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 hover:bg-white dark:hover:bg-zinc-900 transition-colors backdrop-blur-sm shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Search className="w-5 h-5" />
+              </div>
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Traditional SEO</h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">Capture high-intent human searchers on Google, Bing, and local maps.</p>
+            </Link>
+
+            <Link href="/services/geo" className="group p-6 rounded-3xl bg-white/60 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 hover:bg-white dark:hover:bg-zinc-900 transition-colors backdrop-blur-sm shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Bot className="w-5 h-5" />
+              </div>
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">GEO (AI Search)</h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">Optimize for LLM retrieval to be cited by ChatGPT, Perplexity, and Gemini.</p>
+            </Link>
+
+            <Link href="/services/hybrid" className="group p-6 rounded-3xl bg-white/60 dark:bg-zinc-900/40 border border-blue-200/50 dark:border-blue-800/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors backdrop-blur-sm relative overflow-hidden shadow-sm">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-100/40 to-purple-100/40 dark:from-blue-900/20 dark:to-purple-900/20 -z-10"></div>
+              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-md">
+                <Zap className="w-5 h-5" />
+              </div>
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Hybrid Dominance</h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">The ultimate strategy. Unified technical architecture for both humans and AI.</p>
             </Link>
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
 
-// 1. THE HYBRID ADVANTAGE
-function HybridSection() {
-  return (
-    <section id="hybrid" className="py-24 bg-white dark:bg-zinc-900/50 border-y border-zinc-200 dark:border-zinc-800 scroll-mt-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6">
-            The <span className="text-blue-600">Hybrid Advantage</span>
-          </h2>
-          <p className="text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
-            Why choose PulseSeo? Because we don&apos;t just optimize for keywords. We optimize for the entire AI ecosystem.
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className="relative h-[400px] md:h-[500px] w-full rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
-            <Image src="/hybrid-seo.jpg" alt="Comparison of Traditional SEO vs Hybrid Agentic SEO" fill className="object-contain p-4 md:p-8" priority />
+      {/* 2. THE HYBRID ADVANTAGE (#hybrid) */}
+      <section id="hybrid" className="py-24 bg-white dark:bg-black border-t border-zinc-200 dark:border-zinc-800 scroll-mt-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <h2 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">The Paradigm Shift</h2>
+            <h3 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
+              The Hybrid Advantage
+            </h3>
+            <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Traditional SEO focuses on matching keywords to web pages. Generative Engine Optimization (GEO) focuses on establishing trust and entity authority so AI language models use you as their source code. We do both.
+            </p>
           </div>
 
-          <div className="space-y-8">
-            <div className="flex gap-4">
-              <div className="mt-1 flex-shrink-0 w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400"><Users className="w-6 h-6" /></div>
-              <div><h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">Verified Client Results</h3><p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">Dominating local search and AI discovery: We put your business at the top of Google Maps and at the center of AI conversations.</p></div>
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div className="p-8 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+              <h4 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                <Search className="w-6 h-6 text-zinc-400" /> The Old Way
+              </h4>
+              <ul className="space-y-4 text-zinc-600 dark:text-zinc-400">
+                <li className="flex items-start gap-3"><span className="text-red-500 font-bold">✕</span> Relying purely on keyword density.</li>
+                <li className="flex items-start gap-3"><span className="text-red-500 font-bold">✕</span> Writing content only for human readers, ignoring RAG structuring.</li>
+                <li className="flex items-start gap-3"><span className="text-red-500 font-bold">✕</span> Blindly building links without focusing on Knowledge Graph connections.</li>
+              </ul>
             </div>
-            <div className="flex gap-4">
-              <div className="mt-1 flex-shrink-0 w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400"><Trophy className="w-6 h-6" /></div>
-              <div><h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">Future-Proof Case Studies</h3><p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">We don&apos;t guess. We use proven schema structures that act as a &quot;digital passport,&quot; ensuring AI agents trust your data.</p></div>
+            
+            <div className="p-8 rounded-3xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border border-blue-200 dark:border-blue-800 relative overflow-hidden">
+              <h4 className="text-2xl font-bold mb-4 flex items-center gap-3 text-zinc-900 dark:text-white">
+                <Zap className="w-6 h-6 text-blue-600" /> The PulseSEO Way
+              </h4>
+              <ul className="space-y-4 text-zinc-700 dark:text-zinc-300">
+                <li className="flex items-start gap-3"><span className="text-blue-500 font-bold">✓</span> Unified keyword and LLM prompt research.</li>
+                <li className="flex items-start gap-3"><span className="text-blue-500 font-bold">✓</span> Answer-first formatting optimized for AI retrieval systems.</li>
+                <li className="flex items-start gap-3"><span className="text-blue-500 font-bold">✓</span> Building unbreakable entity authority via advanced Schema.</li>
+              </ul>
             </div>
-            <div className="flex gap-4">
-              <div className="mt-1 flex-shrink-0 w-12 h-12 rounded-2xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400"><Star className="w-6 h-6" /></div>
-              <div><h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">Transparent About Us</h3><p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">No black-box magic. We provide clear dashboards showing exactly which agents (Gemini, Claude, OpenAI) are citing your business.</p></div>
-            </div>
-            {/* Kept Pricing link as it is not an Analyze link */}
-            <div className="pt-4"><Link href="/pricing" className="text-blue-600 font-bold hover:text-blue-500 flex items-center gap-2">See our pricing plans <ArrowRight className="w-5 h-5" /></Link></div>
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
 
-// 2. SCORE SECTION
-function ScoreSection() {
-  return (
-    <section id="score" className="py-24 bg-zinc-900 text-white scroll-mt-24 relative overflow-hidden">
-       <div className="absolute inset-0 bg-blue-600/10 dark:bg-blue-900/20 pointer-events-none" />
-       
-       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center relative z-10">
-         <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-xs font-bold uppercase tracking-wider mb-6">The PulseSeo Standard</div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Don&apos;t choose between <br/> <span className="text-blue-400">Google & AI.</span></h2>
-            <p className="text-xl text-zinc-400 mb-8 leading-relaxed">Most agencies only optimize for traditional search. We build a <strong>Hybrid Digital Twin</strong> of your business—one layer for human searchers, and a hidden data layer for AI agents.</p>
-            <div className="space-y-4">
-              <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-start gap-4">
-                <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400"><Search className="w-5 h-5"/></div>
-                <div><h4 className="font-bold text-white">Traditional SEO</h4><p className="text-sm text-zinc-400">Targeting Keywords, Backlinks, and Google Rankings.</p></div>
-              </div>
-              <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-start gap-4">
-                <div className="p-2 bg-purple-500/20 rounded-lg text-purple-400"><Bot className="w-5 h-5"/></div>
-                <div><h4 className="font-bold text-white">Agentic SEO (GEO)</h4><p className="text-sm text-zinc-400">Structuring Data, Vector Context, and Token Density.</p></div>
+      {/* 3. AGENTIC SCORE (#score) */}
+      <section id="score" className="py-24 bg-zinc-50 dark:bg-zinc-900/30 border-t border-zinc-200 dark:border-zinc-800 scroll-mt-24">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+          <div className="flex-1">
+            <h2 className="text-sm font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-4">Proprietary Metric</h2>
+            <h3 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
+              The Agentic Score
+            </h3>
+            <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
+              You can&apos;t improve what you don&apos;t measure. The PulseSEO Agentic Score is our proprietary 0-100 metric that quantifies exactly how &quot;visible&quot; and &quot;trusted&quot; your brand is to AI models like ChatGPT and Gemini.
+            </p>
+            <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-8">
+              We aggregate data across brand sentiment, knowledge graph presence, and RAG readiness to give you a single source of truth for your AI marketing performance.
+            </p>
+            <Link href="/analyze" className="inline-flex items-center gap-2 font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
+              Check your score for free <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="flex-1 w-full max-w-md relative">
+            {/* Abstract Score Visualization */}
+            <div className="aspect-square rounded-full border-[16px] border-zinc-100 dark:border-zinc-800 flex items-center justify-center relative shadow-2xl bg-white dark:bg-black">
+              <div className="absolute inset-0 rounded-full border-[16px] border-blue-500 border-r-transparent border-t-transparent -rotate-45"></div>
+              <div className="text-center">
+                <div className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">84</div>
+                <div className="text-sm font-bold text-zinc-400 uppercase tracking-widest mt-2">Highly Visible</div>
               </div>
             </div>
-         </div>
-
-         {/* Score Card */}
-         <div className="bg-black rounded-3xl p-8 border border-zinc-800 shadow-2xl">
-           <div className="flex justify-between items-start mb-8">
-             <div><div className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">Total Visibility Score</div><div className="text-6xl font-black text-white">92<span className="text-2xl text-zinc-600 font-medium">/100</span></div></div>
-             <div className="h-12 w-12 rounded-full border-4 border-green-500 flex items-center justify-center text-green-500 font-bold text-xl">A+</div>
-           </div>
-           <div className="space-y-4">
-             <div className="flex items-center justify-between p-4 rounded-xl bg-zinc-900 border border-zinc-800"><div className="flex items-center gap-3"><Search className="text-blue-500 w-4 h-4"/><span className="font-medium">Google Indexing</span></div><span className="text-green-500 text-sm font-bold">Active</span></div>
-             <div className="flex items-center justify-between p-4 rounded-xl bg-zinc-900 border border-zinc-800"><div className="flex items-center gap-3"><Bot className="text-purple-500 w-4 h-4"/><span className="font-medium">ChatGPT Retrieval</span></div><span className="text-green-500 text-sm font-bold">Optimized</span></div>
-             <div className="flex items-center justify-between p-4 rounded-xl bg-zinc-900 border border-zinc-800"><div className="flex items-center gap-3"><Zap className="text-yellow-500 w-4 h-4"/><span className="font-medium">Schema Validity</span></div><span className="text-green-500 text-sm font-bold">Perfect</span></div>
-           </div>
-           
-           {/* 👇 REMOVED: "Check My Hybrid Score" button is GONE. Clean card. */}
-           <div className="mt-8 pt-6 border-t border-zinc-800 text-center">
-             <p className="text-zinc-500 text-xs">Your competitors are missing half the picture.</p>
-           </div>
-         </div>
-       </div>
-    </section>
-  );
-}
-
-// 3. ANALYSIS GRID
-function AnalysisGrid() {
-  const features = [
-    { icon: <Cpu className="w-6 h-6" />, title: "Multimodal Vector Scan", desc: "We ensure your images and assets are optimized for AI vision models like GPT-4V and Gemini." },
-    { icon: <Layers className="w-6 h-6" />, title: "Citation Extraction Readiness", desc: "Is your content structured in 'Answer Blocks' that LLMs can easily extract and cite?" },
-    { icon: <Globe className="w-6 h-6" />, title: "Knowledge Graph Schema", desc: "Beyond basic JSON-LD. We map your brand as a distinct Entity in the global Knowledge Graph." },
-    { icon: <Zap className="w-6 h-6" />, title: "Agent Access Control", desc: "Verify you aren't accidentally blocking critical crawlers like GPTBot, CCBot, or Google-Extended." },
-    { icon: <Star className="w-6 h-6" />, title: "Entity Authority Mapping", desc: "Does your semantic HTML clearly define your niche authority to reduce AI hallucinations?" },
-    { icon: <Share2 className="w-6 h-6" />, title: "Semantic Connectivity", desc: "Analyze internal linking to ensure AI agents can traverse your full topic cluster logically." },
-  ];
-
-  return (
-    <section id="analysis" className="py-24 bg-zinc-50 dark:bg-black scroll-mt-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6">What we analyze</h2>
-          <p className="text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">Our deep-scan technology checks the 6 critical data points that Large Language Models use to understand and trust your business.</p>
+          </div>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((f, i) => (
-            <div key={i} className="p-8 bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 hover:shadow-xl transition-shadow">
-              <div className="w-12 h-12 mb-6 rounded-2xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center">{f.icon}</div>
-              <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-3">{f.title}</h3>
-              <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm">{f.desc}</p>
+      </section>
+
+      {/* 4. WHAT WE ANALYZE (#analysis) */}
+      <section id="analysis" className="py-24 bg-white dark:bg-black border-t border-zinc-200 dark:border-zinc-800 scroll-mt-24">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <h2 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">Data-Driven Approach</h2>
+            <h3 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
+              The 6 Critical LLM Data Points
+            </h3>
+            <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              When we audit your site and deploy our monthly GEO strategies, we are systematically optimizing across the six pillars that AI algorithms care about most.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+              <BrainCircuit className="w-8 h-8 text-blue-500 mb-4" />
+              <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">Entity Recognition</h4>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm">Does the AI understand *what* your business is and explicitly link it to your target industry?</p>
             </div>
-          ))}
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+              <Activity className="w-8 h-8 text-purple-500 mb-4" />
+              <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">Sentiment Bias</h4>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm">Is the overarching conversation around your brand positive, neutral, or negative across the web?</p>
+            </div>
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+              <Database className="w-8 h-8 text-green-500 mb-4" />
+              <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">RAG Readiness</h4>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm">Is your on-page content structured in an &quot;answer-first&quot; format that AI retrieval models can easily parse?</p>
+            </div>
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+              <ShieldCheck className="w-8 h-8 text-orange-500 mb-4" />
+              <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">Citation Authority</h4>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm">Are high-trust, authoritative websites (like Wikipedia, News outlets, and Tier-1 directories) talking about you?</p>
+            </div>
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+              <Network className="w-8 h-8 text-red-500 mb-4" />
+              <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">Knowledge Graph Density</h4>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm">How deep and interconnected is your brand&apos;s data footprint within Google&apos;s core Knowledge Graph?</p>
+            </div>
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+              <Radar className="w-8 h-8 text-teal-500 mb-4" />
+              <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">Competitor Overlap</h4>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm">When users ask AI for options in your niche, are you recommended alongside, or instead of, your top competitors?</p>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
 
-function CTA() {
-  return (
-    <section className="py-24 relative overflow-hidden">
-      <div className="absolute inset-0 bg-blue-600 dark:bg-blue-900">
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-900/50 to-transparent"></div>
-      </div>
-      
-      <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 tracking-tight">
-          Stop being a link. <br/> Start being the answer.
-        </h2>
-        <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
-          The shift to AI search is happening now. Ensure your local business is the one being recommended.
-        </p>
-        {/* 👇 REPLACED: Changed from "Audit Free" to "View Pricing" to avoid redundancy */}
-        <Link href="/pricing" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white text-blue-600 font-bold text-lg transition-all hover:bg-blue-50 shadow-xl">
-          View Plans & Pricing <ArrowRight className="w-5 h-5" />
-        </Link>
-      </div>
-    </section>
-  );
-}
+      {/* 5. HOW IT WORKS / PROCESS SECTION */}
+      <section className="py-24 bg-zinc-50 dark:bg-zinc-900/30 border-t border-zinc-200 dark:border-zinc-800">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-4">How It Works</h2>
+            <h3 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
+              Our Hybrid Process
+            </h3>
+            <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Our streamlined framework ensures smooth collaboration from initial plan selection through ongoing monthly deliverables while continuously tracking your cross-platform campaign progress.
+            </p>
+          </div>
 
-// 👇 THE NEW PERSISTENT FLOATING BUTTON COMPONENT
-function FloatingAuditBtn() {
-  return (
-    <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-1000 fill-mode-forwards">
-      <Link 
-        href="/analyze" 
-        className="flex items-center gap-3 bg-zinc-900 dark:bg-white text-white dark:text-black px-6 py-4 rounded-full font-bold shadow-2xl hover:scale-105 hover:-translate-y-1 transition-all border border-zinc-700 dark:border-zinc-200 group"
-      >
-        <div className="relative">
-            <Sparkles className="w-5 h-5 text-blue-400 dark:text-blue-600 animate-pulse" />
+          <div className="relative flex flex-col lg:flex-row items-stretch gap-6 lg:gap-8">
+            <div className="flex-1 bg-white dark:bg-black rounded-3xl p-8 border border-zinc-200 dark:border-zinc-800 relative shadow-sm hover:shadow-md transition-shadow">
+              <div className="absolute top-8 right-8 text-xs font-bold text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30 px-3 py-1 rounded-full tracking-wider">
+                STEP 1
+              </div>
+              <h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-4 pr-20">Select a plan</h4>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Choose from our Momentum, Scale, or Elite plans, each tailored to different business sizes and growth goals. All plans feature powerful SEO and GEO deliverables, scaling based on your needs. Upgrade, downgrade, pause, or cancel at any time with no lock-in contracts.
+              </p>
+            </div>
+
+            <div className="hidden lg:flex items-center justify-center -mx-10 z-10">
+              <div className="w-12 h-12 bg-white dark:bg-black rounded-full border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-400 shadow-sm">
+                <ArrowRight className="w-5 h-5" />
+              </div>
+            </div>
+
+            <div className="flex-1 bg-white dark:bg-black rounded-3xl p-8 border border-zinc-200 dark:border-zinc-800 relative shadow-sm hover:shadow-md transition-shadow">
+              <div className="absolute top-8 right-8 text-xs font-bold text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30 px-3 py-1 rounded-full tracking-wider">
+                STEP 2
+              </div>
+              <h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-4 pr-20">Onboarding</h4>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Our team conducts a comprehensive discovery session to map your business objectives, target audience, and AI visibility baseline. We configure your Analytics, build your PulseSEO live dashboard, and craft your initial unified search strategy based on a deep technical audit.
+              </p>
+            </div>
+
+            <div className="hidden lg:flex items-center justify-center -mx-10 z-10">
+              <div className="w-12 h-12 bg-white dark:bg-black rounded-full border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-400 shadow-sm">
+                <ArrowRight className="w-5 h-5" />
+              </div>
+            </div>
+
+            <div className="flex-1 bg-white dark:bg-black rounded-3xl p-8 border border-zinc-200 dark:border-zinc-800 relative shadow-sm hover:shadow-md transition-shadow">
+              <div className="absolute top-8 right-8 text-xs font-bold text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30 px-3 py-1 rounded-full tracking-wider">
+                STEP 3
+              </div>
+              <h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-4 pr-20">Monthly deliverables</h4>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Each month we execute RAG-optimized content updates, acquire contextual backlinks, manage entity associations, and fine-tune your advanced Schema. You receive ongoing tracking of both traditional Google rankings and AI citations within your custom portal.
+              </p>
+            </div>
+          </div>
         </div>
-        <span>Check Your AI Visibility</span>
-      </Link>
-    </div>
+      </section>
+
+      {/* 6. FOOTER */}
+      <Footer />
+    </main>
   );
 }
