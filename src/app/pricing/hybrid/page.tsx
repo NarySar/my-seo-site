@@ -23,7 +23,7 @@ export default function HybridPricingPage() {
 
       {/* PRICING CARDS SECTION */}
       <section className="max-w-7xl mx-auto px-6 pb-32">
-        <div className="flex overflow-x-auto md:grid md:grid-cols-3 items-stretch gap-4 md:gap-2 pt-4 pb-10 snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden -mx-6 px-6 md:mx-0 md:px-0">
+        <div className="flex overflow-x-auto md:grid md:grid-cols-3 items-stretch gap-4 md:gap-2 pt-4 pb-10 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden -mx-6 px-6 md:mx-0 md:px-0">
           
           {/* Card 1 Wrapper */}
           <div className="w-[85vw] md:w-auto shrink-0 snap-center relative z-0">

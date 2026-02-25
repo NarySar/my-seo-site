@@ -23,8 +23,8 @@ export default function SEOPricingPage() {
 
       {/* PRICING CARDS SECTION */}
       <section className="max-w-7xl mx-auto px-6 pb-32">
-        {/* 👇 CHANGED: Added 'pt-4' right before 'pb-10' to raise the invisible ceiling! */}
-        <div className="flex overflow-x-auto md:grid md:grid-cols-3 items-stretch gap-4 md:gap-2 pt-4 pb-10 snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden -mx-6 px-6 md:mx-0 md:px-0">
+        {/* Container has scroll-smooth removed for native, fast mobile swiping */}
+        <div className="flex overflow-x-auto md:grid md:grid-cols-3 items-stretch gap-4 md:gap-2 pt-4 pb-10 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden -mx-6 px-6 md:mx-0 md:px-0">
           
           {/* Card 1 Wrapper */}
           <div className="w-[85vw] md:w-auto shrink-0 snap-center relative z-0">
@@ -104,7 +104,8 @@ interface PricingCardProps {
 
 function PricingCard({ title, description, price, features, isPopular }: PricingCardProps) {
   return (
-    <div className={`flex flex-col h-full rounded-3xl overflow-hidden border transition-all duration-150 ease-out hover:-translate-y-2 active:scale-[0.98] cursor-pointer ${
+    // 👇 NEW: Added transform-gpu, antialiased, will-change-transform, and [backface-visibility:hidden] to fix the scroll blur
+    <div className={`flex flex-col h-full rounded-3xl overflow-hidden border transition-all duration-150 ease-out hover:-translate-y-2 active:scale-[0.98] cursor-pointer transform-gpu antialiased will-change-transform [backface-visibility:hidden] ${
       isPopular 
         ? 'border-blue-500 shadow-xl hover:shadow-2xl hover:shadow-blue-900/30' 
         : 'border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-lg hover:shadow-2xl hover:border-blue-400 dark:hover:border-blue-600'
@@ -137,10 +138,11 @@ function PricingCard({ title, description, price, features, isPopular }: Pricing
           </span>
         </div>
 
-        <button className={`w-full py-4 rounded-xl font-bold transition-all duration-150 active:scale-95 relative z-10 ${
+        {/* 👇 NEW: Removed backdrop-blur-sm and changed background to solid colors (bg-zinc-100/bg-zinc-800) to stop rendering lag */}
+        <button className={`w-full py-4 rounded-xl font-bold transition-all duration-150 active:scale-95 relative z-10 transform-gpu ${
           isPopular 
             ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20' 
-            : 'bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-700 shadow-sm'
+            : 'bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white hover:bg-zinc-200 dark:hover:bg-zinc-700 shadow-sm'
         }`}>
           Get Started
         </button>

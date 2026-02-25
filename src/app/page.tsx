@@ -69,17 +69,32 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. THE HYBRID ADVANTAGE (#hybrid) */}
+      {/* 2. THE HYBRID ADVANTAGE (#hybrid) - Featuring: marketing-agency.jpg */}
       <section id="hybrid" className="py-24 bg-white dark:bg-black border-t border-zinc-200 dark:border-zinc-800 scroll-mt-24">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <h2 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">The Paradigm Shift</h2>
-            <h3 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
-              The Hybrid Advantage
-            </h3>
-            <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Traditional SEO focuses on matching keywords to web pages. Generative Engine Optimization (GEO) focuses on establishing trust and entity authority so AI language models use you as their source code. We do both.
-            </p>
+          <div className="flex flex-col lg:flex-row items-center gap-16 mb-16">
+            <div className="flex-1">
+              <h2 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">The Paradigm Shift</h2>
+              <h3 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
+                The Hybrid Advantage
+              </h3>
+              <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
+                Traditional SEO focuses on matching keywords to web pages. Generative Engine Optimization (GEO) focuses on establishing trust and entity authority so AI language models use you as their source code.
+              </p>
+              <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                We bridge the gap. Our specialized team engineers digital campaigns that dominate Google SERPs while simultaneously securing your brand's citations in tomorrow's AI ecosystems.
+              </p>
+            </div>
+            {/* 👇 IMAGE 1: Team Meeting / Agency Image */}
+            <div className="flex-1 w-full">
+              <div className="rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800">
+                <img 
+                  src="/marketing-agency.png" 
+                  alt="PulseSEO Agency Team" 
+                  className="w-full h-auto object-cover hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
@@ -108,39 +123,54 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. AGENTIC SCORE (#score) */}
-      <section id="score" className="py-24 bg-zinc-50 dark:bg-zinc-900/30 border-t border-zinc-200 dark:border-zinc-800 scroll-mt-24">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
-          <div className="flex-1">
+      {/* 3. AGENTIC SCORE (#score) - Featuring: data-dashboard.jpg */}
+      <section id="score" className="py-24 bg-zinc-50 dark:bg-zinc-900/30 border-y border-zinc-200 dark:border-zinc-800 scroll-mt-24 overflow-visible">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+          
+          <div className="flex-1 lg:order-2">
             <h2 className="text-sm font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-4">Proprietary Metric</h2>
             <h3 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
               The Agentic Score
             </h3>
             <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-              You can&apos;t improve what you don&apos;t measure. The PulseSEO Agentic Score is our proprietary 0-100 metric that quantifies exactly how &quot;visible&quot; and &quot;trusted&quot; your brand is to AI models like ChatGPT and Gemini.
+              You can't improve what you don't measure. The PulseSEO Agentic Score is our proprietary 0-100 metric that quantifies exactly how "visible" and "trusted" your brand is to AI models like ChatGPT and Gemini.
             </p>
             <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-8">
               We aggregate data across brand sentiment, knowledge graph presence, and RAG readiness to give you a single source of truth for your AI marketing performance.
             </p>
-            <Link href="/analyze" className="inline-flex items-center gap-2 font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
+            <Link href="/analyze" className="inline-flex items-center gap-2 font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
               Check your score for free <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="flex-1 w-full max-w-md relative">
-            {/* Abstract Score Visualization */}
-            <div className="aspect-square rounded-full border-[16px] border-zinc-100 dark:border-zinc-800 flex items-center justify-center relative shadow-2xl bg-white dark:bg-black">
-              <div className="absolute inset-0 rounded-full border-[16px] border-blue-500 border-r-transparent border-t-transparent -rotate-45"></div>
-              <div className="text-center">
-                <div className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">84</div>
-                <div className="text-sm font-bold text-zinc-400 uppercase tracking-widest mt-2">Highly Visible</div>
+          
+          {/* 👇 IMAGE 2: Data Dashboard laptop image */}
+          <div className="flex-1 w-full relative mt-10 lg:mt-0 lg:order-1">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 w-full max-w-lg mx-auto lg:mr-auto">
+              <img 
+                src="/data-dashboard.png" 
+                alt="AI Data Dashboard" 
+                className="w-full h-auto object-cover"
+              />
+            </div>
+
+            {/* Floating Score UI (Kept this as it overlaps the image perfectly) */}
+            <div className="absolute -bottom-10 -right-4 md:-right-8 bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-2xl border border-zinc-200 dark:border-zinc-800 flex items-center gap-6 animate-[bounce_6s_infinite] max-w-[280px]">
+              <div className="relative w-20 h-20 shrink-0 rounded-full border-8 border-zinc-50 dark:border-zinc-800 flex items-center justify-center bg-white dark:bg-zinc-900">
+                <div className="absolute inset-0 rounded-full border-8 border-purple-500 border-r-transparent border-t-transparent -rotate-45"></div>
+                <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">84</span>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Status</p>
+                <p className="text-base font-bold text-zinc-900 dark:text-white leading-tight">Highly Visible to AI</p>
               </div>
             </div>
           </div>
+
         </div>
       </section>
 
       {/* 4. WHAT WE ANALYZE (#analysis) */}
-      <section id="analysis" className="py-24 bg-white dark:bg-black border-t border-zinc-200 dark:border-zinc-800 scroll-mt-24">
+      <section id="analysis" className="py-24 bg-white dark:bg-black border-b border-zinc-200 dark:border-zinc-800 scroll-mt-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16 max-w-3xl mx-auto">
             <h2 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">Data-Driven Approach</h2>
@@ -153,51 +183,64 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
               <BrainCircuit className="w-8 h-8 text-blue-500 mb-4" />
               <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">Entity Recognition</h4>
               <p className="text-zinc-600 dark:text-zinc-400 text-sm">Does the AI understand *what* your business is and explicitly link it to your target industry?</p>
             </div>
-            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
               <Activity className="w-8 h-8 text-purple-500 mb-4" />
               <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">Sentiment Bias</h4>
               <p className="text-zinc-600 dark:text-zinc-400 text-sm">Is the overarching conversation around your brand positive, neutral, or negative across the web?</p>
             </div>
-            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
               <Database className="w-8 h-8 text-green-500 mb-4" />
               <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">RAG Readiness</h4>
-              <p className="text-zinc-600 dark:text-zinc-400 text-sm">Is your on-page content structured in an &quot;answer-first&quot; format that AI retrieval models can easily parse?</p>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm">Is your on-page content structured in an "answer-first" format that AI retrieval models can easily parse?</p>
             </div>
-            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
               <ShieldCheck className="w-8 h-8 text-orange-500 mb-4" />
               <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">Citation Authority</h4>
-              <p className="text-zinc-600 dark:text-zinc-400 text-sm">Are high-trust, authoritative websites (like Wikipedia, News outlets, and Tier-1 directories) talking about you?</p>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm">Are high-trust, authoritative websites (like Wikipedia, News outlets, and directories) talking about you?</p>
             </div>
-            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
               <Network className="w-8 h-8 text-red-500 mb-4" />
               <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">Knowledge Graph Density</h4>
-              <p className="text-zinc-600 dark:text-zinc-400 text-sm">How deep and interconnected is your brand&apos;s data footprint within Google&apos;s core Knowledge Graph?</p>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm">How deep and interconnected is your brand's data footprint within Google's core Knowledge Graph?</p>
             </div>
-            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
               <Radar className="w-8 h-8 text-teal-500 mb-4" />
               <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">Competitor Overlap</h4>
-              <p className="text-zinc-600 dark:text-zinc-400 text-sm">When users ask AI for options in your niche, are you recommended alongside, or instead of, your top competitors?</p>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm">When users ask AI for options in your niche, are you recommended alongside, or instead of, competitors?</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. HOW IT WORKS / PROCESS SECTION */}
-      <section className="py-24 bg-zinc-50 dark:bg-zinc-900/30 border-t border-zinc-200 dark:border-zinc-800">
+      {/* 5. HOW IT WORKS / PROCESS SECTION - Featuring: agency-workflow.jpg */}
+      <section className="py-24 bg-zinc-50 dark:bg-zinc-900/30 border-b border-zinc-200 dark:border-zinc-800">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-4">How It Works</h2>
-            <h3 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
-              Our Hybrid Process
-            </h3>
-            <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Our streamlined framework ensures smooth collaboration from initial plan selection through ongoing monthly deliverables while continuously tracking your cross-platform campaign progress.
-            </p>
+          
+          <div className="flex flex-col lg:flex-row items-center gap-16 mb-16">
+            {/* 👇 IMAGE 3: Agency Workflow laptop image */}
+            <div className="flex-1 w-full">
+              <div className="rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800">
+                <img 
+                  src="/agency-workflow.png" 
+                  alt="PulseSEO Agency Workflow" 
+                  className="w-full h-auto object-cover hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+            </div>
+            <div className="flex-1">
+              <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-4">How It Works</h2>
+              <h3 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
+                Our Hybrid Process
+              </h3>
+              <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                We don't do black-box retainers. Our streamlined framework ensures complete transparency from initial plan selection through ongoing monthly deliverables, all tracked via your custom dashboard.
+              </p>
+            </div>
           </div>
 
           <div className="relative flex flex-col lg:flex-row items-stretch gap-6 lg:gap-8">
@@ -207,7 +250,7 @@ export default function HomePage() {
               </div>
               <h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-4 pr-20">Select a plan</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Choose from our Momentum, Scale, or Elite plans, each tailored to different business sizes and growth goals. All plans feature powerful SEO and GEO deliverables, scaling based on your needs. Upgrade, downgrade, pause, or cancel at any time with no lock-in contracts.
+                Choose from our Momentum, Scale, or Elite plans, each tailored to different business sizes and growth goals. Upgrade, downgrade, pause, or cancel at any time with no lock-in contracts.
               </p>
             </div>
 
@@ -223,7 +266,7 @@ export default function HomePage() {
               </div>
               <h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-4 pr-20">Onboarding</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Our team conducts a comprehensive discovery session to map your business objectives, target audience, and AI visibility baseline. We configure your Analytics, build your PulseSEO live dashboard, and craft your initial unified search strategy based on a deep technical audit.
+                Our team maps your business objectives, target audience, and AI visibility baseline. We configure your Analytics, build your PulseSEO live dashboard, and craft your unified search strategy.
               </p>
             </div>
 
@@ -239,7 +282,7 @@ export default function HomePage() {
               </div>
               <h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-4 pr-20">Monthly deliverables</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Each month we execute RAG-optimized content updates, acquire contextual backlinks, manage entity associations, and fine-tune your advanced Schema. You receive ongoing tracking of both traditional Google rankings and AI citations within your custom portal.
+                Each month we execute RAG-optimized content updates, acquire contextual backlinks, and manage entity associations. Track your traditional Google rankings and AI citations within your portal.
               </p>
             </div>
           </div>
