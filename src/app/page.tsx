@@ -123,7 +123,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. AGENTIC SCORE (#score) - Featuring: data-dashboard.jpg */}
+      {/* 3. AGENTIC SCORE (#score) - Featuring: data-dashboard.png */}
       <section id="score" className="py-24 bg-zinc-50 dark:bg-zinc-900/30 border-y border-zinc-200 dark:border-zinc-800 scroll-mt-24 overflow-visible">
         <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
           
@@ -153,15 +153,15 @@ export default function HomePage() {
               />
             </div>
 
-            {/* Floating Score UI (Kept this as it overlaps the image perfectly) */}
-            <div className="absolute -bottom-10 -right-4 md:-right-8 bg-white dark:bg-zinc-900 rounded-3xl p-6 shadow-2xl border border-zinc-200 dark:border-zinc-800 flex items-center gap-6 animate-[bounce_6s_infinite] max-w-[280px]">
-              <div className="relative w-20 h-20 shrink-0 rounded-full border-8 border-zinc-50 dark:border-zinc-800 flex items-center justify-center bg-white dark:bg-zinc-900">
-                <div className="absolute inset-0 rounded-full border-8 border-purple-500 border-r-transparent border-t-transparent -rotate-45"></div>
-                <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">84</span>
+            {/* Floating Score UI (Shrunken to reveal more background) */}
+            <div className="absolute -bottom-6 -right-2 md:-right-6 bg-white dark:bg-zinc-900 rounded-2xl p-4 shadow-2xl border border-zinc-200 dark:border-zinc-800 flex items-center gap-4 animate-[bounce_6s_infinite] max-w-[220px]">
+              <div className="relative w-14 h-14 shrink-0 rounded-full border-[6px] border-zinc-50 dark:border-zinc-800 flex items-center justify-center bg-white dark:bg-zinc-900">
+                <div className="absolute inset-0 rounded-full border-[6px] border-purple-500 border-r-transparent border-t-transparent -rotate-45"></div>
+                <span className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">84</span>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Status</p>
-                <p className="text-base font-bold text-zinc-900 dark:text-white leading-tight">Highly Visible to AI</p>
+                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Status</p>
+                <p className="text-sm font-bold text-zinc-900 dark:text-white leading-tight">Highly Visible to AI</p>
               </div>
             </div>
           </div>
@@ -217,7 +217,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. HOW IT WORKS / PROCESS SECTION - Featuring: agency-workflow.jpg */}
+      {/* 5. HOW IT WORKS / PROCESS SECTION - Featuring: agency-workflow.png */}
       <section className="py-24 bg-zinc-50 dark:bg-zinc-900/30 border-b border-zinc-200 dark:border-zinc-800">
         <div className="max-w-7xl mx-auto px-6">
           
