@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { 
@@ -82,15 +83,17 @@ export default function HomePage() {
                 Traditional SEO focuses on matching keywords to web pages. Generative Engine Optimization (GEO) focuses on establishing trust and entity authority so AI language models use you as their source code.
               </p>
               <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                We bridge the gap. Our specialized team engineers digital campaigns that dominate Google SERPs while simultaneously securing your brand's citations in tomorrow's AI ecosystems.
+                We bridge the gap. Our specialized team engineers digital campaigns that dominate Google SERPs while simultaneously securing your brand&apos;s citations in tomorrow&apos;s AI ecosystems.
               </p>
             </div>
             {/* 👇 IMAGE 1: Team Meeting / Agency Image */}
             <div className="flex-1 w-full">
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800">
-                <img 
+                <Image 
                   src="/marketing-agency.png" 
                   alt="PulseSEO Agency Team" 
+                  width={800}
+                  height={600}
                   className="w-full h-auto object-cover hover:scale-105 transition-transform duration-700"
                 />
               </div>
@@ -133,7 +136,7 @@ export default function HomePage() {
               The Agentic Score
             </h3>
             <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-              You can't improve what you don't measure. The PulseSEO Agentic Score is our proprietary 0-100 metric that quantifies exactly how "visible" and "trusted" your brand is to AI models like ChatGPT and Gemini.
+              You can&apos;t improve what you don&apos;t measure. The PulseSEO Agentic Score is our proprietary 0-100 metric that quantifies exactly how &quot;visible&quot; and &quot;trusted&quot; your brand is to AI models like ChatGPT and Gemini.
             </p>
             <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-8">
               We aggregate data across brand sentiment, knowledge graph presence, and RAG readiness to give you a single source of truth for your AI marketing performance.
@@ -146,9 +149,11 @@ export default function HomePage() {
           {/* 👇 IMAGE 2: Data Dashboard laptop image */}
           <div className="flex-1 w-full relative mt-10 lg:mt-0 lg:order-1">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 w-full max-w-lg mx-auto lg:mr-auto">
-              <img 
+              <Image 
                 src="/data-dashboard.png" 
                 alt="AI Data Dashboard" 
+                width={800}
+                height={600}
                 className="w-full h-auto object-cover"
               />
             </div>
@@ -196,7 +201,7 @@ export default function HomePage() {
             <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
               <Database className="w-8 h-8 text-green-500 mb-4" />
               <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">RAG Readiness</h4>
-              <p className="text-zinc-600 dark:text-zinc-400 text-sm">Is your on-page content structured in an "answer-first" format that AI retrieval models can easily parse?</p>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm">Is your on-page content structured in an &quot;answer-first&quot; format that AI retrieval models can easily parse?</p>
             </div>
             <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
               <ShieldCheck className="w-8 h-8 text-orange-500 mb-4" />
@@ -206,7 +211,7 @@ export default function HomePage() {
             <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
               <Network className="w-8 h-8 text-red-500 mb-4" />
               <h4 className="text-xl font-bold mb-2 text-zinc-900 dark:text-white">Knowledge Graph Density</h4>
-              <p className="text-zinc-600 dark:text-zinc-400 text-sm">How deep and interconnected is your brand's data footprint within Google's core Knowledge Graph?</p>
+              <p className="text-zinc-600 dark:text-zinc-400 text-sm">How deep and interconnected is your brand&apos;s data footprint within Google&apos;s core Knowledge Graph?</p>
             </div>
             <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
               <Radar className="w-8 h-8 text-teal-500 mb-4" />
@@ -225,9 +230,11 @@ export default function HomePage() {
             {/* 👇 IMAGE 3: Agency Workflow laptop image */}
             <div className="flex-1 w-full">
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800">
-                <img 
+                <Image 
                   src="/agency-workflow.png" 
                   alt="PulseSEO Agency Workflow" 
+                  width={800}
+                  height={600}
                   className="w-full h-auto object-cover hover:scale-105 transition-transform duration-700"
                 />
               </div>
@@ -238,7 +245,7 @@ export default function HomePage() {
                 Our Hybrid Process
               </h3>
               <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                We don't do black-box retainers. Our streamlined framework ensures complete transparency from initial plan selection through ongoing monthly deliverables, all tracked via your custom dashboard.
+                We don&apos;t do black-box retainers. Our streamlined framework ensures complete transparency from initial plan selection through ongoing monthly deliverables, all tracked via your custom dashboard.
               </p>
             </div>
           </div>
