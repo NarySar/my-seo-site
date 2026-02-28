@@ -37,7 +37,8 @@ export async function POST(req: Request) {
             url: url,
             domain: new URL(url).hostname,
             score: result.score,
-            model: "Gemini 2.0 (V6)",
+            // 👇 FIX: Use the dynamic model name returned from the hybrid engine!
+            model: result.modelUsed || "Tri-Engine Hybrid", 
             result: result,
             user_id: userId
           });

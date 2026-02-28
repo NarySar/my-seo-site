@@ -204,7 +204,8 @@ function formatDate(dateString: string) {
 
 function formatModelName(model: string) {
     if (!model) return "Agent V1";
+    // 👇 FIX: Add support for our new Tri-Engine label
+    if (model.includes("Tri-Engine") || model.includes("Hybrid")) return "Tri-Engine Hybrid";
     if (model.includes("V6")) return "Gemini 2.0 (V6)";
-    if (model.includes("Gemini")) return "Gemini 2.0";
     return model;
 }
