@@ -9,7 +9,7 @@ const google = createGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
 });
 
-// --- 1. THE MATH ENGINE (Baseline Accuracy) ---
+// --- THE MATH ENGINE BASELINE (Helper Functions) ---
 function scoreTitle(title: string) {
   const len = title.trim().length;
   if (len === 0) return 0;
@@ -48,111 +48,144 @@ function scoreSchema(hasSchema: boolean, isSPA: boolean) {
   return hasSchema ? 100 : 0;
 }
 
-// --- 2. THE MULTI-MODEL HYBRID AGENT ---
-export async function runAgentScan(url: string) {
-  console.log(`🚀 MULTI-MODEL HYBRID SCAN: ${url}`);
+// ==========================================
+// 🤖 AGENT 1: THE SCRAPER & MATH CALCULATOR
+// ==========================================
+async function runMathAgent(url: string) {
+  console.log("🧮 Agent 1: Scraping and Calculating Math Baseline...");
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), 10000); 
+  
+  const response = await fetch(url, {
+    headers: { "User-Agent": "Mozilla/5.0 (compatible; PulseSeoBot/1.0;)" },
+    signal: controller.signal,
+  });
+  
+  if (!response.ok) throw new Error(`Status ${response.status}`);
+  const html = await response.text();
+  const $ = cheerio.load(html);
 
+  const spaMarkers = ['#root', '#__next', '#app', 'div[data-reactroot]'];
+  const isSPA = spaMarkers.some(s => $(s).length > 0);
+  $('script, style, svg, noscript').remove();
+  
+  const title = $('title').text().trim() || "";
+  const desc = $('meta[name="description"]').attr('content') || "";
+  const h1Count = $('h1').length;
+  const h1Text = $('h1').first().text().trim() || "";
+  const bodyText = $('body').text().replace(/\s+/g, ' ').trim();
+  const wordCount = bodyText.split(' ').length;
+  const hasSchema = html.includes('application/ld+json');
+
+  const sTitle = scoreTitle(title);
+  const sDesc = scoreDescription(desc);
+  const sH1 = scoreH1(h1Count, h1Text, isSPA);
+  const sWords = scoreWordCount(wordCount, isSPA);
+  const sSchema = scoreSchema(hasSchema, isSPA);
+
+  const mathScore = Math.round((sTitle * 0.2) + (sDesc * 0.2) + (sH1 * 0.2) + (sWords * 0.2) + (sSchema * 0.2));
+
+  return { url, isSPA, title, bodyText, wordCount, hasSchema, mathScore, scores: { sTitle, sDesc, sH1, sWords, sSchema } };
+}
+
+// ==========================================
+// 🤖 AGENT 2: GEMINI SEMANTIC ANALYSIS
+// ==========================================
+async function runGeminiAgent(title: string, bodyText: string) {
+  console.log("👷 Agent 2: Gemini analyzing semantic quality...");
   try {
-    // --- STEP 1: SCRAPE & CALCULATE BASELINE (Math) ---
-    console.log("🧮 Phase 1: Scraping and Calculating Math Baseline...");
-    const controller = new AbortController();
-    setTimeout(() => controller.abort(), 10000); 
-    
-    const response = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; PulseSeoBot/1.0;)" },
-      signal: controller.signal,
-    });
-    
-    if (!response.ok) throw new Error(`Status ${response.status}`);
-    const html = await response.text();
-    const $ = cheerio.load(html);
-
-    const spaMarkers = ['#root', '#__next', '#app', 'div[data-reactroot]'];
-    const isSPA = spaMarkers.some(s => $(s).length > 0);
-    $('script, style, svg, noscript').remove();
-    
-    const title = $('title').text().trim() || "";
-    const desc = $('meta[name="description"]').attr('content') || "";
-    const h1Count = $('h1').length;
-    const h1Text = $('h1').first().text().trim() || "";
-    const bodyText = $('body').text().replace(/\s+/g, ' ').trim();
-    const wordCount = bodyText.split(' ').length;
-    const hasSchema = html.includes('application/ld+json');
-
-    const sTitle = scoreTitle(title);
-    const sDesc = scoreDescription(desc);
-    const sH1 = scoreH1(h1Count, h1Text, isSPA);
-    const sWords = scoreWordCount(wordCount, isSPA);
-    const sSchema = scoreSchema(hasSchema, isSPA);
-
-    const mathScore = Math.round((sTitle * 0.2) + (sDesc * 0.2) + (sH1 * 0.2) + (sWords * 0.2) + (sSchema * 0.2));
-
-    // --- STEP 2: THE WORKER (Gemini 2.5 Flash) ---
-    console.log("👷 Phase 2: Gemini analyzing semantic quality...");
-    const { text: geminiAnalysis } = await generateText({
+    const { text } = await generateText({
       model: google("gemini-2.5-flash"),
       system: "You are an AI data quality rater. Read the website text and summarize the core business. Then, state if the content is clear and high-quality for LLMs, or if it is confusing/spammy.",
       prompt: `Title: ${title}\nText Snippet: ${bodyText.substring(0, 2000)}`,
     });
+    return text;
+  } catch (error) {
+    // 🛡️ SAFETY NET: If Gemini crashes, we gracefully catch it and keep going!
+    console.error("⚠️ Gemini Agent Failed, bypassing semantic analysis:", error);
+    return "Semantic analysis unavailable due to timeout. Rely solely on the math baseline score.";
+  }
+}
 
-    // --- STEP 3: THE JUDGE (OpenAI GPT-4o-mini) ---
-    console.log("👨‍⚖️ Phase 3: OpenAI finalizing Agentic JSON...");
-    const payload = `
-      Site: ${url} (SPA: ${isSPA})
-      MATH BASELINE SCORE: ${mathScore}/100
-      Title Quality: ${sTitle}/100
-      Description Quality: ${sDesc}/100
-      Structure (H1): ${sH1}/100
-      Data Density (Words): ${sWords}/100
-      Trust (Schema): ${sSchema}/100
-      
-      GEMINI SEMANTIC ANALYSIS:
-      "${geminiAnalysis}"
-    `;
+// ==========================================
+// 🤖 AGENT 3: OPENAI JUDGE
+// ==========================================
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+async function runOpenAIAgent(mathData: any, geminiAnalysis: string) {
+  console.log("👨‍⚖️ Agent 3: OpenAI finalizing Agentic JSON...");
+  const payload = `
+    Site: ${mathData.url} (SPA: ${mathData.isSPA})
+    MATH BASELINE SCORE: ${mathData.mathScore}/100
+    Title Quality: ${mathData.scores.sTitle}/100
+    Description Quality: ${mathData.scores.sDesc}/100
+    Structure (H1): ${mathData.scores.sH1}/100
+    Data Density (Words): ${mathData.scores.sWords}/100
+    Trust (Schema): ${mathData.scores.sSchema}/100
+    
+    GEMINI SEMANTIC ANALYSIS:
+    "${geminiAnalysis}"
+  `;
 
-    const { object } = await generateObject({
-      model: openai("gpt-4o-mini"),
-      schema: z.object({
-        score: z.number().min(0).max(100),
-        summary: z.string(),
-        breakdown: z.object({
-          dataDensity: z.number(),
-          structure: z.number(),
-          trust: z.number(),
-          clarity: z.number(),
-          completeness: z.number(),
-        }),
-        improvements: z.array(z.string()),
+  const { object } = await generateObject({
+    model: openai("gpt-4o-mini", { structuredOutputs: false }),
+    mode: "json", // 👈 Bypasses the Tool Calling crash
+    schema: z.object({
+      score: z.number(),
+      summary: z.string(),
+      breakdown: z.object({
+        dataDensity: z.number(),
+        structure: z.number(),
+        trust: z.number(),
+        clarity: z.number(),
+        completeness: z.number(),
       }),
-      system: `You are the final PulseSEO Judge. You will receive a mathematically calculated Baseline Score and a Semantic Analysis from Gemini.
-      Your job:
-      1. Output the final 'score'. You can adjust the Math Baseline Score by a maximum of +/- 10 points based on Gemini's analysis (e.g., boost it if Gemini says the text is incredibly high quality, or drop it if Gemini says it's spam).
-      2. Write a professional 3-sentence summary.
-      3. Use the exact math category scores provided to fill out the 'breakdown' object.
-      4. Provide 3 actionable 'improvements'.`,
-      prompt: `Finalize the audit based on this data:\n\n${payload}`,
-    });
+      improvements: z.array(z.string()),
+    }),
+    system: `You are the final PulseSEO Judge. You will receive a mathematically calculated Baseline Score and a Semantic Analysis from Gemini.
+    Your job:
+    1. Output the final 'score' as a number between 0 and 100. You can adjust the Math Baseline Score by a maximum of +/- 10 points based on Gemini's analysis.
+    2. Write a professional 3-sentence summary.
+    3. Fill out the 'breakdown' object using EXACTLY these keys: 'dataDensity', 'structure', 'trust', 'clarity', 'completeness'.
+    4. Provide 3 actionable 'improvements'.`,
+    prompt: `Finalize the audit based on this data:\n\n${payload}`,
+  });
 
-    // 👇 THE FIX: Force TypeScript to accept the object structure so the build passes
+  return object;
+}
+
+// ==========================================
+// 👑 THE ORCHESTRATOR (Main Function)
+// ==========================================
+export async function runAgentScan(url: string) {
+  console.log(`🚀 MULTI-AGENT ORCHESTRATION INITIATED: ${url}`);
+  
+  try {
+    // Step 1: Scrape & Math
+    const mathData = await runMathAgent(url);
+
+    // Step 2: Run Gemini (Protected by safety net)
+    const geminiAnalysis = await runGeminiAgent(mathData.title, mathData.bodyText);
+
+    // Step 3: Run OpenAI Judge
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    const finalData = object as any;
+    const finalData = await runOpenAIAgent(mathData, geminiAnalysis) as any;
 
-    console.log(`✅ Pipeline Complete! Math: ${mathScore} -> Final AI Score: ${finalData.score}`);
+    console.log(`✅ Pipeline Complete! Math: ${mathData.mathScore} -> Final AI Score: ${finalData.score}`);
 
     return {
       score: finalData.score,
-      crawlable: wordCount > 50 || isSPA,
-      wordCount: isSPA ? 1500 : wordCount,
-      hasSchema: hasSchema,
+      crawlable: mathData.wordCount > 50 || mathData.isSPA,
+      wordCount: mathData.isSPA ? 1500 : mathData.wordCount,
+      hasSchema: mathData.hasSchema,
       summary: finalData.summary,
       breakdown: finalData.breakdown,
       improvements: finalData.improvements,
-      modelUsed: "Tri-Engine (Math + Gemini + OpenAI)",
+      modelUsed: "Tri-Engine Orchestrator (Math -> Gemini -> OpenAI)",
     };
 
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Scan failed";
-    console.error("🔥 Scan Error:", msg);
+    console.error("🔥 Orchestrator Error:", msg);
     throw new Error(msg);
   }
 }
