@@ -11,7 +11,9 @@ const isPublicRoute = createRouteMatcher([
   "/api/scan",       
   "/api/cron",       
   "/api/worker",     
-  "/api/pulse",      // 👈 ADDED: This allows the chatbot to work publicly
+  "/api/pulse",      // This allows the chatbot to work publicly
+  "/docs",           // 👈 ADDED: Allows the main docs page to be public
+  "/docs/(.*)",      // 👈 ADDED: Allows any sub-pages inside docs to be public
   "/sign-in(.*)",    
   "/sign-up(.*)"     
 ]);

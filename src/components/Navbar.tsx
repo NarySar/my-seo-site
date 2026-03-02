@@ -18,6 +18,7 @@ import {
   Bot,
   Zap,
   Cpu,
+  MonitorSmartphone, // 👈 ADDED: The Web Design icon
   type LucideIcon 
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle"; 
@@ -47,7 +48,7 @@ export default function Navbar() {
 
   const isActive = (href: string) => pathname === href;
 
-  // 👇 NEW: 3-Tier Streamlined Structure
+  // 👇 UPDATED: Added Web Design to Services and Pricing arrays
   const navItems: NavItem[] = [
     { 
       name: "What Makes PulseSEO Different?", 
@@ -63,6 +64,7 @@ export default function Navbar() {
         { name: "Traditional SEO", href: "/services/seo", icon: Search, description: "Rank higher on Google, Bing, and Maps." },
         { name: "GEO (AI Search)", href: "/services/geo", icon: Bot, description: "Be cited by ChatGPT, Gemini & Perplexity." },
         { name: "Hybrid Dominance", href: "/services/hybrid", icon: Zap, description: "The ultimate unified SEO + GEO strategy." },
+        { name: "Performance Web Design", href: "/services/web-design", icon: MonitorSmartphone, description: "Lightning-fast, AI-ready Next.js websites." }, // 👈 NEW
       ]
     },
     { 
@@ -71,6 +73,7 @@ export default function Navbar() {
         { name: "SEO Plans", href: "/pricing/seo", icon: LineChart, description: "Foundational search engine visibility." },
         { name: "GEO Plans", href: "/pricing/geo", icon: Cpu, description: "Entity authority & LLM citation readiness." },
         { name: "Hybrid Plans", href: "/pricing/hybrid", icon: Sparkles, description: "Total market search dominance." },
+        { name: "Web Design Plans", href: "/pricing/web-design", icon: MonitorSmartphone, description: "Flat-rate pricing for custom websites." }, // 👈 NEW
       ]
     },
     { name: "Docs", href: "/docs" },
@@ -98,7 +101,7 @@ export default function Navbar() {
                     </Link>
                   )}
 
-                  {/* 👇 NEW: Colorful, Glassy Dropdown Background */}
+                  {/* Colorful, Glassy Dropdown Background */}
                   {item.children && (
                     <div className="absolute left-1/2 -translate-x-1/2 top-full pt-4 w-80 invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-out">
                       <div className="relative rounded-3xl border border-blue-200/60 dark:border-blue-800/50 shadow-2xl p-3 overflow-hidden bg-white/90 dark:bg-zinc-950/90 backdrop-blur-xl">

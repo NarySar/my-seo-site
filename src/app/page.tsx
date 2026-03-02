@@ -4,7 +4,8 @@ import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { 
   ArrowRight, Sparkles, Search, Bot, Zap, 
-  Activity, Radar, Network, BrainCircuit, ShieldCheck, Database
+  Activity, Radar, Network, BrainCircuit, ShieldCheck, Database,
+  MonitorSmartphone, Code, CheckCircle2
 } from "lucide-react";
 
 export default function HomePage() {
@@ -18,7 +19,7 @@ export default function HomePage() {
 
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 text-sm font-bold uppercase tracking-wider mb-8 shadow-sm">
-            <Sparkles className="w-4 h-4" /> The Hybrid Search Agency
+            <Sparkles className="w-4 h-4" /> The Full-Stack Search & Web Agency
           </div>
 
           <h1 className="text-5xl md:text-7xl font-extrabold text-zinc-900 dark:text-white tracking-tight mb-8">
@@ -29,7 +30,7 @@ export default function HomePage() {
           </h1>
 
           <p className="text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto leading-relaxed mb-12">
-            Stop choosing between traditional traffic and the future of search. We build unbreakable entity authority to rank your business on Google, ChatGPT, Gemini, and Perplexity.
+            Stop choosing between traditional traffic and the future of search. We build high-performance websites and unbreakable entity authority to rank your business on Google, ChatGPT, and Gemini.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -41,7 +42,8 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto text-left">
+          {/* Expanded 4-Column Hero Grid */}
+          <div className="mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto text-left">
             <Link href="/services/seo" className="group p-6 rounded-3xl bg-white/60 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 hover:bg-white dark:hover:bg-zinc-900 transition-colors backdrop-blur-sm shadow-sm">
               <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Search className="w-5 h-5" />
@@ -60,33 +62,41 @@ export default function HomePage() {
 
             <Link href="/services/hybrid" className="group p-6 rounded-3xl bg-white/60 dark:bg-zinc-900/40 border border-blue-200/50 dark:border-blue-800/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors backdrop-blur-sm relative overflow-hidden shadow-sm">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-100/40 to-purple-100/40 dark:from-blue-900/20 dark:to-purple-900/20 -z-10"></div>
-              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-md">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-md">
                 <Zap className="w-5 h-5" />
               </div>
               <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Hybrid Dominance</h3>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">The ultimate strategy. Unified technical architecture for both humans and AI.</p>
             </Link>
+
+            <Link href="/services/web-design" className="group p-6 rounded-3xl bg-white/60 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 hover:bg-white dark:hover:bg-zinc-900 transition-colors backdrop-blur-sm shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <MonitorSmartphone className="w-5 h-5" />
+              </div>
+              <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Web Design <span className="text-[10px] bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400 px-2 py-0.5 rounded-full ml-1 align-top">NEW</span></h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">Lightning-fast, conversion-optimized websites built for modern search algorithms.</p>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* 2. THE HYBRID ADVANTAGE (#hybrid) - Featuring: marketing-agency.jpg */}
-      <section id="hybrid" className="py-24 bg-white dark:bg-black border-t border-zinc-200 dark:border-zinc-800 scroll-mt-24">
+      {/* 2. OUR CORE SERVICES OVERVIEW */}
+      <section id="services-overview" className="py-24 bg-white dark:bg-black border-t border-zinc-200 dark:border-zinc-800 scroll-mt-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col lg:flex-row items-center gap-16 mb-16">
             <div className="flex-1">
-              <h2 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">The Paradigm Shift</h2>
+              <h2 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-4">Complete Digital Ecosystem</h2>
               <h3 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
-                The Hybrid Advantage
+                Everything you need to own the internet.
               </h3>
               <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-                Traditional SEO focuses on matching keywords to web pages. Generative Engine Optimization (GEO) focuses on establishing trust and entity authority so AI language models use you as their source code.
+                A beautiful website is useless if no one can find it. Ranking on Google is great, but irrelevant if AI recommends your competitor. 
               </p>
               <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                We bridge the gap. Our specialized team engineers digital campaigns that dominate Google SERPs while simultaneously securing your brand&apos;s citations in tomorrow&apos;s AI ecosystems.
+                We are a full-stack agency. We build the digital foundation (Web Design), drive human traffic (SEO), and ensure AI language models trust your brand (GEO).
               </p>
             </div>
-            {/* 👇 IMAGE 1: Team Meeting / Agency Image */}
+            {/* Agency Image */}
             <div className="flex-1 w-full">
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800">
                 <Image 
@@ -100,28 +110,69 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <div className="p-8 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-              <h4 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                <Search className="w-6 h-6 text-zinc-400" /> The Old Way
-              </h4>
-              <ul className="space-y-4 text-zinc-600 dark:text-zinc-400">
-                <li className="flex items-start gap-3"><span className="text-red-500 font-bold">✕</span> Relying purely on keyword density.</li>
-                <li className="flex items-start gap-3"><span className="text-red-500 font-bold">✕</span> Writing content only for human readers, ignoring RAG structuring.</li>
-                <li className="flex items-start gap-3"><span className="text-red-500 font-bold">✕</span> Blindly building links without focusing on Knowledge Graph connections.</li>
-              </ul>
-            </div>
+          {/* Deep Dive Services Grid */}
+          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
             
-            <div className="p-8 rounded-3xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border border-blue-200 dark:border-blue-800 relative overflow-hidden">
-              <h4 className="text-2xl font-bold mb-4 flex items-center gap-3 text-zinc-900 dark:text-white">
-                <Zap className="w-6 h-6 text-blue-600" /> The PulseSEO Way
-              </h4>
-              <ul className="space-y-4 text-zinc-700 dark:text-zinc-300">
-                <li className="flex items-start gap-3"><span className="text-blue-500 font-bold">✓</span> Unified keyword and LLM prompt research.</li>
-                <li className="flex items-start gap-3"><span className="text-blue-500 font-bold">✓</span> Answer-first formatting optimized for AI retrieval systems.</li>
-                <li className="flex items-start gap-3"><span className="text-blue-500 font-bold">✓</span> Building unbreakable entity authority via advanced Schema.</li>
+            {/* SEO Block */}
+            <div className="p-8 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 dark:hover:border-blue-700 transition-colors">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl text-blue-600 dark:text-blue-400">
+                  <Search className="w-6 h-6" />
+                </div>
+                <h4 className="text-2xl font-bold text-zinc-900 dark:text-white">Traditional SEO</h4>
+              </div>
+              <p className="text-zinc-600 dark:text-zinc-400 mb-6">We map high-intent keywords to perfectly optimized pages, build authoritative backlinks, and fix technical errors so you climb the Google ranks.</p>
+              <ul className="space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-blue-500" /> On-Page & Technical Audits</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-blue-500" /> High-Authority Link Building</li>
               </ul>
             </div>
+
+            {/* GEO Block */}
+            <div className="p-8 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-purple-300 dark:hover:border-purple-700 transition-colors">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl text-purple-600 dark:text-purple-400">
+                  <Bot className="w-6 h-6" />
+                </div>
+                <h4 className="text-2xl font-bold text-zinc-900 dark:text-white">GEO (AI Optimization)</h4>
+              </div>
+              <p className="text-zinc-600 dark:text-zinc-400 mb-6">We structure your data for Retrieval-Augmented Generation (RAG) and optimize your entity authority so LLMs natively recommend you.</p>
+              <ul className="space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-purple-500" /> AI Prompt Research</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-purple-500" /> Knowledge Graph & Schema Injection</li>
+              </ul>
+            </div>
+
+            {/* Hybrid Block */}
+            <div className="p-8 rounded-3xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/10 dark:to-purple-900/10 border border-blue-200 dark:border-blue-800 relative overflow-hidden">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl text-white">
+                  <Zap className="w-6 h-6" />
+                </div>
+                <h4 className="text-2xl font-bold text-zinc-900 dark:text-white">Hybrid Strategy</h4>
+              </div>
+              <p className="text-zinc-700 dark:text-zinc-300 mb-6">The best of both worlds. A unified, dual-engine strategy designed to dominate traditional search while securing your citations for tomorrow.</p>
+              <ul className="space-y-2 text-sm text-zinc-800 dark:text-zinc-200">
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-500" /> Omni-Channel Authority</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-500" /> Dual-Optimized Content Creation</li>
+              </ul>
+            </div>
+
+            {/* Web Design Block */}
+            <div className="p-8 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-teal-300 dark:hover:border-teal-700 transition-colors">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 bg-teal-100 dark:bg-teal-900/30 rounded-xl text-teal-600 dark:text-teal-400">
+                  <Code className="w-6 h-6" />
+                </div>
+                <h4 className="text-2xl font-bold text-zinc-900 dark:text-white">Performance Web Design</h4>
+              </div>
+              <p className="text-zinc-600 dark:text-zinc-400 mb-6">We design and develop blazing-fast Next.js and React websites built with SEO and AI-readiness baked into the code from day one.</p>
+              <ul className="space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-teal-500" /> Conversion-Optimized UI/UX</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-teal-500" /> Lightning Fast Core Web Vitals</li>
+              </ul>
+            </div>
+
           </div>
         </div>
       </section>
@@ -146,7 +197,7 @@ export default function HomePage() {
             </Link>
           </div>
           
-          {/* 👇 IMAGE 2: Data Dashboard laptop image */}
+          {/* Data Dashboard laptop image */}
           <div className="flex-1 w-full relative mt-10 lg:mt-0 lg:order-1">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 w-full max-w-lg mx-auto lg:mr-auto">
               <Image 
@@ -158,7 +209,7 @@ export default function HomePage() {
               />
             </div>
 
-            {/* Floating Score UI (Shrunken to reveal more background) */}
+            {/* Floating Score UI */}
             <div className="absolute -bottom-6 -right-2 md:-right-6 bg-white dark:bg-zinc-900 rounded-2xl p-4 shadow-2xl border border-zinc-200 dark:border-zinc-800 flex items-center gap-4 animate-[bounce_6s_infinite] max-w-[220px]">
               <div className="relative w-14 h-14 shrink-0 rounded-full border-[6px] border-zinc-50 dark:border-zinc-800 flex items-center justify-center bg-white dark:bg-zinc-900">
                 <div className="absolute inset-0 rounded-full border-[6px] border-purple-500 border-r-transparent border-t-transparent -rotate-45"></div>
@@ -227,7 +278,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6">
           
           <div className="flex flex-col lg:flex-row items-center gap-16 mb-16">
-            {/* 👇 IMAGE 3: Agency Workflow laptop image */}
+            {/* Agency Workflow laptop image */}
             <div className="flex-1 w-full">
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800">
                 <Image 
@@ -242,7 +293,7 @@ export default function HomePage() {
             <div className="flex-1">
               <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-4">How It Works</h2>
               <h3 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-6 tracking-tight">
-                Our Hybrid Process
+                Our Transparent Process
               </h3>
               <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 We don&apos;t do black-box retainers. Our streamlined framework ensures complete transparency from initial plan selection through ongoing monthly deliverables, all tracked via your custom dashboard.
@@ -257,7 +308,7 @@ export default function HomePage() {
               </div>
               <h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-4 pr-20">Select a plan</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Choose from our Momentum, Scale, or Elite plans, each tailored to different business sizes and growth goals. Upgrade, downgrade, pause, or cancel at any time with no lock-in contracts.
+                Choose from our core service plans, each tailored to different business sizes and growth goals. Upgrade, downgrade, pause, or cancel at any time with no lock-in contracts.
               </p>
             </div>
 
@@ -273,7 +324,7 @@ export default function HomePage() {
               </div>
               <h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-4 pr-20">Onboarding</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Our team maps your business objectives, target audience, and AI visibility baseline. We configure your Analytics, build your PulseSEO live dashboard, and craft your unified search strategy.
+                Our team maps your business objectives, target audience, and current baseline. We configure your Analytics, build your PulseSEO live dashboard, and craft your custom strategy.
               </p>
             </div>
 
@@ -287,7 +338,7 @@ export default function HomePage() {
               <div className="absolute top-8 right-8 text-xs font-bold text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30 px-3 py-1 rounded-full tracking-wider">
                 STEP 3
               </div>
-              <h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-4 pr-20">Monthly deliverables</h4>
+              <h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-4 pr-20">Monthly Execution</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 Each month we execute RAG-optimized content updates, acquire contextual backlinks, and manage entity associations. Track your traditional Google rankings and AI citations within your portal.
               </p>
