@@ -59,7 +59,7 @@ export async function POST(req: Request) {
 
     if (adminEmail) {
         await resend.emails.send({
-          from: "PulseSeo Agency <onboarding@resend.dev>",
+          from: "PulsePlusSEO Agency <onboarding@resend.dev>",
           to: adminEmail, // 👈 SENT TO YOU (chansovannary.sar001@umb.edu)
           subject: `🔔 Client Report: ${result.score}/100 for ${new URL(url).hostname}`,
           html: `
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
                 <p style="font-size: 12px; color: #666;">
                     View the full technical breakdown in your admin dashboard.
                     <br />
-                    <a href="https://www.pulseseo.ai/report/${savedScan?.id}">Open Full Report</a>
+                    <a href="https://www.PulsePlusSEO.ai/report/${savedScan?.id}">Open Full Report</a>
                 </p>
             </div>
           `

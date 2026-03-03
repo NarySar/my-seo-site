@@ -101,7 +101,7 @@ export default function HomePage() {
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800">
                 <Image 
                   src="/marketing-agency.png" 
-                  alt="PulseSEO Agency Team" 
+                  alt="PulsePlusSEO Agency Team" 
                   width={800}
                   height={600}
                   className="w-full h-auto object-cover hover:scale-105 transition-transform duration-700"
@@ -187,7 +187,7 @@ export default function HomePage() {
               The Agentic Score
             </h3>
             <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-              You can&apos;t improve what you don&apos;t measure. The PulseSEO Agentic Score is our proprietary 0-100 metric that quantifies exactly how &quot;visible&quot; and &quot;trusted&quot; your brand is to AI models like ChatGPT and Gemini.
+              You can&apos;t improve what you don&apos;t measure. The PulsePlusSEO Agentic Score is our proprietary 0-100 metric that quantifies exactly how &quot;visible&quot; and &quot;trusted&quot; your brand is to AI models like ChatGPT and Gemini.
             </p>
             <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-8">
               We aggregate data across brand sentiment, knowledge graph presence, and RAG readiness to give you a single source of truth for your AI marketing performance.
@@ -283,7 +283,7 @@ export default function HomePage() {
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800">
                 <Image 
                   src="/agency-workflow.png" 
-                  alt="PulseSEO Agency Workflow" 
+                  alt="PulsePlusSEO Agency Workflow" 
                   width={800}
                   height={600}
                   className="w-full h-auto object-cover hover:scale-105 transition-transform duration-700"
@@ -324,7 +324,7 @@ export default function HomePage() {
               </div>
               <h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-4 pr-20">Onboarding</h4>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                Our team maps your business objectives, target audience, and current baseline. We configure your Analytics, build your PulseSEO live dashboard, and craft your custom strategy.
+                Our team maps your business objectives, target audience, and current baseline. We configure your Analytics, build your PulsePlusSEO live dashboard, and craft your custom strategy.
               </p>
             </div>
 

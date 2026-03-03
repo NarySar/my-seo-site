@@ -13,7 +13,7 @@ export default function HybridSection() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/30 border border-blue-800 text-blue-400 text-sm font-medium mb-6">
               <Zap className="w-4 h-4" />
-              <span>The PulseSeo Standard</span>
+              <span>The PulsePlusSEO Standard</span>
             </div>
             
             <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">

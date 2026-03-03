@@ -97,7 +97,7 @@ export default function DashboardPage() {
                 </div>
                 <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">Sign in to view dashboard</h3>
                 <p className="text-zinc-500 mb-8 max-w-md">
-                    Your scan history and active PulseSEO plans are private. Please sign in to access your secure client portal.
+                    Your scan history and active PulsePlusSEO plans are private. Please sign in to access your secure client portal.
                 </p>
                 {/* 👈 CLERK SIGN IN BUTTON */}
                 <SignInButton mode="modal">

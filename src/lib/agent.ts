@@ -57,7 +57,7 @@ async function runMathAgent(url: string) {
   setTimeout(() => controller.abort(), 10000); 
   
   const response = await fetch(url, {
-    headers: { "User-Agent": "Mozilla/5.0 (compatible; PulseSeoBot/1.0;)" },
+    headers: { "User-Agent": "Mozilla/5.0 (compatible; PulsePlusSEOBot/1.0;)" },
     signal: controller.signal,
   });
   
@@ -141,7 +141,7 @@ async function runOpenAIAgent(mathData: any, geminiAnalysis: string) {
       }),
       improvements: z.array(z.string()),
     }),
-    system: `You are the final PulseSEO Judge. You will receive a mathematically calculated Baseline Score and a Semantic Analysis from Gemini.
+    system: `You are the final PulsePlusSEO Judge. You will receive a mathematically calculated Baseline Score and a Semantic Analysis from Gemini.
     Your job:
     1. Output the final 'score' as a number between 0 and 100. You can adjust the Math Baseline Score by a maximum of +/- 10 points based on Gemini's analysis.
     2. Write a professional 3-sentence summary.

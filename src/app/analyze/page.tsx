@@ -196,7 +196,7 @@ export default function AnalyzePage() {
         <div className="mt-24 pt-16 border-t border-zinc-200 dark:border-zinc-800">
             <h2 className="text-3xl font-bold text-center mb-4 text-zinc-900 dark:text-white">Under the Hood</h2>
             <p className="text-zinc-600 dark:text-zinc-400 text-center mb-12 max-w-2xl mx-auto">
-              PulseSeo isn&apos;t just a crawler. It&apos;s an Agentic Emulator that reads your site exactly like ChatGPT does.
+              PulsePlusSEO isn&apos;t just a crawler. It&apos;s an Agentic Emulator that reads your site exactly like ChatGPT does.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

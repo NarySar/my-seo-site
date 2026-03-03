@@ -51,7 +51,7 @@ export default function Navbar() {
   // 👇 UPDATED: Added Web Design to Services and Pricing arrays
   const navItems: NavItem[] = [
     { 
-      name: "What Makes PulseSEO Different?", 
+      name: "What Makes PulsePlusSEO Different?", 
       children: [
         { name: "The Hybrid Advantage", href: "/#hybrid", icon: Sparkles, description: "See how we combine Google & AI rankings." },
         { name: "Agentic Score", href: "/#score", icon: BarChart3, description: "Understand our 0-100 visibility metric." },
@@ -163,8 +163,18 @@ export default function Navbar() {
 
 function Logo() {
   return (
-    <Link href="/" className="relative block overflow-visible z-10 transition-opacity hover:opacity-80 w-40 h-16 -ml-3 md:w-64 md:h-20 md:-ml-4">
-      <Image src="/pulse-logo.png" alt="PulseSeo.ai" fill className="object-contain object-left origin-left scale-[2.5] md:scale-[3.5]" priority />
+    <Link href="/" className="flex items-center group">
+      {/* 👇 Tweak the -ml margin if you want to shift it left or right */}
+      <div className="relative -ml-2"> 
+        <Image 
+          src="/pulselogo-vs.png" // (or whatever your current filename is!)
+          alt="PulsePlusSEO Logo" 
+          width={400} // 👈 BUMPED UP
+          height={70} // 👈 BUMPED UP
+          priority
+          className="object-contain group-hover:scale-[1.03] transition-transform duration-300" 
+        />
+      </div>
     </Link>
   );
 }

@@ -8,16 +8,16 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PulseSeo.ai | Hybrid SEO Agency for AI & Google",
-  description: "PulseSeo.ai helps local businesses rank on Google and become visible to AI agents like ChatGPT, Gemini, and Perplexity. Get your free AI visibility scan today.",
+  title: "PulsePlusSEO.ai | Hybrid SEO Agency for AI & Google",
+  description: "PulsePlusSEO.ai helps local businesses rank on Google and become visible to AI agents like ChatGPT, Gemini, and Perplexity. Get your free AI visibility scan today.",
   openGraph: {
-    title: "PulseSeo.ai | Hybrid SEO Agency",
-    description: "Is your website invisible to AI? Scan it now with PulseSeo.ai to find out.",
-    url: "https://www.pulseseo.ai",
-    siteName: "PulseSeo.ai",
+    title: "PulsePlusSEO.ai | Hybrid SEO Agency",
+    description: "Is your website invisible to AI? Scan it now with PulsePlusSEO.ai to find out.",
+    url: "https://www.PulsePlusSEO.ai",
+    siteName: "PulsePlusSEO.ai",
     images: [
       {
-        url: "https://www.pulseseo.ai/opengraph-image.png", 
+        url: "https://www.PulsePlusSEO.ai/opengraph-image.png", 
         width: 1200,
         height: 630,
       },
@@ -49,10 +49,10 @@ export default function RootLayout({
                 __html: JSON.stringify({
                   "@context": "https://schema.org",
                   "@type": "ProfessionalService",
-                  "name": "PulseSeo.ai",
-                  "image": "https://www.pulseseo.ai/opengraph-image.png",
-                  "@id": "https://www.pulseseo.ai",
-                  "url": "https://www.pulseseo.ai",
+                  "name": "PulsePlusSEO.ai",
+                  "image": "https://www.PulsePlusSEO.ai/opengraph-image.png",
+                  "@id": "https://www.PulsePlusSEO.ai",
+                  "url": "https://www.PulsePlusSEO.ai",
                   "telephone": "+1-555-0100", 
                   "priceRange": "$$",
                   "address": {
@@ -75,7 +75,7 @@ export default function RootLayout({
                     { "@type": "City", "name": "Brookline" }
                   ],
                   "description":
-                    "PulseSeo.ai is a Hybrid SEO Agency based in Brighton, MA. We help local businesses rank on Google and become visible to AI agents.",
+                    "PulsePlusSEO.ai is a Hybrid SEO Agency based in Brighton, MA. We help local businesses rank on Google and become visible to AI agents.",
                 }),
               }}
             />

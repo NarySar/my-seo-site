@@ -54,7 +54,7 @@ export function Chatbot() {
                 <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div>
-                <h3 className="font-bold text-sm sm:text-base tracking-tight">Pulse Strategy Agent</h3>
+                <h3 className="font-bold text-sm sm:text-base tracking-tight">PulsePlus Strategy Agent</h3>
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
                   <p className="text-[10px] sm:text-[11px] text-blue-100 font-medium uppercase tracking-wider">Online</p>
@@ -72,7 +72,7 @@ export function Chatbot() {
               <div className="text-center py-8 sm:py-10 space-y-3">
                 <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-blue-500 mx-auto opacity-50" />
                 <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 px-4 sm:px-6">
-                  Hi! I&apos;m Pulse. Ask me about our <strong>Agentic SEO</strong> services or how we can help you rank on AI models.
+                  Hi! I&apos;m PulsePlus. Ask me about our <strong>Agentic SEO</strong> services or how we can help you rank on AI models.
                 </p>
               </div>
             )}
@@ -103,7 +103,7 @@ export function Chatbot() {
             {isLoading && (
               <div className="flex justify-start items-center gap-3 animate-pulse">
                 <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
-                <span className="text-[11px] sm:text-xs text-zinc-400 font-medium">Pulse is typing...</span>
+                <span className="text-[11px] sm:text-xs text-zinc-400 font-medium">PulsePlus is typing...</span>
               </div>
             )}
 

@@ -16,7 +16,7 @@ const docsContent = [
     content: (
       <div className="space-y-4 text-zinc-600 dark:text-zinc-400">
         <p>
-          <strong>PulseSeo.ai</strong> is a Hybrid SEO engine designed to help local businesses rank on Google <em>and</em> get cited by AI agents.
+          <strong>PulsePlusSEO.ai</strong> is a Hybrid SEO engine designed to help local businesses rank on Google <em>and</em> get cited by AI agents.
         </p>
         <p>
           Traditional SEO focuses on keywords and backlinks. <strong>Agentic SEO</strong> focuses on &quot;Structured Data&quot; and &quot;Token Density&quot; to help Large Language Models (LLMs) like ChatGPT, Gemini, and Claude understand your business facts.

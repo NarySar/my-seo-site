@@ -37,9 +37,9 @@ export async function GET(req: Request) {
         // 3. QUEUE JOBS: Send them to the Worker
         const qstash = new Client({ token: QSTASH_TOKEN! });
         
-        // ⚠️ IMPORTANT: Use your LIVE domain here (e.g., https://pulseseo.ai)
+        // ⚠️ IMPORTANT: Use your LIVE domain here (e.g., https://PulsePlusSEO.ai)
         // If testing locally, use your ngrok or local URL, but for production use real domain.
-        const APP_URL = "https://www.pulseseo.ai"; 
+        const APP_URL = "https://www.PulsePlusSEO.ai"; 
 
         // 3. QUEUE JOBS: Create a list of promises (requests)
         const jobs = monitors.map(monitor => 

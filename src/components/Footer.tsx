@@ -12,8 +12,8 @@ export function Footer() {
           {/* Logo with fixed zoom */}
           <Link href="/" className="inline-block relative w-96 h-24 mb-2 -ml-8 overflow-visible">
             <Image
-              src="/pulse-logo.png" 
-              alt="PulseSeo.ai"
+              src="/pulselogo-vs.png" 
+              alt="PulsePlusSEO.ai"
               fill
               className="object-contain object-left scale-[3.5] origin-left"
             />
@@ -40,8 +40,8 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-blue-600 shrink-0" />
-                <a href="mailto:hello@pulseseo.ai" className="hover:text-blue-600 transition-colors">
-                  hello@pulseseo.ai
+                <a href="mailto:hello@PulsePlusSEO.ai" className="hover:text-blue-600 transition-colors">
+                  hello@PulsePlusSEO.ai
                 </a>
               </li>
             </ul>
@@ -73,7 +73,7 @@ export function Footer() {
       {/* Bottom Bar */}
       <div className="max-w-7xl mx-auto px-6 border-t border-zinc-200 dark:border-zinc-800 pt-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          © {new Date().getFullYear()} PulseSeo.ai. All rights reserved.
+          © {new Date().getFullYear()} PulsePlusSEO.ai. All rights reserved.
         </p>
         <p className="text-xs text-zinc-400">
           Designed in Boston.
