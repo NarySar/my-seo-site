@@ -11,7 +11,14 @@ export function Chatbot() {
   const [hasUnread, setHasUnread] = useState(true); 
 
   const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
-    api: '/api/pulse'
+    api: '/api/pulse',
+    initialMessages: [
+      {
+        id: 'welcome-message',
+        role: 'assistant',
+        content: "Hello there! I'm PulsePlus, your AI assistant from PulsePlusSEO. I'm here to help you understand how our **Traditional SEO**, **GEO (AI Search)**, **Hybrid Dominance**, and high-performance **Web Design** strategies can boost your online presence. How can I assist you today?"
+      }
+    ]
   });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
