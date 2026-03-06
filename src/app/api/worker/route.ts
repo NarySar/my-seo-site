@@ -18,14 +18,13 @@ export async function POST(req: Request) {
 
     console.log(`👷 AGENCY WORKER: Starting scan for ${url}...`);
 
-    // 2. Run the AI Agent Scan
+    // 2. Run the AI Agent Scan (Now returns UI Checklists!)
     const result = await runAgentScan(url);
 
-    // 3. Save to Supabase (So the Client sees it in their Dashboard)
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!, 
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    // 3. Save to Supabase
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     const { data: savedScan, error: saveError } = await supabase
         .from("scans")
@@ -42,7 +41,6 @@ export async function POST(req: Request) {
 
     if (saveError) {
         console.error("DB Save Failed:", saveError);
-        // Continue anyway to send the email
     }
 
     // 4. Update 'last_run' in monitors table
@@ -53,14 +51,25 @@ export async function POST(req: Request) {
             .eq("id", monitorId);
     }
 
-    // 5. Send Report to AGENCY ADMIN (You)
-    // We use the MY_EMAIL variable from your .env.local
+    // 5. CALCULATE ERRORS FOR THE EMAIL
+    // Combine all the checks the AI just ran
+    const allChecks = [
+      ...(result.metaChecks || []), 
+      ...(result.qualityChecks || []), 
+      ...(result.technicalChecks || [])
+    ];
+    
+    // Count how many warnings and errors were found
+    const errorsCount = allChecks.filter(c => c.status === "error").length;
+    const warningsCount = allChecks.filter(c => c.status === "warning").length;
+
+    // 6. Send Report to AGENCY ADMIN
     const adminEmail = process.env.MY_EMAIL;
 
     if (adminEmail) {
         await resend.emails.send({
           from: "PulsePlusSEO Agency <onboarding@resend.dev>",
-          to: adminEmail, // 👈 SENT TO YOU (chansovannary.sar001@umb.edu)
+          to: adminEmail,
           subject: `🔔 Client Report: ${result.score}/100 for ${new URL(url).hostname}`,
           html: `
             <div style="font-family: sans-serif; padding: 20px; color: #333;">
@@ -74,14 +83,17 @@ export async function POST(req: Request) {
                 </div>
 
                 <h3>Quick Summary:</h3>
-                <p>${result.summary}</p>
+                <p>
+                  Our automated scan found <strong style="color: #dc2626;">${errorsCount} critical errors</strong> and 
+                  <strong style="color: #d97706;">${warningsCount} warnings</strong> that are currently hurting this site's visibility.
+                </p>
 
                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
                 
                 <p style="font-size: 12px; color: #666;">
                     View the full technical breakdown in your admin dashboard.
                     <br />
-                    <a href="https://www.PulsePlusSEO.ai/report/${savedScan?.id}">Open Full Report</a>
+                    <a href="https://pulseplusseo.ai/report/${savedScan?.id || ''}">Open Full Report</a>
                 </p>
             </div>
           `

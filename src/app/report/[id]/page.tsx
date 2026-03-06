@@ -4,50 +4,38 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { 
-  ArrowLeft, CheckCircle2, AlertCircle, Zap, HelpCircle, 
-  Globe, Calendar, Sparkles
+  ArrowLeft, CheckCircle2, AlertCircle, AlertTriangle, 
+  XCircle, Globe, Calendar
 } from "lucide-react";
 import { redirect } from "next/navigation";
 
-// 👇 FIX 1: Update the type to expect a Promise
 export default async function ReportPage({ params }: { params: Promise<{ id: string }> }) {
   
-  // 👇 FIX 2: "await" the params before we try to use the ID
   const resolvedParams = await params;
   const reportId = resolvedParams.id;
 
-  // 1. Securely check who is logged in
   const { userId } = await auth();
+  if (!userId) redirect("/login");
 
-  if (!userId) {
-    redirect("/login");
-  }
-
-  // 2. Connect to Supabase with the Service Role Key
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  // 3. Fetch the specific scan using the awaited ID
   const { data: scan, error } = await supabase
     .from("scans")
     .select("*")
-    .eq("id", reportId) // 👈 Use the awaited ID here
+    .eq("id", reportId)
     .eq("user_id", userId)
     .single();
 
-  // If no scan is found, show an error state
   if (error || !scan) {
     return (
-      <main className="min-h-screen bg-zinc-50 dark:bg-black flex flex-col">
+      <main className="min-h-screen bg-slate-50 flex flex-col">
         <Navbar />
         <div className="flex-grow flex flex-col items-center justify-center text-center p-6">
-          <AlertCircle className="w-16 h-16 text-zinc-400 mb-4" />
-          <h1 className="text-3xl font-bold text-zinc-900 dark:text-white mb-4">Report Not Found</h1>
-          <p className="text-zinc-500 mb-8 max-w-md">
-            We couldn&apos;t find this scan. It may have been deleted, or you might not have permission to view it.
-          </p>
-          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-full font-bold transition-all">
+          <AlertCircle className="w-16 h-16 text-slate-400 mb-4" />
+          <h1 className="text-3xl font-bold text-slate-900 mb-4">Report Not Found</h1>
+          <Link href="/dashboard" className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-full font-bold">
             Back to Dashboard
           </Link>
         </div>
@@ -55,147 +43,147 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
     );
   }
 
-  // Extract the JSON result object
   const result = scan.result;
   const score = scan.score;
 
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  const calculateCategoryScore = (checks: any[]) => {
+    if (!checks || checks.length === 0) return 0;
+    const passes = checks.filter(c => c.status === "pass").length;
+    return Math.round((passes / checks.length) * 100);
+  };
+
+  const metaScore = calculateCategoryScore(result.metaChecks);
+  const qualityScore = calculateCategoryScore(result.qualityChecks);
+  const structureScore = calculateCategoryScore(result.structureAndLinkChecks);
+  const llmScore = calculateCategoryScore(result.llmReadinessChecks); // 👈 Calculating new LLM Pillar score
+  const techScore = calculateCategoryScore(result.technicalChecks);
+
   return (
-    <main className="min-h-screen bg-zinc-50 dark:bg-black selection:bg-blue-100 dark:selection:bg-blue-900 overflow-x-hidden flex flex-col">
+    <main className="min-h-screen bg-slate-50 selection:bg-blue-100 overflow-x-hidden flex flex-col">
       <Navbar />
       
-      <div className="flex-grow pt-32 pb-20 px-6 max-w-5xl mx-auto w-full relative z-10">
+      <div className="flex-grow pt-32 pb-20 px-6 max-w-6xl mx-auto w-full relative z-10">
         
-        {/* TOP NAVIGATION */}
-        <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-bold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors mb-8">
+        <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors mb-8">
           <ArrowLeft className="w-4 h-4" /> Back to Dashboard
         </Link>
 
         {/* HEADER */}
         <div className="mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 text-xs font-bold uppercase tracking-wider mb-4">
-              <Sparkles className="w-4 h-4" /> Historical Scan
-            </div>
-            <h1 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-4 tracking-tight flex items-center gap-3">
-              <Globe className="text-blue-500" /> {scan.domain || scan.url}
+            <h1 className="text-3xl md:text-5xl font-bold text-slate-900 mb-4 tracking-tight flex items-center gap-3">
+              <Globe className="text-blue-600" /> {scan.domain || scan.url}
             </h1>
-            <div className="flex items-center gap-4 text-zinc-500 dark:text-zinc-400 text-sm font-medium">
-                <span className="flex items-center gap-2"><Calendar className="w-4 h-4"/> {new Date(scan.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            <div className="flex items-center gap-4 text-slate-500 text-sm font-medium">
+                <span className="flex items-center gap-2"><Calendar className="w-4 h-4"/> {new Date(scan.created_at).toLocaleDateString()}</span>
                 <span>•</span>
-                <span className="uppercase tracking-widest text-xs font-bold">{scan.model}</span>
+                <span className="uppercase tracking-widest text-xs font-bold bg-blue-100 text-blue-700 px-2 py-1 rounded-md">{scan.model}</span>
             </div>
         </div>
 
-        <div className="space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            {/* SCORE & BREAKDOWN ROW */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-              
-              {/* Score Box */}
-              <div className="md:col-span-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 flex flex-col justify-center items-center text-center relative overflow-hidden shadow-lg">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none" />
-                <h3 className="text-zinc-500 dark:text-zinc-400 font-bold mb-6 uppercase tracking-widest text-xs">Overall Agent Score</h3>
-                
-                <div className="relative w-48 h-48 shrink-0 rounded-full border-[12px] border-zinc-50 dark:border-zinc-950 flex flex-col items-center justify-center bg-white dark:bg-zinc-900 shadow-inner mb-6">
-                  <div className={`absolute inset-0 rounded-full border-[12px] border-r-transparent border-t-transparent -rotate-45 ${getRingColor(score)}`}></div>
-                  <span className={`text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r ${getTextGradient(score)}`}>
-                    {score}
-                  </span>
+            {/* LEFT COLUMN */}
+            <div className="lg:col-span-4 space-y-6">
+              <div className="bg-white border border-slate-200 rounded-2xl p-8 flex flex-col items-center text-center shadow-sm">
+                <h3 className="text-slate-800 font-bold mb-6 text-lg">On-page score</h3>
+                <div 
+                  className="relative w-48 h-48 rounded-full flex items-center justify-center mb-4"
+                  style={{ background: `conic-gradient(${score >= 80 ? '#22c55e' : score >= 50 ? '#eab308' : '#ef4444'} ${score}%, #f1f5f9 ${score}%)` }}
+                >
+                  <div className="absolute inset-2 bg-white rounded-full flex flex-col items-center justify-center">
+                     <span className="text-5xl font-black text-slate-800">{score}%</span>
+                  </div>
                 </div>
-
-                <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-950 px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800">
-                  {score >= 80 ? <CheckCircle2 className="text-green-500 w-5 h-5" /> : <AlertCircle className="text-yellow-500 w-5 h-5" />}
-                  <span className="text-zinc-700 dark:text-zinc-300 font-bold text-sm uppercase tracking-wider">
-                    {score >= 80 ? "Highly Visible" : score >= 50 ? "Needs Optimization" : "Invisible to AI"}
-                  </span>
+                <div className={`mt-4 px-4 py-1 rounded-full text-sm font-bold ${score >= 80 ? 'bg-green-100 text-green-700' : score >= 50 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
+                  {score >= 80 ? "Good" : score >= 50 ? "Warning" : "Critical"}
                 </div>
               </div>
 
-              {/* Breakdown Bars */}
-              <div className="md:col-span-7 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 shadow-lg">
-                <h3 className="text-zinc-500 dark:text-zinc-400 font-bold mb-8 uppercase tracking-widest text-xs flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-blue-500" /> Score Breakdown
-                </h3>
-                <div className="space-y-6">
-                   <ProgressBar label="Data Density" score={result.breakdown?.dataDensity || 0} />
-                   <ProgressBar label="Structure & Hierarchy" score={result.breakdown?.structure || 0} />
-                   <ProgressBar label="Trust Signals" score={result.breakdown?.trust || 0} />
-                   <ProgressBar label="Content Clarity" score={result.breakdown?.clarity || 0} />
-                   <ProgressBar label="Completeness" score={result.breakdown?.completeness || 0} />
-                </div>
+              {/* Progress Bars */}
+              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+                 <ProgressBar label="Meta data" score={metaScore} />
+                 <ProgressBar label="Page quality" score={qualityScore} />
+                 <ProgressBar label="Page Structure & Links" score={structureScore} />
+                 <ProgressBar label="LLM & RAG Readiness" score={llmScore} /> {/* 👈 NEW BAR! */}
+                 <ProgressBar label="Server & Tech" score={techScore} />
               </div>
             </div>
 
-            {/* AI EXECUTIVE SUMMARY */}
-            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 shadow-lg">
-              <h3 className="text-zinc-500 dark:text-zinc-400 font-bold mb-4 uppercase tracking-widest text-xs">AI Executive Summary</h3>
-              <p className="text-zinc-700 dark:text-zinc-300 text-lg leading-relaxed">
-                {result.summary || "No summary was generated for this scan."}
-              </p>
+            {/* RIGHT COLUMN */}
+            <div className="lg:col-span-8 space-y-8">
+               <CheckSection title="Meta data" checks={result.metaChecks} score={metaScore} />
+               <CheckSection title="Page quality" checks={result.qualityChecks} score={qualityScore} />
+               <CheckSection title="Page Structure & Links" checks={result.structureAndLinkChecks} score={structureScore} />
+               <CheckSection title="LLM & RAG Readiness" checks={result.llmReadinessChecks} score={llmScore} /> {/* 👈 NEW LIST! */}
+               <CheckSection title="Server & Technical" checks={result.technicalChecks} score={techScore} />
             </div>
-
-            {/* ACTION PLAN */}
-            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 shadow-lg">
-              <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-2">
-                <Zap className="h-5 w-5 text-blue-500" /> Action Plan
-              </h3>
-              <div className="space-y-3">
-                {result.improvements && result.improvements.length > 0 ? (
-                    result.improvements.map((item: string, i: number) => (
-                    <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-black/40 border border-zinc-200 dark:border-zinc-800/50">
-                        <div className="mt-0.5 h-6 w-6 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold shrink-0">
-                        {i + 1}
-                        </div>
-                        <p className="text-zinc-700 dark:text-zinc-300 text-sm leading-relaxed">{item}</p>
-                    </div>
-                    ))
-                ) : (
-                    <p className="text-zinc-500">No specific improvements suggested for this scan.</p>
-                )}
-              </div>
-            </div>
-
         </div>
       </div>
-      
-      {/* Background decoration */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-blue-500/5 dark:bg-blue-600/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
-
       <Footer />
     </main>
   );
 }
 
 // --- HELPER COMPONENTS ---
-
 function ProgressBar({ label, score }: { label: string, score: number }) {
   return (
     <div className="group">
       <div className="flex justify-between mb-2 items-center">
-        <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">{label}</span>
-        <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{score}/100</span>
+        <span className="text-sm font-semibold text-slate-700">{label}</span>
+        <span className="text-sm font-bold text-slate-900">{score || 0} %</span>
       </div>
-      
-      <div className="h-2 w-full bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+      <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
         <div 
-          className={`h-full rounded-full transition-all duration-1000 ${
-            score >= 80 ? 'bg-green-500' : score >= 50 ? 'bg-yellow-500' : 'bg-red-500'
-          }`}
-          style={{ width: `${score}%` }}
+          className="h-full rounded-full bg-blue-600 transition-all duration-1000"
+          style={{ width: `${score || 0}%` }}
         />
       </div>
     </div>
   );
 }
 
-// Helpers for the Score Circle
-function getRingColor(score: number) {
-  if (score >= 80) return "border-blue-500";
-  if (score >= 50) return "border-yellow-500";
-  return "border-red-500";
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+function CheckSection({ title, checks, score }: { title: string, checks: any[], score: number }) {
+  if (!checks || checks.length === 0) return null;
+  return (
+    <div className="mb-8">
+      <div className="flex justify-between items-center border-b border-slate-200 pb-2 mb-6">
+        <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
+        <div className="flex items-center gap-4">
+           <div className="h-2 w-24 bg-slate-100 rounded-full overflow-hidden hidden sm:block">
+             <div className="h-full bg-blue-600" style={{ width: `${score || 0}%` }}></div>
+           </div>
+           <span className="font-bold text-lg text-slate-800">{score || 0}%</span>
+        </div>
+      </div>
+      <div className="space-y-4">
+        {checks.map((check, index) => (
+          <CheckCard key={index} label={check.label} status={check.status} value={check.value} />
+        ))}
+      </div>
+    </div>
+  );
 }
 
-function getTextGradient(score: number) {
-  if (score >= 80) return "from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400";
-  if (score >= 50) return "from-yellow-600 to-orange-600 dark:from-yellow-400 dark:to-orange-400";
-  return "from-red-600 to-rose-600 dark:from-red-400 dark:to-rose-400";
+function CheckCard({ label, status, value }: { label: string, status: "pass" | "warning" | "error", value: string }) {
+  const styles = {
+    pass: { border: "border-l-green-500", bg: "bg-white", text: "text-slate-700", icon: <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" /> },
+    warning: { border: "border-l-yellow-400", bg: "bg-yellow-50", text: "text-yellow-800", icon: <AlertTriangle className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" /> },
+    error: { border: "border-l-red-500", bg: "bg-red-50", text: "text-red-800", icon: <XCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" /> }
+  };
+  const current = styles[status] || styles.pass;
+  return (
+    <div className={`border border-slate-200 border-l-[6px] rounded-lg p-5 flex flex-col sm:flex-row gap-4 sm:items-start ${current.border} ${current.bg}`}>
+      <div className="min-w-[150px] font-bold text-slate-800 text-sm mt-0.5">
+        {label}
+      </div>
+      <div className="flex items-start gap-3 bg-white border border-slate-100 p-4 rounded-md flex-grow shadow-sm">
+        {current.icon}
+        <p className={`text-sm leading-relaxed ${current.text}`}>
+          {value}
+        </p>
+      </div>
+    </div>
+  );
 }

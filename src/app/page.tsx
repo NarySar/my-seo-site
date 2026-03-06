@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import FAQSection from "@/components/FAQSection"; // 👈 NEW: Imported your Agentic FAQ component!
 import { 
   ArrowRight, Sparkles, Search, Bot, Zap, 
   Activity, Radar, Network, BrainCircuit, ShieldCheck, Database,
@@ -177,7 +178,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. AGENTIC SCORE (#score) - Featuring: data-dashboard.png */}
+      {/* 3. AGENTIC SCORE (#score) */}
       <section id="score" className="py-24 bg-zinc-50 dark:bg-zinc-900/30 border-y border-zinc-200 dark:border-zinc-800 scroll-mt-24 overflow-visible">
         <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
           
@@ -197,7 +198,6 @@ export default function HomePage() {
             </Link>
           </div>
           
-          {/* Data Dashboard laptop image */}
           <div className="flex-1 w-full relative mt-10 lg:mt-0 lg:order-1">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800 w-full max-w-lg mx-auto lg:mr-auto">
               <Image 
@@ -209,7 +209,6 @@ export default function HomePage() {
               />
             </div>
 
-            {/* Floating Score UI */}
             <div className="absolute -bottom-6 -right-2 md:-right-6 bg-white dark:bg-zinc-900 rounded-2xl p-4 shadow-2xl border border-zinc-200 dark:border-zinc-800 flex items-center gap-4 animate-[bounce_6s_infinite] max-w-[220px]">
               <div className="relative w-14 h-14 shrink-0 rounded-full border-[6px] border-zinc-50 dark:border-zinc-800 flex items-center justify-center bg-white dark:bg-zinc-900">
                 <div className="absolute inset-0 rounded-full border-[6px] border-purple-500 border-r-transparent border-t-transparent -rotate-45"></div>
@@ -273,12 +272,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. HOW IT WORKS / PROCESS SECTION - Featuring: agency-workflow.png */}
+      {/* 5. HOW IT WORKS / PROCESS SECTION */}
       <section className="py-24 bg-zinc-50 dark:bg-zinc-900/30 border-b border-zinc-200 dark:border-zinc-800">
         <div className="max-w-7xl mx-auto px-6">
           
           <div className="flex flex-col lg:flex-row items-center gap-16 mb-16">
-            {/* Agency Workflow laptop image */}
             <div className="flex-1 w-full">
               <div className="rounded-3xl overflow-hidden shadow-2xl border border-zinc-200 dark:border-zinc-800">
                 <Image 
@@ -347,7 +345,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. FOOTER */}
+      {/* 6. FAQ SECTION (Newly Added!) */}
+      <FAQSection />
+
+      {/* 7. FOOTER */}
       <Footer />
     </main>
   );

@@ -14,12 +14,11 @@ export async function POST(req: Request) {
 
     console.log(`🚀 Starting Agentic Scan for: ${url}`);
 
-    // 1. RUN THE V6 ENGINE
+    // 1. RUN THE V6 ENGINE (Now returning UI Arrays!)
     const result = await runAgentScan(url);
 
     // 2. SAVE TO DATABASE
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    // 👇 CRITICAL FIX: Using the Service Role Key so it never gets blocked by security rules
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY; 
 
     if (supabaseUrl && supabaseKey) {
@@ -37,9 +36,10 @@ export async function POST(req: Request) {
             url: url,
             domain: new URL(url).hostname,
             score: result.score,
-            // 👇 FIX: Use the dynamic model name returned from the hybrid engine!
-            model: result.modelUsed || "Tri-Engine Hybrid", 
-            result: result,
+            // 👇 FIX: Updated the model name to reflect our new UI data engine
+            model: "PulsePlus UI Fact-Checker", 
+            // 👇 FIX: This now saves the beautiful arrays (metaChecks, qualityChecks, etc.) into your database
+            result: result, 
             user_id: userId
           });
           
