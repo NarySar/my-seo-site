@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { 
   Loader2, Globe, Sparkles, CheckCircle2, 
-  AlertCircle, AlertTriangle, XCircle
+  AlertTriangle, XCircle, FileText
 } from "lucide-react";
 
 // --- TYPE DEFINITIONS ---
@@ -17,10 +17,13 @@ interface CheckItem {
 
 interface AnalysisResult {
   score: number;
+  seoScore: number; // 👈 Add this
+  aiScore: number;  // 👈 Add this
+  executiveSummary?: string; 
   metaChecks: CheckItem[];
   qualityChecks: CheckItem[];
   structureAndLinkChecks: CheckItem[];
-  llmReadinessChecks: CheckItem[]; // 👈 NEW: The 6 Critical LLM Data Points!
+  llmReadinessChecks: CheckItem[]; 
   technicalChecks: CheckItem[];
 }
 
@@ -29,7 +32,7 @@ const SCAN_STEPS = [
   "Analyzing Meta Tags & Core Web Vitals...",
   "Mapping Page Structure & Link Density...",
   "Gemini Evaluates LLM Readiness & Entity...",
-  "Applying 5-Pillar Agentic Rubric...",
+  "Applying 6-Pillar Agentic Rubric...",
   "Formatting UI Checklist..."
 ];
 
@@ -132,7 +135,7 @@ export default function AnalyzePage() {
           const metaScore = calculateCategoryScore(result.metaChecks);
           const qualityScore = calculateCategoryScore(result.qualityChecks);
           const structureScore = calculateCategoryScore(result.structureAndLinkChecks);
-          const llmScore = calculateCategoryScore(result.llmReadinessChecks); // 👈 Calculating new LLM Pillar score
+          const llmScore = calculateCategoryScore(result.llmReadinessChecks);
           const techScore = calculateCategoryScore(result.technicalChecks);
 
           return (
@@ -142,40 +145,79 @@ export default function AnalyzePage() {
                 {/* LEFT COLUMN: SCORE & PROGRESS BARS */}
                 <div className="lg:col-span-4 space-y-6">
                   
-                  <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 flex flex-col items-center text-center shadow-lg">
-                    <h3 className="text-zinc-800 dark:text-zinc-200 font-bold mb-6 text-lg">On-page score</h3>
+                  {/* OVERALL SCORE BOX */}
+                  <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 flex flex-col items-center text-center shadow-lg relative overflow-hidden">
+                    <h3 className="text-zinc-800 dark:text-zinc-200 font-bold mb-6 text-lg relative z-10">Overall Hybrid Score</h3>
                     
                     <div 
-                      className="relative w-48 h-48 rounded-full flex items-center justify-center mb-4"
+                      className="relative w-48 h-48 rounded-full flex items-center justify-center mb-4 z-10"
                       style={{ background: `conic-gradient(${result.score >= 80 ? '#22c55e' : result.score >= 50 ? '#eab308' : '#ef4444'} ${result.score}%, transparent ${result.score}%)` }}
                     >
                       <div className="absolute inset-2 bg-white dark:bg-zinc-900 rounded-full flex flex-col items-center justify-center">
                          <span className="text-5xl font-black text-zinc-800 dark:text-white">{result.score}%</span>
                       </div>
                     </div>
+                  </div>
 
-                    <div className={`mt-4 px-4 py-1 rounded-full text-sm font-bold ${result.score >= 80 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : result.score >= 50 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
-                      {result.score >= 80 ? "Good" : result.score >= 50 ? "Warning" : "Critical"}
+                  {/* 👈 NEW: THE SPLIT SCORES (SEO VS AI) */}
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Traditional SEO Score */}
+                    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 flex flex-col items-center shadow-sm">
+                      <Globe className="w-5 h-5 text-zinc-400 mb-2" />
+                      <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1">Traditional SEO</span>
+                      <span className={`text-2xl font-black ${result.seoScore >= 80 ? 'text-green-500' : result.seoScore >= 50 ? 'text-yellow-500' : 'text-red-500'}`}>
+                        {result.seoScore}%
+                      </span>
+                    </div>
+
+                    {/* AI Visibility Score */}
+                    <div className="bg-purple-50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-800/50 rounded-xl p-4 flex flex-col items-center shadow-sm relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-16 h-16 bg-purple-500/10 rounded-bl-full"></div>
+                      <Sparkles className="w-5 h-5 text-purple-500 mb-2 relative z-10" />
+                      <span className="text-xs font-bold text-purple-700 dark:text-purple-400 uppercase tracking-wider mb-1 relative z-10">AI Visibility</span>
+                      <span className={`text-2xl font-black relative z-10 ${result.aiScore >= 80 ? 'text-green-500' : result.aiScore >= 50 ? 'text-yellow-500' : 'text-red-500'}`}>
+                        {result.aiScore}%
+                      </span>
                     </div>
                   </div>
 
-                  {/* The 5 Progress Bars */}
+                  {/* Progress Bars */}
                   <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-lg space-y-6">
-                     <ProgressBar label="Meta data" score={metaScore} />
-                     <ProgressBar label="Page quality" score={qualityScore} />
-                     <ProgressBar label="Page Structure & Links" score={structureScore} />
-                     <ProgressBar label="LLM & RAG Readiness" score={llmScore} /> {/* 👈 NEW BAR! */}
-                     <ProgressBar label="Server & Tech" score={techScore} />
+                     <ProgressBar label="Meta data" score={calculateCategoryScore(result.metaChecks)} type="seo" />
+                     <ProgressBar label="Page quality" score={calculateCategoryScore(result.qualityChecks)} type="seo" />
+                     <ProgressBar label="Page Structure" score={calculateCategoryScore(result.structureAndLinkChecks)} type="seo" />
+                     <ProgressBar label="LLM & RAG Readiness" score={calculateCategoryScore(result.llmReadinessChecks)} type="ai" /> 
+                     <ProgressBar label="Server & Tech" score={calculateCategoryScore(result.technicalChecks)} type="seo" />
                   </div>
                 </div>
 
-                {/* RIGHT COLUMN: THE 5 CHECKLISTS */}
+                {/* RIGHT COLUMN: SUMMARY & THE 5 CHECKLISTS */}
                 <div className="lg:col-span-8 space-y-8">
-                   <CheckSection title="Meta data" checks={result.metaChecks} score={metaScore} />
-                   <CheckSection title="Page quality" checks={result.qualityChecks} score={qualityScore} />
-                   <CheckSection title="Page Structure & Links" checks={result.structureAndLinkChecks} score={structureScore} />
-                   <CheckSection title="LLM & RAG Readiness" checks={result.llmReadinessChecks} score={llmScore} /> {/* 👈 NEW CHECKLIST! */}
-                   <CheckSection title="Server & Technical" checks={result.technicalChecks} score={techScore} />
+                   
+                   {/* EXECUTIVE SUMMARY CARD */}
+                   {result.executiveSummary && (
+                     <div className="bg-white dark:bg-zinc-900 border border-purple-200 dark:border-purple-900/50 rounded-2xl p-6 shadow-sm mb-8 flex gap-4">
+                       <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full h-min">
+                         <Sparkles className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                       </div>
+                       <div>
+                         <div className="flex items-center gap-3 mb-2">
+                           <h2 className="text-xl font-bold text-zinc-800 dark:text-white">Executive Summary</h2>
+                           <span className="text-[10px] font-bold uppercase tracking-wider bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 px-2 py-0.5 rounded-sm">AI Generated</span>
+                         </div>
+                         <p className="text-zinc-600 dark:text-zinc-300 leading-relaxed text-sm">
+                           {result.executiveSummary}
+                         </p>
+                       </div>
+                     </div>
+                   )}
+
+                   {/* 👈 LABELS ADDED HERE */}
+                   <CheckSection title="Meta data" checks={result.metaChecks} score={metaScore} type="seo" />
+                   <CheckSection title="Page quality" checks={result.qualityChecks} score={qualityScore} type="seo" />
+                   <CheckSection title="Page Structure & Links" checks={result.structureAndLinkChecks} score={structureScore} type="seo" />
+                   <CheckSection title="LLM & RAG Readiness" checks={result.llmReadinessChecks} score={llmScore} type="ai" /> 
+                   <CheckSection title="Server & Technical" checks={result.technicalChecks} score={techScore} type="seo" />
                 </div>
 
               </div>
@@ -189,11 +231,20 @@ export default function AnalyzePage() {
 }
 
 // --- HELPER COMPONENTS ---
-function ProgressBar({ label, score }: { label: string, score: number }) {
+
+// 👈 NEW: Accepts 'type' to show the badge
+function ProgressBar({ label, score, type }: { label: string, score: number, type: "seo" | "ai" }) {
   return (
     <div className="group">
       <div className="flex justify-between mb-2 items-center">
-        <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">{label}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">{label}</span>
+          {type === 'ai' ? (
+            <span className="text-[9px] font-bold uppercase tracking-wider bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 px-1.5 py-0.5 rounded-sm">AI Scan</span>
+          ) : (
+            <span className="text-[9px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400 px-1.5 py-0.5 rounded-sm">Traditional</span>
+          )}
+        </div>
         <span className="text-sm font-bold text-zinc-900 dark:text-white">{score} %</span>
       </div>
       <div className="h-2.5 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
@@ -206,12 +257,26 @@ function ProgressBar({ label, score }: { label: string, score: number }) {
   );
 }
 
-function CheckSection({ title, checks, score }: { title: string, checks: CheckItem[], score: number }) {
+// 👈 NEW: Accepts 'type' to show the badge next to the title
+function CheckSection({ title, checks, score, type }: { title: string, checks: CheckItem[], score: number, type: "seo" | "ai" }) {
   if (!checks || checks.length === 0) return null;
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-6">
-        <h2 className="text-2xl font-bold text-zinc-800 dark:text-white">{title}</h2>
+        
+        <div className="flex items-center gap-3">
+          <h2 className="text-2xl font-bold text-zinc-800 dark:text-white">{title}</h2>
+          {type === 'ai' ? (
+            <span className="text-[10px] font-bold uppercase tracking-wider bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 px-2 py-1 rounded-md flex items-center gap-1">
+              <Sparkles className="w-3 h-3" /> AI Scan
+            </span>
+          ) : (
+            <span className="text-[10px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 px-2 py-1 rounded-md flex items-center gap-1">
+              <Globe className="w-3 h-3" /> Traditional SEO
+            </span>
+          )}
+        </div>
+
         <div className="flex items-center gap-4">
            <div className="h-2 w-24 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden hidden sm:block">
              <div className="h-full bg-blue-600" style={{ width: `${score}%` }}></div>

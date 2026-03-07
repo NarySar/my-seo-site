@@ -34,12 +34,13 @@ export default function HomePage() {
             Stop choosing between traditional traffic and the future of search. We build high-performance websites and unbreakable entity authority to rank your business on Google, ChatGPT, and Gemini.
           </p>
 
+          {/* 👈 BUTTONS UPDATED HERE */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/services/hybrid" className="flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg transition-all hover:scale-105 shadow-xl shadow-blue-600/20">
-              Explore Services <ArrowRight className="w-5 h-5" />
+            <Link href="/services" className="flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg transition-all hover:scale-105 shadow-xl shadow-blue-600/20">
+              Compare Services <ArrowRight className="w-5 h-5" />
             </Link>
             <Link href="/analyze" className="flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white font-bold text-lg transition-all hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:scale-105 shadow-lg">
-              <Search className="w-5 h-5" /> Free AI Visibility Audit
+              <Search className="w-5 h-5" /> Free Hybrid SEO & AI Audit
             </Link>
           </div>
 
