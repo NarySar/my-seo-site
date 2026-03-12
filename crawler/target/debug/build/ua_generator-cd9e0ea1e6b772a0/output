@@ -1,0 +1,4 @@
+cargo:rerun-if-changed=build.rs
+cargo:rerun-if-env-changed=BUILD_ENABLED
+cargo:rerun-if-env-changed=API_URL
+cargo:rerun-if-env-changed=APILAYER_KEY

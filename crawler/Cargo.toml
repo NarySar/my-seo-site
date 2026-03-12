@@ -1,0 +1,23 @@
+[package]
+name = "pulse-plus-crawler"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# The core crawling engine (blazing fast)
+spider = { version = "1.99.0", features = ["sync"] }
+
+# Async runtime for concurrency
+tokio = { version = "1", features = ["full"] }
+
+# HTTP client & HTML parsing
+reqwest = { version = "0.11", features = ["json"] }
+scraper = "0.18"
+
+# Database connection
+postgrest = "1.6"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Environment variables
+dotenv = "0.15"

@@ -1,0 +1,15 @@
+/Users/narysar/my-seo-site/crawler/target/debug/deps/markup5ever-3b262c78671ec25f.d: /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/lib.rs /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/data/mod.rs /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/interface/mod.rs /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/interface/tree_builder.rs /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/serialize.rs /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/util/buffer_queue.rs /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/util/smallcharset.rs /Users/narysar/my-seo-site/crawler/target/debug/build/markup5ever-43687d3bb0424c51/out/generated.rs /Users/narysar/my-seo-site/crawler/target/debug/build/markup5ever-43687d3bb0424c51/out/named_entities.rs
+
+/Users/narysar/my-seo-site/crawler/target/debug/deps/libmarkup5ever-3b262c78671ec25f.rmeta: /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/lib.rs /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/data/mod.rs /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/interface/mod.rs /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/interface/tree_builder.rs /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/serialize.rs /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/util/buffer_queue.rs /Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/util/smallcharset.rs /Users/narysar/my-seo-site/crawler/target/debug/build/markup5ever-43687d3bb0424c51/out/generated.rs /Users/narysar/my-seo-site/crawler/target/debug/build/markup5ever-43687d3bb0424c51/out/named_entities.rs
+
+/Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/lib.rs:
+/Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/data/mod.rs:
+/Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/interface/mod.rs:
+/Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/interface/tree_builder.rs:
+/Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/serialize.rs:
+/Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/util/buffer_queue.rs:
+/Users/narysar/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/markup5ever-0.11.0/util/smallcharset.rs:
+/Users/narysar/my-seo-site/crawler/target/debug/build/markup5ever-43687d3bb0424c51/out/generated.rs:
+/Users/narysar/my-seo-site/crawler/target/debug/build/markup5ever-43687d3bb0424c51/out/named_entities.rs:
+
+# env-dep:OUT_DIR=/Users/narysar/my-seo-site/crawler/target/debug/build/markup5ever-43687d3bb0424c51/out
