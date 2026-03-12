@@ -2,23 +2,28 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { runAgentScan } from "@/lib/agent";
 
-// Allow Vercel to run this in the background for up to 60 seconds
 export const maxDuration = 60; 
 
-export async function GET(req: Request) {
+// 1️⃣ CHANGED TO POST: So we don't have to fight the Upstash dropdown!
+export async function POST(req: Request) {
   try {
-    // 🔐 1. SECURITY: Only allow QStash (or you) to trigger this
+    // 2️⃣ URL TOKEN BYPASS: We check the URL for the password instead of a header
+    const requestUrl = new URL(req.url);
+    const secretToken = requestUrl.searchParams.get("token");
     const authHeader = req.headers.get("authorization");
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+
+    // Allow entry if they provide the correct URL token OR the header
+    if (secretToken !== process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      console.error("🚨 Unauthorized access attempt to queue worker!");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     console.log("👷 QUEUE WORKER: Looking for pending URLs...");
 
-    // 1. Grab ONE pending URL from the queue
     const { data: queueItem, error: fetchError } = await supabase
       .from("crawl_queue")
       .select("*")
@@ -34,13 +39,9 @@ export async function GET(req: Request) {
     const { id, url, domain } = queueItem;
     console.log(`🚀 QUEUE WORKER: Processing ${url}...`);
 
-    // 2. Mark it as "scanning" so it doesn't get processed twice
     await supabase.from("crawl_queue").update({ status: "scanning" }).eq("id", id);
-
-    // 3. Run your AI Agent! (Using your existing 6-Pillar logic)
     const result = await runAgentScan(url);
 
-    // 4. Save the results to your main 'scans' table
     await supabase.from("scans").insert({
       url: url,
       domain: domain,
@@ -49,7 +50,6 @@ export async function GET(req: Request) {
       result: result
     });
 
-    // 5. Mark the queue item as "completed"
     await supabase.from("crawl_queue").update({ status: "completed" }).eq("id", id);
 
     console.log(`✅ QUEUE WORKER: Successfully processed ${url} with a score of ${result.score}`);
